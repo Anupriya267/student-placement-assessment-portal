@@ -1,117 +1,146 @@
-// LOGIN FUNCTION
+// ================= LOGIN =================
 
 function login(){
 
-    let username = document.getElementById("username").value.trim();
-    let password = document.getElementById("password").value.trim();
+let username = document.getElementById("username").value.trim();
+let password = document.getElementById("password").value.trim();
 
 
-    if(username === "admin" && password === "admin123"){
+if(username === "admin" && password === "admin123"){
 
-        window.location.href = "admin.html";
+window.location.href = "admin.html";
 
-    }
+}
 
-    else if(username === "student1" && password === "1234"){
+else if(username === "student1" && password === "1234"){
 
-        window.location.href = "student.html";
+window.location.href = "student.html";
 
-    }
+}
 
-    else{
+else{
 
-        alert("Invalid Username or Password");
+alert("Invalid Username or Password");
 
-    }
+}
 
 }
 
 
 
-// TIMER FOR ASSESSMENT PAGE
+// ================= TIMER =================
+
+if(document.getElementById("timer")){
 
 let time = 40 * 60;
 
+
 let timer = setInterval(function(){
 
-    let timerBox = document.getElementById("timer");
-
-    if(timerBox){
-
-        let minutes = Math.floor(time / 60);
-        let seconds = time % 60;
-
-        timerBox.innerHTML =
-        minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-
-        time--;
-
-    }
+let minutes = Math.floor(time / 60);
+let seconds = time % 60;
 
 
-    if(time < 0){
+document.getElementById("timer").innerHTML =
+minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
 
-        clearInterval(timer);
 
-        localStorage.setItem("score",0);
+time--;
 
-        window.location.href = "results.html";
 
-    }
+if(time < 0){
 
+clearInterval(timer);
+
+submitTest();
+
+}
 
 },1000);
 
+}
 
 
 
-// SUBMIT ASSESSMENT
+// ================= SUBMIT =================
 
 function submitTest(){
 
-    let score = 0;
+
+let score = 0;
 
 
-    let answers = {
+// MCQ answers
 
-        q1:"new",
-        q2:"for",
-        q3:"int",
-        q4:"==",
-        q5:"if",
-        q6:"0",
-        q7:"Object Oriented",
-        q8:"&&",
-        q9:"main",
-        q10:"final",
-        error1:"semicolon",
-        error2:"addsemicolon"
+let answers = {
 
-    };
+q1:"new",
+q2:"for",
+q3:"int",
+q4:"==",
+q5:"if",
+q6:"0",
+q7:"Object Oriented",
+q8:"&&",
+q9:"main",
+q10:"final"
 
-
-    for(let question in answers){
-
-        let selected =
-        document.querySelector(
-        'input[name="'+question+'"]:checked'
-        );
+};
 
 
-        if(selected && selected.value === answers[question]){
 
-            score++;
+for(let q in answers){
 
-        }
-
-    }
-
-
-    localStorage.setItem("score", score);
-
-    localStorage.setItem("total", "12");
+let selected =
+document.querySelector(
+'input[name="'+q+'"]:checked'
+);
 
 
-    window.location.href = "results.html";
+if(selected && selected.value === answers[q]){
+
+score++;
+
+}
+
+}
+
+
+
+// Error correction
+
+let error1 =
+document.querySelector('input[name="error1"]:checked');
+
+
+if(error1 && error1.value === "semicolon"){
+
+score++;
+
+}
+
+
+
+let error2 =
+document.querySelector('input[name="error2"]:checked');
+
+
+if(error2 && error2.value === "addsemicolon"){
+
+score++;
+
+}
+
+
+
+// Save score
+
+localStorage.setItem("score", score);
+
+
+// Navigate
+
+window.location.href = "results.html";
+
 
 }
