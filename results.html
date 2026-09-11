@@ -1,22 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Assessment Result</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Assessment Result</h2>
+
+<p><b>Student:</b> Student 1</p>
+
+<p><b>Year:</b> Final Year</p>
+
+<p><b>Topic:</b> Java Basics</p>
+
+<p><b>Marks:</b> <span id="marks"></span></p>
+
+<p><b>Percentage:</b> <span id="percentage"></span>%</p>
+
+<p><b>Status:</b> Completed</p>
+
+
+<button onclick="downloadPDF()">
+Download PDF Report
+</button>
+
+
+</div>
+
+
 <script>
+
+
+// Get actual score from assessment
 
 let score = localStorage.getItem("score");
 
-if(score === null){
-    score = 0;
+
+if(score == null){
+
+score = 0;
+
 }
+
 
 let totalQuestions = 12;
 
+
 let percentage = (score / totalQuestions) * 100;
+
 
 
 document.getElementById("marks").innerHTML =
 score + " / " + totalQuestions;
 
 
+
 document.getElementById("percentage").innerHTML =
 percentage.toFixed(0);
 
 
+
+
+
+function downloadPDF(){
+
+
+let report =
+
+"Student: Student 1\n"+
+"Year: Final Year\n"+
+"Topic: Java Basics\n"+
+"Marks: "+score+" / "+totalQuestions+"\n"+
+"Percentage: "+percentage.toFixed(0)+"%\n"+
+"Status: Completed";
+
+
+
+let blob = new Blob([report],
+{type:"application/pdf"});
+
+
+
+let link = document.createElement("a");
+
+
+link.href = URL.createObjectURL(blob);
+
+
+link.download = "Assessment_Report.pdf";
+
+
+link.click();
+
+
+}
+
+
 </script>
+
+
+</body>
+
+</html>
