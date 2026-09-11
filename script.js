@@ -1,4 +1,32 @@
-// LOGIN FUNCTION
+alert("Script Loaded");
+
+
+let time = 40 * 60;
+
+let timer = setInterval(function(){
+
+let timerBox = document.getElementById("timer");
+
+if(timerBox){
+
+let min = Math.floor(time / 60);
+let sec = time % 60;
+
+timerBox.innerHTML = min + ":" + (sec < 10 ? "0" : "") + sec;
+
+}
+
+time--;
+
+},1000);
+
+
+
+function submitTest(){
+
+window.location.href="results.html";
+
+}
 
 function login(){
 
