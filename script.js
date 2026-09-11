@@ -53,3 +53,34 @@ window.location.href="results.html";
 }
 
 },1000);
+function submitTest(){
+
+let score = 0;
+
+
+// Question 1 answer
+
+let q1 = document.querySelector('input[name="q1"]:checked');
+
+
+if(q1 && q1.value === "new"){
+
+score++;
+
+}
+
+
+// Save result
+
+localStorage.setItem(
+"score",
+score
+);
+
+
+// Open result page
+
+window.location.href="results.html";
+
+
+}
