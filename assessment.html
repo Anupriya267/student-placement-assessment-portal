@@ -1,4 +1,33 @@
-<!-- MCQ QUESTIONS -->
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Java Placement Assessment</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="dashboard">
+
+
+<h1>Java Placement Assessment</h1>
+
+
+<div class="card">
+
+<h2>Time Remaining</h2>
+
+<h1 id="timer">40:00</h1>
+
+</div>
+
+
 
 <div class="card">
 
@@ -14,7 +43,7 @@
 
 
 
-<p>2. Which loop is used when the number of iterations is known?</p>
+<p>2. Which loop is used when iterations are known?</p>
 
 <input type="radio" name="q2" value="while"> while<br>
 <input type="radio" name="q2" value="do-while"> do-while<br>
@@ -77,7 +106,7 @@
 
 
 
-<p>9. Java program execution starts from?</p>
+<p>9. Java execution starts from?</p>
 
 <input type="radio" name="q9" value="main"> main()<br>
 <input type="radio" name="q9" value="start"> start()<br>
@@ -98,8 +127,6 @@
 
 
 
-<!-- ERROR CORRECTION -->
-
 
 <div class="card">
 
@@ -117,15 +144,9 @@ System.out.println(a);
 <input type="radio" name="error1" value="semicolon">
 Add semicolon<br>
 
+
 <input type="radio" name="error1" value="remove">
 Remove println<br>
-
-<input type="radio" name="error1" value="datatype">
-Change datatype<br>
-
-<input type="radio" name="error1" value="loop">
-Add loop<br>
-
 
 
 
@@ -142,14 +163,61 @@ System.out.println(i);
 <input type="radio" name="error2" value="addsemicolon">
 Add semicolon after condition<br>
 
+
 <input type="radio" name="error2" value="remove">
 Remove loop<br>
 
-<input type="radio" name="error2" value="datatype">
-Change datatype<br>
 
-<input type="radio" name="error2" value="class">
-Add class<br>
+</div>
 
 
-  </div>
+
+
+<div class="card">
+
+<h2>Coding Questions (2)</h2>
+
+
+<p>
+13. Write Java program to find largest of 3 numbers.
+</p>
+
+
+<textarea rows="8" cols="50"
+placeholder="Write your Java code here">
+</textarea>
+
+
+
+<p>
+14. Write Java program to reverse a string.
+</p>
+
+
+<textarea rows="8" cols="50"
+placeholder="Write your Java code here">
+</textarea>
+
+
+</div>
+
+
+
+
+<button onclick="submitTest()">
+
+Submit Assessment
+
+</button>
+
+
+
+</div>
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
