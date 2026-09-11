@@ -115,3 +115,14 @@ textarea {
     font-size: 30px;
 
 }
+.card label {
+    display: block;
+    text-align: left;
+    margin: 10px 0;
+}
+
+.card input[type="radio"] {
+    width: auto;
+    margin-right: 8px;
+    vertical-align: middle;
+}
