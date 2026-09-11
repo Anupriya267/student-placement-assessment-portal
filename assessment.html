@@ -1,96 +1,155 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-
-<title>Assessment</title>
-
-<link rel="stylesheet" href="style.css">
-
-</head>
-
-
-<body>
-
-<div class="dashboard">
-
-<h1>Java Placement Assessment</h1>
-
-<h3>Day 1 - Java Basics</h3>
-
-<p>Time: 40 Minutes</p>
-
+<!-- MCQ QUESTIONS -->
 
 <div class="card">
-  <div class="card">
-<h2>Time Remaining</h2>
-<h1 id="timer">40:00</h1>
-  </div>
 
 <h2>MCQ Questions (10)</h2>
 
+
 <p>1. Which keyword is used to create an object in Java?</p>
 
+<input type="radio" name="q1" value="class"> class<br>
+<input type="radio" name="q1" value="new"> new<br>
+<input type="radio" name="q1" value="object"> object<br>
+<input type="radio" name="q1" value="create"> create<br>
 
-<input type="radio" name="q1" value="class"> class
-<br>
 
-<input type="radio" name="q1" value="new"> new
-<br>
 
-<input type="radio" name="q1" value="object"> object
-<br>
+<p>2. Which loop is used when the number of iterations is known?</p>
 
-<input type="radio" name="q1" value="create"> create
+<input type="radio" name="q2" value="while"> while<br>
+<input type="radio" name="q2" value="do-while"> do-while<br>
+<input type="radio" name="q2" value="for"> for<br>
+<input type="radio" name="q2" value="switch"> switch<br>
+
+
+
+<p>3. Which data type stores whole numbers?</p>
+
+<input type="radio" name="q3" value="float"> float<br>
+<input type="radio" name="q3" value="int"> int<br>
+<input type="radio" name="q3" value="char"> char<br>
+<input type="radio" name="q3" value="boolean"> boolean<br>
+
+
+
+<p>4. Which operator checks equality?</p>
+
+<input type="radio" name="q4" value="="> =<br>
+<input type="radio" name="q4" value="=="> ==<br>
+<input type="radio" name="q4" value="+"> +<br>
+<input type="radio" name="q4" value="&&"> &&<br>
+
+
+
+<p>5. Which statement is used for decision making?</p>
+
+<input type="radio" name="q5" value="if"> if<br>
+<input type="radio" name="q5" value="print"> print<br>
+<input type="radio" name="q5" value="import"> import<br>
+<input type="radio" name="q5" value="package"> package<br>
+
+
+
+<p>6. Array index starts from?</p>
+
+<input type="radio" name="q6" value="0"> 0<br>
+<input type="radio" name="q6" value="1"> 1<br>
+<input type="radio" name="q6" value="-1"> -1<br>
+<input type="radio" name="q6" value="2"> 2<br>
+
+
+
+<p>7. Java is which type of language?</p>
+
+<input type="radio" name="q7" value="Object Oriented"> Object Oriented<br>
+<input type="radio" name="q7" value="Procedural"> Procedural<br>
+<input type="radio" name="q7" value="Machine"> Machine<br>
+<input type="radio" name="q7" value="Assembly"> Assembly<br>
+
+
+
+<p>8. Logical AND operator is?</p>
+
+<input type="radio" name="q8" value="&&"> &&<br>
+<input type="radio" name="q8" value="||"> ||<br>
+<input type="radio" name="q8" value="!"> !<br>
+<input type="radio" name="q8" value="+"> +<br>
+
+
+
+<p>9. Java program execution starts from?</p>
+
+<input type="radio" name="q9" value="main"> main()<br>
+<input type="radio" name="q9" value="start"> start()<br>
+<input type="radio" name="q9" value="run"> run()<br>
+<input type="radio" name="q9" value="begin"> begin()<br>
+
+
+
+<p>10. Keyword used to prevent inheritance?</p>
+
+<input type="radio" name="q10" value="final"> final<br>
+<input type="radio" name="q10" value="static"> static<br>
+<input type="radio" name="q10" value="private"> private<br>
+<input type="radio" name="q10" value="public"> public<br>
 
 
 </div>
 
 
+
+<!-- ERROR CORRECTION -->
+
+
 <div class="card">
 
-<h2>Error Correction (2)</h2>
+<h2>Error Correction Questions (2)</h2>
 
-<p>Find the error:</p>
+
+<p>11. Find the correction:</p>
 
 <pre>
 int a = 10
 System.out.println(a);
 </pre>
 
-<input type="radio"> Add semicolon
-<br>
 
-<input type="radio"> Remove println
+<input type="radio" name="error1" value="semicolon">
+Add semicolon<br>
 
+<input type="radio" name="error1" value="remove">
+Remove println<br>
 
-</div>
+<input type="radio" name="error1" value="datatype">
+Change datatype<br>
 
-
-<div class="card">
-
-<h2>Coding Questions (2)</h2>
-
-<p>
-Write Java program to find largest of 3 numbers.
-</p>
-
-<textarea rows="8" cols="40"
-placeholder="Write your Java code here">
-</textarea>
-
-
-</div>
-
-<button onclick="submitTest()">
-Submit Assessment
-</button>
+<input type="radio" name="error1" value="loop">
+Add loop<br>
 
 
 
-</div>
+
+<p>12. Find the correction:</p>
+
+<pre>
+for(int i=0; i&lt;5 i++)
+{
+System.out.println(i);
+}
+</pre>
 
 
-</body>
+<input type="radio" name="error2" value="addsemicolon">
+Add semicolon after condition<br>
 
-</html>
+<input type="radio" name="error2" value="remove">
+Remove loop<br>
+
+<input type="radio" name="error2" value="datatype">
+Change datatype<br>
+
+<input type="radio" name="error2" value="class">
+Add class<br>
+
+
+  </div>
