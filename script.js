@@ -1,231 +1,174 @@
-// ===============================
+// =======================
 // LOGIN FUNCTION
-// ===============================
+// =======================
 
-function login(){
+function login() {
 
-let username = document.querySelector("input[type='text']").value;
-
-let password = document.querySelector("input[type='password']").value;
-
-
-if(username === "admin" && password === "admin123"){
-
-window.location.href = "admin.html";
-
-}
-
-else if(username === "student1" && password === "1234"){
-
-window.location.href = "student.html";
-
-}
-
-else{
-
-alert("Invalid Username or Password");
-
-}
-
-}
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
 
 
+    if (username === "admin" && password === "admin123") {
 
-// ===============================
-// TIMER FUNCTION
-// ===============================
+        window.location.href = "admin.html";
 
-let time = 40 * 60;
+    }
 
+    else if (username === "student1" && password === "1234") {
 
-if(document.getElementById("timer")){
+        window.location.href = "student.html";
 
+    }
 
-let timer = setInterval(function(){
+    else {
 
+        alert("Invalid Username or Password");
 
-let minutes = Math.floor(time / 60);
-
-let seconds = time % 60;
-
-
-document.getElementById("timer").innerHTML =
-minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-
-
-
-time--;
-
-
-
-if(time < 0){
-
-
-clearInterval(timer);
-
-alert("Time Over! Test Submitted");
-
-
-submitTest();
-
+    }
 
 }
 
 
 
-},1000);
+// =======================
+// TIMER
+// =======================
+
+if (document.getElementById("timer")) {
+
+    let time = 40 * 60;
 
 
-}
+    let timer = setInterval(function () {
 
 
+        let minutes = Math.floor(time / 60);
+
+        let seconds = time % 60;
 
 
-// ===============================
-// ASSESSMENT EVALUATION
-// ===============================
+        document.getElementById("timer").innerHTML =
+            minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
 
 
-function submitTest(){
+        time--;
 
 
-let score = 0;
+        if (time < 0) {
+
+            clearInterval(timer);
+
+            alert("Time Over");
+
+            submitTest();
+
+        }
 
 
-
-// MCQ Answers (10 Marks)
-
-
-let answers = {
-
-
-q1:"new",
-
-q2:"for",
-
-q3:"int",
-
-q4:"==",
-
-q5:"if",
-
-q6:"0",
-
-q7:"Object Oriented",
-
-q8:"&&",
-
-q9:"main",
-
-q10:"final"
-
-
-};
-
-
-
-for(let q in answers){
-
-
-let selected =
-document.querySelector(
-'input[name="'+q+'"]:checked'
-);
-
-
-
-if(selected && selected.value === answers[q]){
-
-
-score++;
-
-
-}
-
+    }, 1000);
 
 }
 
 
 
+// =======================
+// SUBMIT ASSESSMENT
+// =======================
 
-// Error Correction (4 Marks)
-
-
-let error1 =
-document.querySelector(
-'input[name="error1"]:checked'
-);
+function submitTest() {
 
 
-if(error1 && error1.value === "semicolon"){
+    let score = 0;
 
 
-score += 2;
+    let answers = {
 
+        q1: "new",
+        q2: "for",
+        q3: "int",
+        q4: "==",
+        q5: "if",
+        q6: "0",
+        q7: "Object Oriented",
+        q8: "&&",
+        q9: "main",
+        q10: "final"
 
-}
-
-
-
-
-let error2 =
-document.querySelector(
-'input[name="error2"]:checked'
-);
-
-
-if(error2 && error2.value === "addsemicolon"){
-
-
-score += 2;
-
-
-}
+    };
 
 
 
-
-// Coding Questions (6 Marks)
-
-
-let codeBoxes =
-document.querySelectorAll("textarea");
+    for (let q in answers) {
 
 
-codeBoxes.forEach(function(box){
+        let answer =
+        document.querySelector(
+        'input[name="' + q + '"]:checked'
+        );
 
 
-if(box.value.trim() !== ""){
+        if (answer && answer.value === answers[q]) {
 
+            score++;
 
-score += 3;
+        }
 
-
-}
-
-
-});
+    }
 
 
 
+    // Error correction
+
+    let error1 =
+    document.querySelector(
+    'input[name="error1"]:checked'
+    );
 
 
-// Save Result
+    if (error1 && error1.value === "semicolon") {
 
+        score += 2;
 
-localStorage.setItem(
-"score",
-score
-);
+    }
 
 
 
-// Move to Result Page
+    let error2 =
+    document.querySelector(
+    'input[name="error2"]:checked'
+    );
 
 
-window.location.href =
-"results.html";
+    if (error2 && error2.value === "addsemicolon") {
 
+        score += 2;
+
+    }
+
+
+
+    // Coding marks
+
+    let codes =
+    document.querySelectorAll("textarea");
+
+
+    codes.forEach(function(code){
+
+        if(code.value.trim() !== "") {
+
+            score += 3;
+
+        }
+
+    });
+
+
+
+    localStorage.setItem("score", score);
+
+
+    window.location.href = "results.html";
 
 
 }
