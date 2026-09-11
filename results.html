@@ -2,53 +2,32 @@
 <html>
 
 <head>
-
 <title>Assessment Result</title>
-
 <link rel="stylesheet" href="style.css">
-
 </head>
-
 
 <body>
 
-
-<div class="dashboard">
-
-
-<h1>
-Assessment Result
-</h1>
-
-
 <div class="card">
 
-<h2>
-Student: Student 1
-</h2>
+<h2>Assessment Result</h2>
+
+<p><b>Student:</b> <span id="student">Student 1</span></p>
+
+<p><b>Year:</b> Final Year</p>
+
+<p><b>Day:</b> <span id="day">Day 1</span></p>
+
+<p><b>Topic:</b> <span id="topic">Loops, Conditions, Operators</span></p>
+
+<p><b>Marks:</b> <span id="marks"></span></p>
+
+<h3>Percentage: <span id="percentage"></span>%</h3>
+
+<p><b>Status:</b> Completed</p>
 
 
-<p>
-Topic: Java Basics
-</p>
-
-
-<p>
-Marks: 17 / 20
-</p>
-
-
-<h2>
-Percentage: 85%
-</h2>
-
-
-<h3>
-Status: Completed
-</h3>
-
-
-<button>
+<button onclick="downloadPDF()">
 Download PDF Report
 </button>
 
@@ -56,7 +35,57 @@ Download PDF Report
 </div>
 
 
-</div>
+<script>
+
+let score = localStorage.getItem("score");
+
+if(score == null){
+score = 0;
+}
+
+
+let total = 20;
+
+
+let percentage = (score / total) * 100;
+
+
+document.getElementById("marks").innerHTML =
+score + " / " + total;
+
+
+document.getElementById("percentage").innerHTML =
+percentage.toFixed(0);
+
+
+
+function downloadPDF(){
+
+let report =
+"Student: Student 1\n"+
+"Year: Final Year\n"+
+"Day: Day 1\n"+
+"Topic: Loops, Conditions, Operators\n"+
+"Marks: "+score+" / "+total+"\n"+
+"Percentage: "+percentage.toFixed(0)+"%\n"+
+"Status: Completed";
+
+
+let file = new Blob([report],
+{type:"application/pdf"});
+
+
+let link=document.createElement("a");
+
+link.href=URL.createObjectURL(file);
+
+link.download="Assessment_Report.pdf";
+
+link.click();
+
+}
+
+</script>
 
 
 </body>
