@@ -7,73 +7,412 @@
 
 <link rel="stylesheet" href="style.css">
 
-</head>
+<!-- Excel Reader -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
+</head>
 
 <body>
 
-
 <div class="dashboard">
 
-
-<h1>
-Admin Dashboard
-</h1>
-
+<h1>Admin Dashboard</h1>
 
 <div class="card">
 
-<h2>
-Welcome Admin
-</h2>
+<h2>Question Bank Import</h2>
 
-</div>
+<p>
+Upload the 41-Day Java Placement Question Bank Excel file.
+</p>
 
+<input
+    type="file"
+    id="excelFile"
+    accept=".xlsx,.xls"
+>
 
-<div class="card">
+<br><br>
 
-<h3>Student Management</h3>
-
-<button>
-Upload Students
+<button onclick="importExcel()">
+Import Question Bank
 </button>
 
-</div>
-
-
-<div class="card">
-
-<h3>Assessment</h3>
-
-<button>
-Generate Assessment
-</button>
-
-<button>
-Assign Test
-</button>
+<p id="importStatus"></p>
 
 </div>
 
 
 <div class="card">
 
-<h3>Reports</h3>
+<h2>Question Bank Summary</h2>
 
-<button>
-View Results
-</button>
+<p>
+Total Questions:
+<strong id="totalQuestions">0</strong>
+</p>
 
-<button>
-Download PDF
+<p>
+Total Days:
+<strong id="totalDays">0</strong>
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>Daily Assessments</h2>
+
+<div id="dayList">
+
+<p>
+No question bank imported yet.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Student Management</h2>
+
+<button onclick="alert('Student management will be added next.')">
+Manage Students
 </button>
 
 </div>
 
 
+<div class="card">
+
+<h2>Reports</h2>
+
+<button onclick="alert('Reports section will be connected next.')">
+View Student Reports
+</button>
+
 </div>
 
+</div>
+
+
+<script>
+
+function importExcel(){
+
+    let fileInput =
+        document.getElementById("excelFile");
+
+    let file = fileInput.files[0];
+
+    if(!file){
+
+        alert("Please select the Excel file first.");
+
+        return;
+
+    }
+
+    let reader = new FileReader();
+
+    reader.onload = function(event){
+
+        try{
+
+            let data =
+                new Uint8Array(event.target.result);
+
+            let workbook =
+                XLSX.read(data, {
+                    type: "array"
+                });
+
+            let sheetName =
+                "Question Bank";
+
+            if(!workbook.SheetNames.includes(sheetName)){
+
+                alert(
+                    "Question Bank sheet was not found."
+                );
+
+                return;
+
+            }
+
+            let worksheet =
+                workbook.Sheets[sheetName];
+
+            let questions =
+                XLSX.utils.sheet_to_json(
+                    worksheet,
+                    {
+                        defval: ""
+                    }
+                );
+
+            if(questions.length === 0){
+
+                alert(
+                    "No questions found in the Excel file."
+                );
+
+                return;
+
+            }
+
+            /*
+            Store complete question bank
+            */
+
+            localStorage.setItem(
+                "questionBank",
+                JSON.stringify(questions)
+            );
+
+
+            /*
+            Find available days
+            */
+
+            let days = [];
+
+            questions.forEach(function(q){
+
+                if(
+                    q.Day !== undefined &&
+                    !days.includes(String(q.Day))
+                ){
+
+                    days.push(String(q.Day));
+
+                }
+
+            });
+
+
+            days.sort(function(a,b){
+
+                return Number(a) - Number(b);
+
+            });
+
+
+            localStorage.setItem(
+                "questionBankDays",
+                JSON.stringify(days)
+            );
+
+
+            document.getElementById(
+                "importStatus"
+            ).innerHTML =
+                "✅ Question Bank imported successfully.";
+
+
+            showSummary(
+                questions,
+                days
+            );
+
+
+            alert(
+                "Question Bank imported successfully!"
+            );
+
+        }
+
+        catch(error){
+
+            console.error(error);
+
+            alert(
+                "Error reading Excel file."
+            );
+
+        }
+
+    };
+
+
+    reader.readAsArrayBuffer(file);
+
+}
+
+
+function showSummary(
+    questions,
+    days
+){
+
+    document.getElementById(
+        "totalQuestions"
+    ).innerText =
+        questions.length;
+
+
+    document.getElementById(
+        "totalDays"
+    ).innerText =
+        days.length;
+
+
+    let dayList =
+        document.getElementById("dayList");
+
+    dayList.innerHTML = "";
+
+
+    days.forEach(function(day){
+
+        let dayQuestions =
+            questions.filter(function(q){
+
+                return String(q.Day) === day;
+
+            });
+
+
+        let topic =
+            dayQuestions.length > 0
+            ? dayQuestions[0]["Source Date / Assessment"]
+            : "";
+
+
+        let div =
+            document.createElement("div");
+
+        div.className = "card";
+
+
+        div.innerHTML =
+
+            "<h3>Day " + day + "</h3>" +
+
+            "<p>" +
+            topic +
+            "</p>" +
+
+            "<p>" +
+            "Questions: " +
+            dayQuestions.length +
+            "</p>" +
+
+            "<button onclick=\"viewDay('" +
+            day +
+            "')\">" +
+
+            "View Questions" +
+
+            "</button>";
+
+
+        dayList.appendChild(div);
+
+    });
+
+}
+
+
+function viewDay(day){
+
+    let questions =
+        JSON.parse(
+            localStorage.getItem(
+                "questionBank"
+            ) || "[]"
+        );
+
+
+    let dayQuestions =
+        questions.filter(function(q){
+
+            return String(q.Day) === day;
+
+        });
+
+
+    if(dayQuestions.length === 0){
+
+        alert(
+            "No questions found for Day " +
+            day
+        );
+
+        return;
+
+    }
+
+
+    let message =
+        "Day " +
+        day +
+        "\n\n";
+
+
+    dayQuestions.forEach(function(q){
+
+        message +=
+            q["Question No."] +
+            ". " +
+            q.Question +
+            "\n\n";
+
+    });
+
+
+    alert(message);
+
+}
+
+
+/*
+Load previously imported bank
+*/
+
+window.onload = function(){
+
+    let saved =
+        localStorage.getItem(
+            "questionBank"
+        );
+
+
+    let savedDays =
+        localStorage.getItem(
+            "questionBankDays"
+        );
+
+
+    if(saved && savedDays){
+
+        let questions =
+            JSON.parse(saved);
+
+        let days =
+            JSON.parse(savedDays);
+
+
+        showSummary(
+            questions,
+            days
+        );
+
+
+        document.getElementById(
+            "importStatus"
+        ).innerHTML =
+            "✅ Previously imported question bank loaded.";
+
+    }
+
+};
+
+</script>
 
 </body>
 
-</html>
+  </html>
