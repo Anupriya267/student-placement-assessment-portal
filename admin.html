@@ -3,13 +3,15 @@
 
 <head>
 
+<meta charset="UTF-8">
+
 <title>Admin Dashboard</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="style.css">
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
 
@@ -104,6 +106,22 @@
     margin-top:10px;
 }
 
+#importStatus {
+    font-weight:bold;
+}
+
+.success-message {
+    color:#16803c;
+}
+
+.error-message {
+    color:#c62828;
+}
+
+.day-card {
+    margin-bottom:15px;
+}
+
 </style>
 
 </head>
@@ -111,16 +129,14 @@
 
 <body>
 
-
 <div class="dashboard">
-
 
 <h1>Admin Dashboard</h1>
 
 
-<!-- ========================================= -->
-<!-- QUESTION BANK IMPORT -->
-<!-- ========================================= -->
+<!-- =====================================================
+     QUESTION BANK IMPORT
+===================================================== -->
 
 <div class="card">
 
@@ -138,7 +154,10 @@ Upload the 41-Day Java Placement Question Bank Excel file.
 
 <br><br>
 
-<button onclick="importExcel()">
+<button
+    type="button"
+    onclick="importExcel()"
+>
 Import Question Bank
 </button>
 
@@ -147,10 +166,9 @@ Import Question Bank
 </div>
 
 
-
-<!-- ========================================= -->
-<!-- QUESTION BANK SUMMARY -->
-<!-- ========================================= -->
+<!-- =====================================================
+     QUESTION BANK SUMMARY
+===================================================== -->
 
 <div class="card">
 
@@ -169,10 +187,9 @@ Total Days:
 </div>
 
 
-
-<!-- ========================================= -->
-<!-- DAILY ASSESSMENTS -->
-<!-- ========================================= -->
+<!-- =====================================================
+     DAILY ASSESSMENTS
+===================================================== -->
 
 <div class="card">
 
@@ -189,32 +206,36 @@ No question bank imported yet.
 </div>
 
 
-
-<!-- ========================================= -->
-<!-- STUDENT MANAGEMENT -->
-<!-- ========================================= -->
+<!-- =====================================================
+     STUDENT MANAGEMENT
+===================================================== -->
 
 <div class="card">
 
 <h2>Student Management</h2>
 
-<button onclick="studentManagement()">
+<button
+    type="button"
+    onclick="studentManagement()"
+>
 Manage Students
 </button>
 
 </div>
 
 
-
-<!-- ========================================= -->
-<!-- REPORTS -->
-<!-- ========================================= -->
+<!-- =====================================================
+     REPORTS
+===================================================== -->
 
 <div class="card">
 
 <h2>Reports</h2>
 
-<button onclick="viewReports()">
+<button
+    type="button"
+    onclick="viewReports()"
+>
 View Student Reports
 </button>
 
@@ -224,10 +245,9 @@ View Student Reports
 </div>
 
 
-
-<!-- ========================================= -->
-<!-- QUESTION VIEWER -->
-<!-- ========================================= -->
+<!-- =====================================================
+     QUESTION VIEWER
+===================================================== -->
 
 <div
     id="questionModal"
@@ -235,7 +255,6 @@ View Student Reports
 >
 
 <div class="question-modal-content">
-
 
 <div class="question-modal-header">
 
@@ -259,52 +278,258 @@ Day Questions
 >
 </div>
 
-
 </div>
 
 </div>
-
 
 
 <script>
 
+/* =====================================================
+   HELPER: FIND COLUMN
+===================================================== */
 
-// ================================================
-// IMPORT EXCEL
-// ================================================
+function findColumn(row, names) {
 
-function importExcel(){
+    const keys = Object.keys(row);
 
-    let fileInput =
+    for (let i = 0; i < names.length; i++) {
+
+        const wanted =
+            String(names[i])
+            .trim()
+            .toLowerCase();
+
+        const found = keys.find(function(key) {
+
+            return String(key)
+                .trim()
+                .toLowerCase() === wanted;
+
+        });
+
+        if (found) {
+            return found;
+        }
+
+    }
+
+    return null;
+}
+
+
+/* =====================================================
+   HELPER: NORMALIZE QUESTION
+===================================================== */
+
+function normalizeQuestion(row) {
+
+    const dayKey = findColumn(
+        row,
+        [
+            "Day",
+            "day",
+            "DAY"
+        ]
+    );
+
+    const typeKey = findColumn(
+        row,
+        [
+            "Question Type",
+            "question type",
+            "Type",
+            "type"
+        ]
+    );
+
+    const questionKey = findColumn(
+        row,
+        [
+            "Question",
+            "question"
+        ]
+    );
+
+    const optionAKey = findColumn(
+        row,
+        [
+            "Option A",
+            "option a",
+            "A"
+        ]
+    );
+
+    const optionBKey = findColumn(
+        row,
+        [
+            "Option B",
+            "option b",
+            "B"
+        ]
+    );
+
+    const optionCKey = findColumn(
+        row,
+        [
+            "Option C",
+            "option c",
+            "C"
+        ]
+    );
+
+    const optionDKey = findColumn(
+        row,
+        [
+            "Option D",
+            "option d",
+            "D"
+        ]
+    );
+
+    const sourceKey = findColumn(
+        row,
+        [
+            "Source Date / Assessment",
+            "Source",
+            "Topic",
+            "topic"
+        ]
+    );
+
+    const codingKey = findColumn(
+        row,
+        [
+            "Coding Requirement",
+            "coding requirement"
+        ]
+    );
+
+    const answerKey = findColumn(
+        row,
+        [
+            "Correct Answer",
+            "correct answer",
+            "Answer",
+            "answer"
+        ]
+    );
+
+
+    const dayValue =
+        dayKey
+        ? row[dayKey]
+        : "";
+
+
+    return {
+
+        Day:
+            String(dayValue)
+            .trim(),
+
+        "Question Type":
+            typeKey
+            ? String(row[typeKey] || "").trim()
+            : "",
+
+        Question:
+            questionKey
+            ? String(row[questionKey] || "").trim()
+            : "",
+
+        "Option A":
+            optionAKey
+            ? String(row[optionAKey] || "").trim()
+            : "",
+
+        "Option B":
+            optionBKey
+            ? String(row[optionBKey] || "").trim()
+            : "",
+
+        "Option C":
+            optionCKey
+            ? String(row[optionCKey] || "").trim()
+            : "",
+
+        "Option D":
+            optionDKey
+            ? String(row[optionDKey] || "").trim()
+            : "",
+
+        "Correct Answer":
+            answerKey
+            ? String(row[answerKey] || "").trim()
+            : "",
+
+        "Source Date / Assessment":
+            sourceKey
+            ? String(row[sourceKey] || "").trim()
+            : "",
+
+        "Coding Requirement":
+            codingKey
+            ? String(row[codingKey] || "").trim()
+            : ""
+
+    };
+
+}
+
+
+/* =====================================================
+   IMPORT EXCEL
+===================================================== */
+
+function importExcel() {
+
+    const fileInput =
         document.getElementById("excelFile");
 
-    let file =
+    const file =
         fileInput.files[0];
 
-    if(!file){
+
+    if (!file) {
 
         alert(
             "Please select the Excel file first."
         );
 
         return;
-
     }
 
-    let reader =
+
+    const status =
+        document.getElementById(
+            "importStatus"
+        );
+
+
+    status.className =
+        "";
+
+    status.innerHTML =
+        "⏳ Reading Excel file...";
+
+
+    const reader =
         new FileReader();
 
+
     reader.onload =
-        function(event){
+        function(event) {
 
-            try{
+            try {
 
-                let data =
+                const data =
                     new Uint8Array(
                         event.target.result
                     );
 
-                let workbook =
+
+                const workbook =
                     XLSX.read(
                         data,
                         {
@@ -312,29 +537,70 @@ function importExcel(){
                         }
                     );
 
-                let sheetName =
-                    "Question Bank";
 
-                if(
-                    !workbook.SheetNames.includes(
-                        sheetName
-                    )
-                ){
+                /* -------------------------------------
+                   FIND THE CORRECT SHEET
+                ------------------------------------- */
 
-                    alert(
-                        "Question Bank sheet was not found."
-                    );
+                let sheetName = null;
 
-                    return;
+
+                if (
+                    workbook.SheetNames
+                    .includes("Question Bank")
+                ) {
+
+                    sheetName =
+                        "Question Bank";
 
                 }
 
-                let worksheet =
+                else if (
+                    workbook.SheetNames
+                    .includes("Questions")
+                ) {
+
+                    sheetName =
+                        "Questions";
+
+                }
+
+                else if (
+                    workbook.SheetNames.length > 0
+                ) {
+
+                    sheetName =
+                        workbook.SheetNames[0];
+
+                }
+
+
+                if (!sheetName) {
+
+                    throw new Error(
+                        "No worksheet found in the Excel file."
+                    );
+
+                }
+
+
+                console.log(
+                    "Using Excel sheet:",
+                    sheetName
+                );
+
+
+                /* -------------------------------------
+                   READ SHEET
+                ------------------------------------- */
+
+                const worksheet =
                     workbook.Sheets[
                         sheetName
                     ];
 
-                let questions =
+
+                const rawQuestions =
                     XLSX.utils.sheet_to_json(
                         worksheet,
                         {
@@ -342,17 +608,112 @@ function importExcel(){
                         }
                     );
 
-                if(
-                    questions.length === 0
-                ){
 
-                    alert(
-                        "No questions found in the Excel file."
+                if (
+                    !rawQuestions.length
+                ) {
+
+                    throw new Error(
+                        "The selected Excel sheet contains no questions."
                     );
 
-                    return;
+                }
+
+
+                /* -------------------------------------
+                   NORMALIZE QUESTIONS
+                ------------------------------------- */
+
+                const questions =
+                    rawQuestions
+                    .map(
+                        normalizeQuestion
+                    )
+                    .filter(
+                        function(q) {
+
+                            return (
+                                q.Day !== ""
+                                &&
+                                q.Question !== ""
+                            );
+
+                        }
+                    );
+
+
+                if (
+                    questions.length === 0
+                ) {
+
+                    throw new Error(
+                        "Questions were found, but the Day or Question columns could not be read."
+                    );
 
                 }
+
+
+                /* -------------------------------------
+                   GET DAYS
+                ------------------------------------- */
+
+                const dayMap = {};
+
+
+                questions.forEach(
+                    function(q) {
+
+                        const day =
+                            String(q.Day)
+                            .trim();
+
+
+                        if (day !== "") {
+
+                            dayMap[day] = true;
+
+                        }
+
+                    }
+                );
+
+
+                const days =
+                    Object.keys(dayMap);
+
+
+                days.sort(
+                    function(a,b) {
+
+                        const numA =
+                            parseInt(
+                                String(a)
+                                .replace(
+                                    /[^0-9]/g,
+                                    ""
+                                )
+                            ) || 0;
+
+
+                        const numB =
+                            parseInt(
+                                String(b)
+                                .replace(
+                                    /[^0-9]/g,
+                                    ""
+                                )
+                            ) || 0;
+
+
+                        return numA - numB;
+
+                    }
+                );
+
+
+                /* -------------------------------------
+                   SAVE TO BROWSER
+                ------------------------------------- */
 
                 localStorage.setItem(
                     "questionBank",
@@ -361,36 +722,6 @@ function importExcel(){
                     )
                 );
 
-                let days = [];
-
-                questions.forEach(
-                    function(q){
-
-                        if(
-                            q.Day !== undefined &&
-                            !days.includes(
-                                String(q.Day)
-                            )
-                        ){
-
-                            days.push(
-                                String(q.Day)
-                            );
-
-                        }
-
-                    }
-                );
-
-                days.sort(
-                    function(a,b){
-
-                        return Number(a)
-                        -
-                        Number(b);
-
-                    }
-                );
 
                 localStorage.setItem(
                     "questionBankDays",
@@ -399,141 +730,185 @@ function importExcel(){
                     )
                 );
 
-                document.getElementById(
-                    "importStatus"
-                ).innerHTML =
-                    "✅ Question Bank imported successfully.";
+
+                /* -------------------------------------
+                   SHOW RESULT
+                ------------------------------------- */
 
                 showSummary(
                     questions,
                     days
                 );
 
+
+                status.className =
+                    "success-message";
+
+
+                status.innerHTML =
+                    "✅ Question Bank imported successfully.";
+
+
                 alert(
-                    "Question Bank imported successfully!"
+                    "Question Bank imported successfully!\n\n" +
+                    "Questions: " +
+                    questions.length +
+                    "\nDays: " +
+                    days.length
                 );
+
 
             }
 
-            catch(error){
+            catch(error) {
 
-                console.error(error);
+                console.error(
+                    "Excel import error:",
+                    error
+                );
+
+
+                status.className =
+                    "error-message";
+
+
+                status.innerHTML =
+                    "❌ Import failed: " +
+                    escapeHTML(
+                        error.message
+                    );
+
 
                 alert(
-                    "Error reading Excel file."
+                    "Question Bank import failed.\n\n" +
+                    error.message
                 );
 
             }
 
         };
 
+
+    reader.onerror =
+        function() {
+
+            status.className =
+                "error-message";
+
+
+            status.innerHTML =
+                "❌ Could not read the Excel file.";
+
+
+            alert(
+                "Could not read the selected Excel file."
+            );
+
+        };
+
+
     reader.readAsArrayBuffer(file);
 
 }
 
 
-
-// ================================================
-// SHOW SUMMARY
-// ================================================
+/* =====================================================
+   SHOW SUMMARY
+===================================================== */
 
 function showSummary(
     questions,
     days
-){
+) {
 
     document.getElementById(
         "totalQuestions"
     ).innerText =
         questions.length;
 
+
     document.getElementById(
         "totalDays"
     ).innerText =
         days.length;
 
-    let dayList =
+
+    const dayList =
         document.getElementById(
             "dayList"
         );
 
-    dayList.innerHTML = "";
+
+    dayList.innerHTML =
+        "";
 
 
     days.forEach(
-        function(day){
+        function(day) {
 
-            let dayQuestions =
+
+            const dayQuestions =
                 questions.filter(
-                    function(q){
+                    function(q) {
 
-                        return String(q.Day)
-                        ===
-                        String(day);
+                        return (
+                            String(q.Day)
+                            .trim()
+                            ===
+                            String(day)
+                            .trim()
+                        );
 
                     }
                 );
 
 
-            let topic =
+            let topic = "";
+
+
+            if (
                 dayQuestions.length > 0
-                ?
-                (
+            ) {
+
+                topic =
                     dayQuestions[0][
                         "Source Date / Assessment"
                     ]
                     ||
-                    "Java Placement Assessment"
-                )
-                :
-                "";
+                    "Java Placement Assessment";
+
+            }
 
 
-            let div =
+            const div =
                 document.createElement(
                     "div"
                 );
 
+
             div.className =
-                "card";
+                "card day-card";
 
 
             div.innerHTML =
 
-                "<h3>Day "
-                +
-                escapeHTML(day)
-                +
-                "</h3>"
+                "<h3>Day " +
+                escapeHTML(day) +
+                "</h3>" +
 
-                +
+                "<p>" +
+                escapeHTML(topic) +
+                "</p>" +
 
-                "<p>"
-                +
-                escapeHTML(topic)
-                +
-                "</p>"
+                "<p><b>Questions:</b> " +
+                dayQuestions.length +
+                "</p>" +
 
-                +
-
-                "<p>"
-                +
-                "Questions: "
-                +
-                dayQuestions.length
-                +
-                "</p>"
-
-                +
-
-                "<button onclick=\"viewDay('"
-                +
-                escapeJS(day)
-                +
-                "')\">"
-                +
-                "View Questions"
-                +
+                "<button type='button' " +
+                "onclick=\"viewDay('" +
+                escapeJS(day) +
+                "')\">" +
+                "View Questions" +
                 "</button>";
 
 
@@ -547,42 +922,72 @@ function showSummary(
 }
 
 
+/* =====================================================
+   VIEW DAY QUESTIONS
+===================================================== */
 
-// ================================================
-// VIEW DAY QUESTIONS
-// ================================================
+function viewDay(day) {
 
-function viewDay(day){
-
-    let questions =
-        JSON.parse(
-            localStorage.getItem(
-                "questionBank"
-            )
-            ||
-            "[]"
+    const saved =
+        localStorage.getItem(
+            "questionBank"
         );
 
 
-    let dayQuestions =
-        questions.filter(
-            function(q){
+    if (!saved) {
 
-                return String(q.Day)
-                ===
-                String(day);
+        alert(
+            "No question bank imported."
+        );
+
+        return;
+
+    }
+
+
+    let questions = [];
+
+
+    try {
+
+        questions =
+            JSON.parse(saved);
+
+    }
+
+    catch(error) {
+
+        alert(
+            "Saved question bank is corrupted. Please import the Excel file again."
+        );
+
+        return;
+
+    }
+
+
+    const dayQuestions =
+        questions.filter(
+            function(q) {
+
+                return (
+                    String(q.Day)
+                    .trim()
+                    ===
+                    String(day)
+                    .trim()
+                );
 
             }
         );
 
 
-    if(
+    if (
         dayQuestions.length === 0
-    ){
+    ) {
 
         alert(
-            "No questions found for Day "
-            +
+            "No questions found for Day " +
             day
         );
 
@@ -591,43 +996,41 @@ function viewDay(day){
     }
 
 
-    let modal =
+    const modal =
         document.getElementById(
             "questionModal"
         );
 
 
-    let modalTitle =
+    const modalTitle =
         document.getElementById(
             "modalTitle"
         );
 
 
-    let modalQuestions =
+    const modalQuestions =
         document.getElementById(
             "modalQuestions"
         );
 
 
     modalTitle.innerText =
-        "Day "
-        +
-        day
-        +
-        " - "
-        +
-        dayQuestions.length
-        +
+        "Day " +
+        day +
+        " - " +
+        dayQuestions.length +
         " Questions";
 
 
-    modalQuestions.innerHTML = "";
+    modalQuestions.innerHTML =
+        "";
 
 
     dayQuestions.forEach(
-        function(q,index){
+        function(q,index) {
 
-            let type =
+
+            const type =
                 String(
                     q["Question Type"]
                     ||
@@ -637,7 +1040,7 @@ function viewDay(day){
                 .toUpperCase();
 
 
-            let questionBox =
+            const questionBox =
                 document.createElement(
                     "div"
                 );
@@ -647,7 +1050,9 @@ function viewDay(day){
                 "question-item";
 
 
-            if(type === "MCQ"){
+            if (
+                type === "MCQ"
+            ) {
 
                 questionBox.classList.add(
                     "mcq-question"
@@ -655,7 +1060,11 @@ function viewDay(day){
 
             }
 
-            else if(type === "ERROR"){
+            else if (
+                type === "ERROR"
+                ||
+                type === "ERROR FINDING"
+            ) {
 
                 questionBox.classList.add(
                     "error-question"
@@ -663,7 +1072,9 @@ function viewDay(day){
 
             }
 
-            else if(type === "CODING"){
+            else if (
+                type === "CODING"
+            ) {
 
                 questionBox.classList.add(
                     "coding-question"
@@ -674,137 +1085,105 @@ function viewDay(day){
 
             let html =
 
-                "<div class='question-type'>"
-                +
-                escapeHTML(type)
-                +
-                "</div>"
+                "<div class='question-type'>" +
 
-                +
-
-                "<h3>"
-                +
-                "Question "
-                +
-                (index + 1)
-                +
-                ". "
-                +
                 escapeHTML(
-                    String(
-                        q.Question
-                        ||
-                        ""
-                    )
-                )
-                +
+                    type || "QUESTION"
+                ) +
+
+                "</div>" +
+
+                "<h3>" +
+
+                "Question " +
+
+                (index + 1) +
+
+                ". " +
+
+                escapeHTML(
+                    q.Question || ""
+                ) +
+
                 "</h3>";
 
 
-            if(
+            if (
                 type === "MCQ"
                 ||
                 type === "ERROR"
-            ){
+                ||
+                type === "ERROR FINDING"
+            ) {
+
 
                 html +=
 
-                    "<div class='option'>"
-                    +
-                    "<b>A.</b> "
-                    +
+                    "<div class='option'>" +
+
+                    "<b>A.</b> " +
+
                     escapeHTML(
-                        String(
-                            q["Option A"]
-                            ||
-                            ""
-                        )
-                    )
-                    +
-                    "</div>"
+                        q["Option A"] || ""
+                    ) +
 
-                    +
+                    "</div>" +
 
-                    "<div class='option'>"
-                    +
-                    "<b>B.</b> "
-                    +
+
+                    "<div class='option'>" +
+
+                    "<b>B.</b> " +
+
                     escapeHTML(
-                        String(
-                            q["Option B"]
-                            ||
-                            ""
-                        )
-                    )
-                    +
-                    "</div>"
+                        q["Option B"] || ""
+                    ) +
 
-                    +
+                    "</div>" +
 
-                    "<div class='option'>"
-                    +
-                    "<b>C.</b> "
-                    +
+
+                    "<div class='option'>" +
+
+                    "<b>C.</b> " +
+
                     escapeHTML(
-                        String(
-                            q["Option C"]
-                            ||
-                            ""
-                        )
-                    )
-                    +
-                    "</div>"
+                        q["Option C"] || ""
+                    ) +
 
-                    +
+                    "</div>" +
 
-                    "<div class='option'>"
-                    +
-                    "<b>D.</b> "
-                    +
+
+                    "<div class='option'>" +
+
+                    "<b>D.</b> " +
+
                     escapeHTML(
-                        String(
-                            q["Option D"]
-                            ||
-                            ""
-                        )
-                    )
-                    +
+                        q["Option D"] || ""
+                    ) +
+
                     "</div>";
 
             }
 
 
-            if(
+            if (
                 type === "CODING"
-            ){
+            ) {
 
                 html +=
 
-                    "<div class='coding-box'>"
+                    "<div class='coding-box'>" +
 
-                    +
+                    "<b>Coding Requirement:</b>" +
 
-                    "<b>Coding Requirement:</b>"
-
-                    +
-
-                    "<br><br>"
-
-                    +
+                    "<br><br>" +
 
                     escapeHTML(
-                        String(
-                            q[
-                                "Coding Requirement"
-                            ]
-                            ||
-                            q.Question
-                            ||
-                            ""
-                        )
-                    )
-
-                    +
+                        q["Coding Requirement"]
+                        ||
+                        q.Question
+                        ||
+                        ""
+                    ) +
 
                     "</div>";
 
@@ -829,12 +1208,11 @@ function viewDay(day){
 }
 
 
+/* =====================================================
+   CLOSE QUESTION MODAL
+===================================================== */
 
-// ================================================
-// CLOSE QUESTION VIEWER
-// ================================================
-
-function closeQuestionModal(){
+function closeQuestionModal() {
 
     document.getElementById(
         "questionModal"
@@ -845,16 +1223,17 @@ function closeQuestionModal(){
 
 
 window.onclick =
-    function(event){
+    function(event) {
 
-        let modal =
+        const modal =
             document.getElementById(
                 "questionModal"
             );
 
-        if(
+
+        if (
             event.target === modal
-        ){
+        ) {
 
             modal.style.display =
                 "none";
@@ -864,12 +1243,11 @@ window.onclick =
     };
 
 
+/* =====================================================
+   STUDENT MANAGEMENT
+===================================================== */
 
-// ================================================
-// STUDENT MANAGEMENT
-// ================================================
-
-function studentManagement(){
+function studentManagement() {
 
     window.location.href =
         "students.html";
@@ -877,12 +1255,11 @@ function studentManagement(){
 }
 
 
+/* =====================================================
+   REPORTS
+===================================================== */
 
-// ================================================
-// REPORTS
-// ================================================
-
-function viewReports(){
+function viewReports() {
 
     window.location.href =
         "reports.html";
@@ -890,12 +1267,11 @@ function viewReports(){
 }
 
 
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
-// ================================================
-// ESCAPE HTML
-// ================================================
-
-function escapeHTML(value){
+function escapeHTML(value) {
 
     return String(value)
 
@@ -927,12 +1303,11 @@ function escapeHTML(value){
 }
 
 
+/* =====================================================
+   ESCAPE JAVASCRIPT
+===================================================== */
 
-// ================================================
-// ESCAPE JAVASCRIPT
-// ================================================
-
-function escapeJS(value){
+function escapeJS(value) {
 
     return String(value)
 
@@ -949,63 +1324,90 @@ function escapeJS(value){
 }
 
 
-
-// ================================================
-// LOAD SAVED QUESTION BANK
-// ================================================
+/* =====================================================
+   LOAD SAVED QUESTION BANK
+===================================================== */
 
 window.onload =
-    function(){
+    function() {
 
-        let saved =
-            localStorage.getItem(
+        try {
+
+            const saved =
+                localStorage.getItem(
+                    "questionBank"
+                );
+
+
+            const savedDays =
+                localStorage.getItem(
+                    "questionBankDays"
+                );
+
+
+            if (
+                saved
+                &&
+                savedDays
+            ) {
+
+                const questions =
+                    JSON.parse(
+                        saved
+                    );
+
+
+                const days =
+                    JSON.parse(
+                        savedDays
+                    );
+
+
+                if (
+                    Array.isArray(questions)
+                    &&
+                    Array.isArray(days)
+                ) {
+
+                    showSummary(
+                        questions,
+                        days
+                    );
+
+
+                    document.getElementById(
+                        "importStatus"
+                    ).innerHTML =
+                        "✅ Previously imported question bank loaded.";
+
+                }
+
+            }
+
+        }
+
+        catch(error) {
+
+            console.error(
+                "Could not load saved question bank:",
+                error
+            );
+
+            localStorage.removeItem(
                 "questionBank"
             );
 
-
-        let savedDays =
-            localStorage.getItem(
+            localStorage.removeItem(
                 "questionBankDays"
             );
-
-
-        if(
-            saved
-            &&
-            savedDays
-        ){
-
-            let questions =
-                JSON.parse(
-                    saved
-                );
-
-
-            let days =
-                JSON.parse(
-                    savedDays
-                );
-
-
-            showSummary(
-                questions,
-                days
-            );
-
-
-            document.getElementById(
-                "importStatus"
-            ).innerHTML =
-                "✅ Previously imported question bank loaded.";
 
         }
 
     };
-
 
 </script>
 
 
 </body>
 
-    </html>
+</html>
