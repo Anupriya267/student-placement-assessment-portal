@@ -2,291 +2,513 @@
 <html>
 
 <head>
+    <title>Student Reports</title>
+    <link rel="stylesheet" href="style.css">
 
-<title>Student Reports</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="stylesheet" href="style.css">
-
-<style>
-
-.report-card {
-    background: white;
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.report-table {
-    width: 100%;
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 700px;
-}
-
-th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-}
-
-th {
-    background: #2864dc;
-    color: white;
-}
-
-.no-data {
-    padding: 20px;
-    text-align: center;
-}
-
-</style>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-
 
 <body>
 
+<div class="container">
 
-<div class="dashboard">
+    <h1>Student Reports</h1>
 
+    <div class="card">
 
-<h1>Student Reports</h1>
+        <h2>Assessment Reports</h2>
 
+        <div style="overflow-x:auto;">
 
-<div class="card">
+            <table border="1" width="100%" cellpadding="8">
 
-<h2>Assessment Reports</h2>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Year</th>
+                        <th>Day</th>
+                        <th>Score</th>
+                        <th>Percentage</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
 
-<div id="reportsContainer">
+                <tbody id="reportTable"></tbody>
 
-<p class="no-data">
-No student reports available yet.
-</p>
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <button onclick="backToAdmin()">
+            Back to Admin Dashboard
+        </button>
+
+    </div>
 
 </div>
 
+
+<!-- REPORT VIEW MODAL -->
+
+<div id="reportModal"
+     style="
+     display:none;
+     position:fixed;
+     top:0;
+     left:0;
+     width:100%;
+     height:100%;
+     background:rgba(0,0,0,0.6);
+     overflow:auto;
+     z-index:1000;
+     ">
+
+    <div style="
+        background:white;
+        width:90%;
+        max-width:800px;
+        margin:40px auto;
+        padding:20px;
+        border-radius:10px;
+        ">
+
+        <h2 id="modalTitle">Student Report</h2>
+
+        <div id="reportDetails"></div>
+
+        <br>
+
+        <button onclick="downloadPDF()">
+            Download PDF
+        </button>
+
+        <button onclick="closeReport()">
+            Close
+        </button>
+
+    </div>
+
 </div>
-
-
-<div class="card">
-
-<button onclick="goBack()">
-Back to Admin Dashboard
-</button>
-
-</div>
-
-
-</div>
-
 
 
 <script>
 
+let reports =
+    JSON.parse(
+        localStorage.getItem("studentReports")
+        || "[]"
+    );
 
-function loadReports(){
-
-    let students =
-        JSON.parse(
-            localStorage.getItem("students")
-            ||
-            "[]"
-        );
+let selectedReport = null;
 
 
-    let reports =
-        JSON.parse(
-            localStorage.getItem("studentReports")
-            ||
-            "[]"
-        );
+// ================= DISPLAY REPORTS =================
+
+function displayReports(){
+
+    const table =
+        document.getElementById("reportTable");
+
+    table.innerHTML = "";
 
 
-    let container =
-        document.getElementById(
-            "reportsContainer"
-        );
+    if(reports.length === 0){
+
+        table.innerHTML =
+            "<tr>" +
+            "<td colspan='8'>" +
+            "No student reports available yet." +
+            "</td>" +
+            "</tr>";
+
+        return;
+    }
 
 
-    container.innerHTML = "";
+    reports.forEach(function(report,index){
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML =
+
+            "<td>" +
+            escapeHTML(report.name) +
+            "</td>" +
+
+            "<td>" +
+            escapeHTML(report.username) +
+            "</td>" +
+
+            "<td>" +
+            escapeHTML(report.year) +
+            "</td>" +
+
+            "<td>" +
+            report.day +
+            "</td>" +
+
+            "<td>" +
+            report.score +
+            "/" +
+            report.total +
+            "</td>" +
+
+            "<td>" +
+            report.percentage +
+            "%</td>" +
+
+            "<td>" +
+            escapeHTML(report.status) +
+            "</td>" +
+
+            "<td>" +
+
+            "<button onclick='viewReport(" +
+            index +
+            ")'>" +
+            "View Report" +
+            "</button>" +
+
+            "</td>";
+
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+// ================= VIEW REPORT =================
+
+function viewReport(index){
+
+    selectedReport =
+        reports[index];
+
+
+    document.getElementById(
+        "modalTitle"
+    ).innerText =
+
+        selectedReport.name +
+        " - Day " +
+        selectedReport.day;
+
+
+    let html =
+
+        "<h3>Student Details</h3>" +
+
+        "<p><b>Name:</b> " +
+        escapeHTML(selectedReport.name) +
+        "</p>" +
+
+        "<p><b>Username:</b> " +
+        escapeHTML(selectedReport.username) +
+        "</p>" +
+
+        "<p><b>Year:</b> " +
+        escapeHTML(selectedReport.year) +
+        "</p>" +
+
+        "<p><b>Day:</b> " +
+        selectedReport.day +
+        "</p>" +
+
+        "<p><b>Score:</b> " +
+        selectedReport.score +
+        "/" +
+        selectedReport.total +
+        "</p>" +
+
+        "<p><b>Percentage:</b> " +
+        selectedReport.percentage +
+        "%</p>" +
+
+        "<p><b>Status:</b> " +
+        escapeHTML(selectedReport.status) +
+        "</p>" +
+
+        "<p><b>Date:</b> " +
+        escapeHTML(selectedReport.date) +
+        "</p>" +
+
+        "<hr>" +
+
+        "<h3>Answer Sheet</h3>";
 
 
     if(
-        reports.length === 0
+        !selectedReport.answers ||
+        selectedReport.answers.length === 0
     ){
 
-        container.innerHTML =
+        html +=
+            "<p>No answers available.</p>";
 
-            "<p class='no-data'>" +
+    }
 
-            "No student reports available yet." +
+    else{
 
-            "</p>";
+        selectedReport.answers.forEach(
+            function(answer,index){
+
+                html +=
+
+                    "<div style='" +
+                    "border:1px solid #ddd;" +
+                    "padding:12px;" +
+                    "margin-bottom:10px;" +
+                    "border-radius:6px;" +
+                    "'>" +
+
+                    "<b>Question " +
+                    (index + 1) +
+                    "</b><br><br>" +
+
+                    "<b>Question:</b><br>" +
+
+                    escapeHTML(
+                        answer.question
+                    ) +
+
+                    "<br><br>" +
+
+                    "<b>Student Answer:</b><br>" +
+
+                    escapeHTML(
+                        answer.studentAnswer
+                    ) +
+
+                    "<br><br>" +
+
+                    "<b>Correct Answer:</b><br>" +
+
+                    escapeHTML(
+                        answer.correctAnswer
+                    ) +
+
+                    "<br><br>" +
+
+                    "<b>Status:</b> " +
+
+                    escapeHTML(
+                        answer.status
+                    ) +
+
+                    "</div>";
+
+            }
+        );
+
+    }
+
+
+    document.getElementById(
+        "reportDetails"
+    ).innerHTML = html;
+
+
+    document.getElementById(
+        "reportModal"
+    ).style.display = "block";
+
+}
+
+
+// ================= CLOSE =================
+
+function closeReport(){
+
+    document.getElementById(
+        "reportModal"
+    ).style.display = "none";
+
+}
+
+
+// ================= PDF =================
+
+function downloadPDF(){
+
+    if(!selectedReport){
+
+        alert(
+            "Please open a report first."
+        );
 
         return;
 
     }
 
 
-    let table =
-        document.createElement("table");
+    const { jsPDF } = window.jspdf;
+
+    const doc =
+        new jsPDF();
 
 
-    table.innerHTML =
-
-        "<thead>" +
-
-        "<tr>" +
-
-        "<th>Name</th>" +
-
-        "<th>Username</th>" +
-
-        "<th>Year</th>" +
-
-        "<th>Day</th>" +
-
-        "<th>Score</th>" +
-
-        "<th>Percentage</th>" +
-
-        "<th>Status</th>" +
-
-        "</tr>" +
-
-        "</thead>" +
-
-        "<tbody></tbody>";
+    let y = 15;
 
 
-    let tbody =
-        table.querySelector("tbody");
+    function addText(text){
 
+        const lines =
+            doc.splitTextToSize(
+                String(text),
+                175
+            );
 
-    reports.forEach(
-        function(report){
+        if(y + lines.length * 7 > 280){
 
-            let student =
-                students.find(
-                    function(s){
+            doc.addPage();
 
-                        return s.username
-                        ===
-                        report.username;
-
-                    }
-                );
-
-
-            let row =
-                document.createElement("tr");
-
-
-            row.innerHTML =
-
-                "<td>" +
-
-                escapeHTML(
-                    report.name ||
-                    (student
-                    ? student.name
-                    : "")
-                ) +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                escapeHTML(
-                    report.username
-                    ||
-                    ""
-                ) +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                escapeHTML(
-                    report.year ||
-                    (student
-                    ? student.year
-                    : "")
-                ) +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                escapeHTML(
-                    String(
-                        report.day ||
-                        ""
-                    )
-                ) +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                escapeHTML(
-                    String(
-                        report.score ||
-                        "0"
-                    )
-                ) +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                escapeHTML(
-                    String(
-                        report.percentage ||
-                        "0"
-                    )
-                ) +
-
-                "%" +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                escapeHTML(
-                    report.status ||
-                    "Completed"
-                ) +
-
-                "</td>";
-
-
-            tbody.appendChild(row);
+            y = 15;
 
         }
+
+        doc.text(
+            lines,
+            15,
+            y
+        );
+
+        y +=
+            lines.length * 7 + 3;
+
+    }
+
+
+    doc.setFontSize(18);
+
+    addText(
+        "Student Placement Assessment Report"
     );
 
 
-    container.appendChild(table);
+    doc.setFontSize(11);
+
+
+    addText(
+        "Name: " +
+        selectedReport.name
+    );
+
+    addText(
+        "Username: " +
+        selectedReport.username
+    );
+
+    addText(
+        "Year: " +
+        selectedReport.year
+    );
+
+    addText(
+        "Day: " +
+        selectedReport.day
+    );
+
+    addText(
+        "Score: " +
+        selectedReport.score +
+        "/" +
+        selectedReport.total
+    );
+
+    addText(
+        "Percentage: " +
+        selectedReport.percentage +
+        "%"
+    );
+
+    addText(
+        "Status: " +
+        selectedReport.status
+    );
+
+    addText(
+        "Date: " +
+        selectedReport.date
+    );
+
+
+    y += 5;
+
+
+    addText(
+        "ANSWER SHEET"
+    );
+
+
+    if(selectedReport.answers){
+
+        selectedReport.answers.forEach(
+            function(answer,index){
+
+                addText(
+                    "Question " +
+                    (index + 1)
+                );
+
+                addText(
+                    "Question: " +
+                    answer.question
+                );
+
+                addText(
+                    "Student Answer: " +
+                    answer.studentAnswer
+                );
+
+                addText(
+                    "Correct Answer: " +
+                    answer.correctAnswer
+                );
+
+                addText(
+                    "Status: " +
+                    answer.status
+                );
+
+                y += 3;
+
+            }
+        );
+
+    }
+
+
+    doc.save(
+
+        selectedReport.name.replace(
+            /[^a-z0-9]/gi,
+            "_"
+        ) +
+
+        "_Day_" +
+
+        selectedReport.day +
+
+        "_Report.pdf"
+
+    );
 
 }
 
 
+// ================= BACK =================
 
-function goBack(){
+function backToAdmin(){
 
     window.location.href =
         "admin.html";
@@ -294,31 +516,26 @@ function goBack(){
 }
 
 
+// ================= SECURITY DISPLAY =================
 
 function escapeHTML(value){
 
-    return String(value)
-
+    return String(value || "")
         .replace(/&/g,"&amp;")
-
         .replace(/</g,"&lt;")
-
         .replace(/>/g,"&gt;")
-
         .replace(/"/g,"&quot;")
-
         .replace(/'/g,"&#039;");
 
 }
 
 
+// ================= START =================
 
-window.onload =
-    loadReports;
+displayReports();
 
 </script>
 
-
 </body>
 
-</html>
+    </html>
