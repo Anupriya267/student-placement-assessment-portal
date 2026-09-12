@@ -2,13 +2,10 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>Student Reports</title>
+<title>Assessment Reports</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -21,13 +18,13 @@
 body{
     margin:0;
     padding:20px;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
     background:#f4f7fb;
     color:#222;
 }
 
 .container{
-    max-width:1150px;
+    max-width:1300px;
     margin:auto;
 }
 
@@ -35,66 +32,89 @@ body{
     background:#ffffff;
     padding:25px;
     border-radius:14px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.10);
+    box-shadow:0 4px 15px rgba(0,0,0,.10);
     margin-bottom:20px;
 }
 
 .header h1{
-    margin:0 0 15px 0;
+    margin:0 0 18px;
+    font-size:32px;
 }
 
-.student-info{
-    line-height:1.8;
+.info{
+    line-height:1.9;
     font-size:16px;
 }
 
-.student-info b{
+.info b{
     color:#111;
 }
 
-.back-btn{
-    margin-top:15px;
+.admin-badge{
+    display:inline-block;
+    background:#222;
+    color:#fff;
+    font-size:13px;
+    padding:5px 10px;
+    border-radius:20px;
+    margin-left:8px;
+    vertical-align:middle;
+}
+
+.back-btn,
+.refresh-btn{
     border:none;
     padding:11px 20px;
     border-radius:7px;
-    background:#555;
     color:white;
     cursor:pointer;
     font-size:15px;
+    margin-top:15px;
+    margin-right:8px;
 }
 
-.back-btn:hover{
+.back-btn{
+    background:#555;
+}
+
+.refresh-btn{
+    background:#2864d7;
+}
+
+.back-btn:hover,
+.refresh-btn:hover{
     opacity:.9;
 }
 
 .loading{
-    background:white;
+    background:#fff;
     padding:30px;
     text-align:center;
     border-radius:12px;
     box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
 
+.message{
+    display:none;
+    padding:14px 18px;
+    border-radius:8px;
+    margin-bottom:15px;
+}
+
 .success{
     background:#edf9ef;
     border:1px solid #b7dfbc;
     color:#17621d;
-    padding:14px 18px;
-    border-radius:8px;
-    margin-bottom:15px;
 }
 
 .error{
     background:#fff1f1;
     border:1px solid #e1b1b1;
     color:#9b111e;
-    padding:14px 18px;
-    border-radius:8px;
-    margin-bottom:15px;
 }
 
 .table-container{
-    background:white;
+    background:#fff;
     padding:20px;
     border-radius:14px;
     box-shadow:0 4px 15px rgba(0,0,0,.10);
@@ -108,13 +128,14 @@ table{
 
 th,
 td{
-    padding:13px 12px;
+    padding:12px;
     border-bottom:1px solid #ddd;
     text-align:left;
+    white-space:nowrap;
 }
 
 th{
-    background:#f0f2f5;
+    background:#eef2f7;
     font-weight:bold;
 }
 
@@ -141,10 +162,7 @@ tr:hover{
     color:#666;
 }
 
-
-/* =====================================================
-   MODAL
-===================================================== */
+/* MODAL */
 
 .modal{
     display:none;
@@ -154,12 +172,12 @@ tr:hover{
     top:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,.60);
+    background:rgba(0,0,0,.65);
     overflow:auto;
 }
 
 .modal-content{
-    background:white;
+    background:#fff;
     width:92%;
     max-width:900px;
     margin:35px auto;
@@ -170,20 +188,15 @@ tr:hover{
 
 .close{
     position:absolute;
-    right:22px;
-    top:15px;
+    right:20px;
+    top:12px;
     font-size:30px;
     font-weight:bold;
     cursor:pointer;
 }
 
 .close:hover{
-    color:#d00;
-}
-
-.report-heading{
-    margin-top:0;
-    padding-right:35px;
+    color:red;
 }
 
 .report-student{
@@ -209,12 +222,12 @@ tr:hover{
 }
 
 .summary-title{
-    font-size:15px;
+    font-size:14px;
 }
 
 .summary-value{
     margin-top:6px;
-    font-size:25px;
+    font-size:24px;
     font-weight:bold;
 }
 
@@ -227,7 +240,6 @@ tr:hover{
 }
 
 .answer-box h3{
-    margin-top:0;
     line-height:1.5;
 }
 
@@ -255,11 +267,6 @@ tr:hover{
     font-weight:bold;
 }
 
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
 @media(max-width:700px){
 
     body{
@@ -286,248 +293,263 @@ tr:hover{
 
     th,
     td{
-        padding:10px 8px;
+        padding:9px;
         font-size:13px;
     }
 
 }
 
 </style>
-
 </head>
 
 
 <body>
 
-
 <div class="container">
 
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
+<!-- HEADER -->
 
 <div class="header">
 
-<h1>Student Reports</h1>
-
-<div class="student-info">
-
-<div>
-<b>Name:</b>
-<span id="studentName">Loading...</span>
-</div>
-
-<div>
-<b>Username:</b>
-<span id="studentUsername">Loading...</span>
-</div>
-
-<div>
-<b>Year:</b>
-<span id="studentYear">Loading...</span>
-</div>
-
-</div>
+    <h1>
+        Assessment Reports
+        <span id="adminBadge"></span>
+    </h1>
 
 
-<button
-class="back-btn"
-onclick="goBack()">
+    <div class="info">
 
-Back to Dashboard
+        <div>
+            <b>Name:</b>
+            <span id="studentName">Loading...</span>
+        </div>
 
-</button>
+        <div>
+            <b>Username:</b>
+            <span id="studentUsername">Loading...</span>
+        </div>
 
-</div>
+        <div>
+            <b>Year:</b>
+            <span id="studentYear">Loading...</span>
+        </div>
+
+        <div>
+            <b>Access:</b>
+            <span id="accessType">Loading...</span>
+        </div>
+
+    </div>
 
 
-<!-- =====================================================
-     LOADING
-===================================================== -->
+    <button
+        class="back-btn"
+        onclick="goBack()">
 
-<div id="loading"
-     class="loading">
+        Back to Dashboard
 
-Loading reports...
-
-</div>
+    </button>
 
 
-<!-- =====================================================
-     SUCCESS
-===================================================== -->
+    <button
+        class="refresh-btn"
+        onclick="startReports()">
 
-<div id="success"
-     class="success"
-     style="display:none;">
+        Refresh Reports
+
+    </button>
 
 </div>
 
 
-<!-- =====================================================
-     ERROR
-===================================================== -->
-
-<div id="error"
-     class="error"
-     style="display:none;">
-
-</div>
-
-
-<!-- =====================================================
-     REPORT TABLE
-===================================================== -->
-
-<div id="reportArea"
-     class="table-container"
-     style="display:none;">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Day</th>
-<th>Topic</th>
-<th>MCQ + Error</th>
-<th>Coding</th>
-<th>Total</th>
-<th>Percentage</th>
-<th>Status</th>
-<th>Date</th>
-<th>Report</th>
-
-</tr>
-
-</thead>
-
-
-<tbody id="reportBody">
-
-</tbody>
-
-</table>
-
-</div>
-
-
-</div>
-
-
-<!-- =====================================================
-     REPORT MODAL
-===================================================== -->
-
-<div id="reportModal"
-     class="modal">
-
-<div class="modal-content">
-
-
-<span
-class="close"
-onclick="closeModal()">
-
-&times;
-
-</span>
-
-
-<h2 class="report-heading">
-Assessment Report
-</h2>
-
+<!-- LOADING -->
 
 <div
-id="modalStudent"
-class="report-student">
+    id="loading"
+    class="loading">
+
+    Loading assessment reports...
 
 </div>
 
 
-<div class="summary-box">
-
-
-<div class="summary-item">
-
-<div class="summary-title">
-MCQ + Error
-</div>
+<!-- SUCCESS -->
 
 <div
-id="modalObjective"
-class="summary-value">
-
-0/12
-
-</div>
-
+    id="success"
+    class="message success">
 </div>
 
 
-<div class="summary-item">
-
-<div class="summary-title">
-Coding
-</div>
+<!-- ERROR -->
 
 <div
-id="modalCoding"
-class="summary-value">
-
-0/3
-
-</div>
-
+    id="error"
+    class="message error">
 </div>
 
 
-<div class="summary-item">
-
-<div class="summary-title">
-Total
-</div>
+<!-- REPORT TABLE -->
 
 <div
-id="modalTotal"
-class="summary-value">
+    id="reportArea"
+    class="table-container"
+    style="display:none;">
 
-0/15
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Name</th>
+
+                <th>Username</th>
+
+                <th>Year</th>
+
+                <th>Day</th>
+
+                <th>Topic</th>
+
+                <th>MCQ + Error</th>
+
+                <th>Coding</th>
+
+                <th>Total</th>
+
+                <th>Percentage</th>
+
+                <th>Status</th>
+
+                <th>Date</th>
+
+                <th>Report</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody id="reportBody">
+
+        </tbody>
+
+    </table>
 
 </div>
 
 </div>
 
 
-<div class="summary-item">
-
-<div class="summary-title">
-Percentage
-</div>
+<!-- REPORT MODAL -->
 
 <div
-id="modalPercentage"
-class="summary-value">
+    id="reportModal"
+    class="modal">
 
-0%
+    <div class="modal-content">
 
-</div>
+        <span
+            class="close"
+            onclick="closeModal()">
 
-</div>
+            &times;
 
-
-</div>
-
-
-<div id="modalDetails">
-
-</div>
+        </span>
 
 
-</div>
+        <h2>
+            Assessment Report
+        </h2>
+
+
+        <div
+            id="modalStudent"
+            class="report-student">
+
+        </div>
+
+
+        <div class="summary-box">
+
+
+            <div class="summary-item">
+
+                <div class="summary-title">
+                    MCQ + Error
+                </div>
+
+                <div
+                    id="modalObjective"
+                    class="summary-value">
+
+                    0/12
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <div class="summary-title">
+                    Coding
+                </div>
+
+                <div
+                    id="modalCoding"
+                    class="summary-value">
+
+                    0/3
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <div class="summary-title">
+                    Total
+                </div>
+
+                <div
+                    id="modalTotal"
+                    class="summary-value">
+
+                    0/15
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <div class="summary-title">
+                    Percentage
+                </div>
+
+                <div
+                    id="modalPercentage"
+                    class="summary-value">
+
+                    0%
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div id="modalDetails">
+
+        </div>
+
+    </div>
 
 </div>
 
@@ -544,7 +566,7 @@ const GOOGLE_SCRIPT_URL =
 
 
 /* =====================================================
-   GET LOGGED-IN STUDENT
+   GET LOGGED STUDENT
 ===================================================== */
 
 function getLoggedStudent(){
@@ -556,13 +578,11 @@ function getLoggedStudent(){
                 "loggedInStudent"
             );
 
-        if(!value){
+        if(value){
 
-            return null;
+            return JSON.parse(value);
 
         }
-
-        return JSON.parse(value);
 
     }
     catch(error){
@@ -572,9 +592,9 @@ function getLoggedStudent(){
             error
         );
 
-        return null;
-
     }
+
+    return null;
 
 }
 
@@ -584,76 +604,127 @@ const loggedStudent =
 
 
 /* =====================================================
+   ADMIN CHECK
+===================================================== */
+
+const isAdmin =
+    String(
+        localStorage.getItem(
+            "loggedInUser"
+        )
+        ||
+        ""
+    )
+    .trim()
+    .toLowerCase()
+    ===
+    "admin";
+
+
+/* =====================================================
    STUDENT IDENTITY
 ===================================================== */
 
-/*
-   IMPORTANT:
-
-   The logged-in student's details are the
-   main source of truth.
-
-   This prevents:
-
-   Name = Student
-   Username = blank
-
-   when the actual login is:
-
-   Name = Student 1
-   Username = student1
-*/
-
-
 const studentName =
+
+    isAdmin
+
+    ?
+
+    "Administrator"
+
+    :
+
     String(
+
         loggedStudent?.name
+
         ||
+
         loggedStudent?.Name
+
         ||
+
         localStorage.getItem(
             "studentName"
         )
+
         ||
+
         "Student"
+
     ).trim();
 
 
 const studentUsername =
+
+    isAdmin
+
+    ?
+
+    "admin"
+
+    :
+
     String(
+
         loggedStudent?.username
+
         ||
+
         loggedStudent?.Username
+
         ||
+
         localStorage.getItem(
             "studentUsername"
         )
+
         ||
+
         ""
+
     ).trim();
 
 
 const studentYear =
+
+    isAdmin
+
+    ?
+
+    "Administrator"
+
+    :
+
     String(
+
         loggedStudent?.year
+
         ||
+
         loggedStudent?.Year
+
         ||
+
         localStorage.getItem(
             "studentYear"
         )
+
         ||
+
         ""
+
     ).trim();
 
 
 const normalizedUsername =
     studentUsername
-        .toLowerCase();
+    .toLowerCase();
 
 
 /* =====================================================
-   DISPLAY STUDENT IDENTITY
+   HEADER DISPLAY
 ===================================================== */
 
 document.getElementById(
@@ -665,13 +736,42 @@ document.getElementById(
 document.getElementById(
     "studentUsername"
 ).textContent =
-    studentUsername || "Not available";
+    studentUsername
+    ||
+    "Not available";
 
 
 document.getElementById(
     "studentYear"
 ).textContent =
-    studentYear || "Not available";
+    studentYear
+    ||
+    "Not available";
+
+
+document.getElementById(
+    "accessType"
+).textContent =
+
+    isAdmin
+
+    ?
+
+    "All Student Reports"
+
+    :
+
+    "My Reports";
+
+
+if(isAdmin){
+
+    document.getElementById(
+        "adminBadge"
+    ).innerHTML =
+        "<span class='admin-badge'>ADMIN</span>";
+
+}
 
 
 /* =====================================================
@@ -717,49 +817,7 @@ function loadLocalReports(){
         }
 
 
-        return parsed.filter(
-            function(report){
-
-                const username =
-                    String(
-                        report.username
-                        ||
-                        report.Username
-                        ||
-                        report.studentUsername
-                        ||
-                        ""
-                    )
-                    .trim()
-                    .toLowerCase();
-
-
-                /*
-                   If username exists,
-                   it must match.
-
-                   If username is blank,
-                   allow it because this
-                   localStorage belongs to
-                   the current browser/student.
-                */
-
-                if(
-                    username === ""
-                ){
-
-                    return true;
-
-                }
-
-
-                return (
-                    username ===
-                    normalizedUsername
-                );
-
-            }
-        );
+        return parsed;
 
     }
     catch(error){
@@ -796,31 +854,61 @@ function(data){
         }
 
 
-        googleReports =
-            data.filter(
-                function(row){
+        /*
+         * IMPORTANT:
+         *
+         * ADMIN:
+         * ALL reports are loaded.
+         *
+         * STUDENT:
+         * only their own reports are loaded.
+         */
 
-                    const username =
-                        String(
-                            row["Username"]
-                            ||
-                            row.username
-                            ||
-                            row.studentUsername
-                            ||
-                            ""
-                        )
-                        .trim()
-                        .toLowerCase();
+        if(isAdmin){
+
+            googleReports =
+                data;
+
+        }
+        else{
+
+            googleReports =
+                data.filter(
+                    function(row){
+
+                        const username =
+                            String(
+
+                                row["Username"]
+
+                                ||
+
+                                row.username
+
+                                ||
+
+                                row.studentUsername
+
+                                ||
+
+                                ""
+
+                            )
+                            .trim()
+                            .toLowerCase();
 
 
-                    return (
-                        username ===
-                        normalizedUsername
-                    );
+                        return (
 
-                }
-            );
+                            username ===
+                            normalizedUsername
+
+                        );
+
+                    }
+                );
+
+        }
 
 
         mergeReports();
@@ -832,6 +920,8 @@ function(data){
             "Google report error:",
             error
         );
+
+        googleReports = [];
 
         mergeReports();
 
@@ -870,27 +960,45 @@ function loadGoogleReports(){
 
 
     script.src =
+
         GOOGLE_SCRIPT_URL
+
         +
+
         "?action=getResults"
+
         +
+
         "&callback=handleAssessmentResults"
+
         +
+
         "&_="
+
         +
+
         Date.now();
 
 
     script.onerror =
-        function(){
+    function(){
 
-            console.warn(
-                "Google results unavailable."
+        const error =
+            document.getElementById(
+                "error"
             );
 
-            mergeReports();
 
-        };
+        error.style.display =
+            "block";
+
+
+        error.textContent =
+            "Google Sheet reports could not be loaded.";
+
+        mergeReports();
+
+    };
 
 
     document.body.appendChild(
@@ -901,7 +1009,7 @@ function loadGoogleReports(){
 
 
 /* =====================================================
-   MERGE LOCAL + GOOGLE REPORTS
+   MERGE REPORTS
 ===================================================== */
 
 function mergeReports(){
@@ -909,7 +1017,7 @@ function mergeReports(){
     const combined = [];
 
 
-    /* ---------- LOCAL ---------- */
+    /* LOCAL */
 
     localReports.forEach(
         function(report){
@@ -925,7 +1033,7 @@ function mergeReports(){
     );
 
 
-    /* ---------- GOOGLE ---------- */
+    /* GOOGLE */
 
     googleReports.forEach(
         function(report){
@@ -942,8 +1050,8 @@ function mergeReports(){
 
 
     /*
-       Remove invalid reports.
-    */
+     * Remove invalid reports.
+     */
 
     const validReports =
         combined.filter(
@@ -958,15 +1066,14 @@ function mergeReports(){
 
 
     /*
-       Remove duplicates.
-
-       Same student + same day
-       = one report.
-
-       Local report is preferred
-       because it contains detailed
-       answer information immediately.
-    */
+     * Remove duplicates.
+     *
+     * ADMIN:
+     * Student + Day
+     *
+     * STUDENT:
+     * Username + Day
+     */
 
     const reportMap =
         new Map();
@@ -975,8 +1082,39 @@ function mergeReports(){
     validReports.forEach(
         function(report){
 
+            let identity;
+
+
+            if(isAdmin){
+
+                identity =
+                    String(
+
+                        report.username
+
+                        ||
+
+                        report.name
+
+                        ||
+
+                        "unknown"
+
+                    )
+                    .trim()
+                    .toLowerCase();
+
+            }
+            else{
+
+                identity =
+                    normalizedUsername;
+
+            }
+
+
             const key =
-                normalizedUsername
+                identity
                 +
                 "_day_"
                 +
@@ -1000,27 +1138,17 @@ function mergeReports(){
 
 
                 /*
-                   Prefer report containing
-                   detailed answers.
-                */
+                 * Prefer report with
+                 * detailed answers.
+                 */
 
                 if(
-                    report.answers.length >
+
+                    report.answers.length
+                    >
+
                     existing.answers.length
-                ){
 
-                    reportMap.set(
-                        key,
-                        report
-                    );
-
-                }
-                else if(
-                    report.source === "google"
-                    &&
-                    existing.source !== "google"
-                    &&
-                    existing.answers.length === 0
                 ){
 
                     reportMap.set(
@@ -1042,13 +1170,53 @@ function mergeReports(){
         );
 
 
+    /* SORT */
+
     studentResults.sort(
         function(a,b){
 
+            if(isAdmin){
+
+                const nameA =
+                    String(
+                        a.name || ""
+                    )
+                    .toLowerCase();
+
+
+                const nameB =
+                    String(
+                        b.name || ""
+                    )
+                    .toLowerCase();
+
+
+                if(
+                    nameA < nameB
+                ){
+
+                    return -1;
+
+                }
+
+
+                if(
+                    nameA > nameB
+                ){
+
+                    return 1;
+
+                }
+
+            }
+
+
             return (
+
                 Number(a.day)
                 -
                 Number(b.day)
+
             );
 
         }
@@ -1073,17 +1241,26 @@ function normalizeReport(
     source
 ){
 
-    /* ---------- DAY ---------- */
+    /* DAY */
 
     const rawDay =
+
         row.day
+
         ??
+
         row.Day
+
         ??
+
         row.assessmentDay
+
         ??
+
         row.assignedDay
+
         ??
+
         "";
 
 
@@ -1100,157 +1277,301 @@ function normalizeReport(
 
 
     const day =
+
         dayMatch
+
         ?
+
         parseInt(
             dayMatch[0],
             10
         )
+
         :
+
         0;
 
 
-    /* ---------- NAME ---------- */
+    /* NAME */
 
-    const name =
+    let name =
+
         String(
+
             row.name
+
             ??
+
             row.Name
+
             ??
+
             row.studentName
+
             ??
+
             row.StudentName
-            ??
-            studentName
-            ??
-            "Student"
-        ).trim();
 
+            ??
 
-    /* ---------- USERNAME ---------- */
-
-    const username =
-        String(
-            row.username
-            ??
-            row.Username
-            ??
-            row.studentUsername
-            ??
-            row.StudentUsername
-            ??
-            studentUsername
-            ??
             ""
+
         ).trim();
 
 
-    /* ---------- YEAR ---------- */
+    /* USERNAME */
+
+    let username =
+
+        String(
+
+            row.username
+
+            ??
+
+            row.Username
+
+            ??
+
+            row.studentUsername
+
+            ??
+
+            row.StudentUsername
+
+            ??
+
+            ""
+
+        ).trim();
+
+
+    /*
+     * Name and username should
+     * be the same when one is missing.
+     */
+
+    if(
+        !name
+        &&
+        username
+    ){
+
+        name =
+            username;
+
+    }
+
+
+    if(
+        !username
+        &&
+        name
+    ){
+
+        username =
+            name;
+
+    }
+
+
+    /*
+     * Student fallback.
+     */
+
+    if(!isAdmin){
+
+        if(!name){
+
+            name =
+                studentName;
+
+        }
+
+
+        if(!username){
+
+            username =
+                studentUsername;
+
+        }
+
+    }
+
+
+    /* YEAR */
 
     const year =
+
         String(
+
             row.year
+
             ??
+
             row.Year
+
             ??
+
             row.studentYear
+
             ??
+
             row.StudentYear
+
             ??
-            studentYear
+
+            (!isAdmin
+                ?
+                studentYear
+                :
+                "")
+
             ??
+
             ""
+
         ).trim();
 
 
-    /* ---------- TOPIC ---------- */
+    /* TOPIC */
 
     const topic =
+
         String(
+
             row.topic
+
             ??
+
             row.Topic
+
             ??
+
             "Java Placement Practice"
+
         ).trim();
 
 
-    /* =================================================
-       SCORES
-    ================================================= */
+    /* SCORES */
 
     let mcqScore =
+
         row.mcqScore
+
         ??
+
         row.MCQScore
+
         ??
+
         "";
 
 
     let errorScore =
+
         row.errorScore
+
         ??
+
         row.ErrorScore
+
         ??
+
         "";
 
 
     let codingScore =
+
         row.codingScore
+
         ??
+
         row.CodingScore
+
         ??
+
         "";
 
 
     let totalScore =
+
         row.totalScore
+
         ??
+
         row.TotalScore
+
         ??
+
         "";
 
 
     let percentage =
+
         row.percentage
+
         ??
+
         row.Percentage
+
         ??
+
         "";
 
 
-    /* ---------- GOOGLE OBJECTIVE SCORE ---------- */
+    /*
+     * Google Sheet stores
+     * MCQ + Error together.
+     */
 
     if(
+
         mcqScore === ""
+
         &&
+
         errorScore === ""
+
     ){
 
         const objectiveText =
+
             String(
+
                 row["MCQ + Error"]
+
                 ??
+
                 "0"
+
             );
 
 
         const match =
+
             objectiveText.match(
                 /-?\d+(?:\.\d+)?/
             );
 
 
         mcqScore =
+
             match
+
             ?
-            Number(match[0])
+
+            Number(
+                match[0]
+            )
+
             :
+
             0;
 
 
-        errorScore = 0;
+        errorScore =
+            0;
 
     }
 
@@ -1279,11 +1600,16 @@ function normalizeReport(
         );
 
 
-    /* ---------- CALCULATE TOTAL ---------- */
+    /*
+     * Calculate total if missing.
+     */
 
     if(
+
         totalScore === 0
+
         &&
+
         (
             mcqScore > 0
             ||
@@ -1291,36 +1617,53 @@ function normalizeReport(
             ||
             codingScore > 0
         )
+
     ){
 
         totalScore =
-            mcqScore +
-            errorScore +
+
+            mcqScore
+            +
+            errorScore
+            +
             codingScore;
 
     }
 
 
-    /* ---------- PERCENTAGE ---------- */
+    /*
+     * Percentage.
+     */
 
     if(
+
         percentage === ""
+
         ||
+
         percentage === null
+
         ||
+
         percentage === undefined
+
     ){
 
         percentage =
-            totalScore /
-            15 *
+
+            totalScore
+            /
+            15
+            *
             100;
 
     }
     else{
 
         percentage =
+
             parseReportNumber(
+
                 String(
                     percentage
                 )
@@ -1328,20 +1671,24 @@ function normalizeReport(
                     "%",
                     ""
                 )
+
             );
 
     }
 
 
-    /* =================================================
-       ANSWERS
-    ================================================= */
+    /* ANSWERS */
 
     let answers =
+
         row.answers
+
         ??
+
         row.Answers
+
         ??
+
         [];
 
 
@@ -1367,7 +1714,9 @@ function normalizeReport(
 
 
     if(
-        !Array.isArray(answers)
+        !Array.isArray(
+            answers
+        )
     ){
 
         answers = [];
@@ -1375,15 +1724,18 @@ function normalizeReport(
     }
 
 
-    /* =================================================
-       CODING EVALUATION
-    ================================================= */
+    /* CODING EVALUATION */
 
     let codingEvaluations =
+
         row.codingEvaluations
+
         ??
+
         row["Coding Evaluation"]
+
         ??
+
         [];
 
 
@@ -1401,87 +1753,82 @@ function normalizeReport(
         }
         catch(error){
 
-            /* Keep text */
+            /* Keep original value */
 
         }
 
     }
 
 
-    /* =================================================
-       DATE
-    ================================================= */
+    /* DATE */
 
     const submittedAt =
+
         row.submittedAt
+
         ??
+
         row["Submission Date"]
+
         ??
+
         row.submissionDate
+
         ??
+
         "";
 
 
-    /* =================================================
-       STATUS
-    ================================================= */
+    /* STATUS */
 
     const status =
+
         String(
+
             row.status
+
             ??
+
             row.Status
+
             ??
+
             "Completed"
+
         ).trim();
 
 
     return {
 
-        source:
-            source,
+        source:source,
 
-        name:
-            name,
+        name:name,
 
-        username:
-            username,
+        username:username,
 
-        year:
-            year,
+        year:year,
 
-        day:
-            day,
+        day:day,
 
-        topic:
-            topic,
+        topic:topic,
 
-        mcqScore:
-            mcqScore,
+        mcqScore:mcqScore,
 
-        errorScore:
-            errorScore,
+        errorScore:errorScore,
 
-        codingScore:
-            codingScore,
+        codingScore:codingScore,
 
-        totalScore:
-            totalScore,
+        totalScore:totalScore,
 
-        percentage:
-            percentage,
+        percentage:percentage,
 
-        status:
-            status,
+        status:status,
 
-        submittedAt:
-            submittedAt,
+        submittedAt:submittedAt,
 
-        answers:
-            answers,
+        answers:answers,
 
-        codingEvaluations:
-            codingEvaluations
+        codingEvaluations:codingEvaluations
 
     };
 
@@ -1492,14 +1839,22 @@ function normalizeReport(
    NUMBER HELPER
 ===================================================== */
 
-function parseReportNumber(value){
+function parseReportNumber(
+    value
+){
 
     if(
+
         value === null
+
         ||
+
         value === undefined
+
         ||
+
         value === ""
+
     ){
 
         return 0;
@@ -1508,15 +1863,22 @@ function parseReportNumber(value){
 
 
     const match =
+
         String(value).match(
             /-?\d+(?:\.\d+)?/
         );
 
 
     return match
+
         ?
-        Number(match[0])
+
+        Number(
+            match[0]
+        )
+
         :
+
         0;
 
 }
@@ -1566,10 +1928,21 @@ function displayReports(){
 
             "<tr>" +
 
-            "<td colspan='9' " +
-            "class='no-report'>" +
+            "<td colspan='12' class='no-report'>" +
 
-            "No assessment reports found."
+            (
+
+                isAdmin
+
+                ?
+
+                "No student assessment reports found in Google Sheet."
+
+                :
+
+                "No assessment reports found."
+
+            )
 
             +
 
@@ -1584,13 +1957,19 @@ function displayReports(){
 
 
     studentResults.forEach(
-        function(report,index){
+        function(
+            report,
+            index
+        ){
 
             const objective =
+
                 Number(
                     report.mcqScore
                 )
+
                 +
+
                 Number(
                     report.errorScore
                 );
@@ -1606,16 +1985,39 @@ function displayReports(){
 
                 "<td>" +
 
-                "Day " +
+                escapeHTML(
+                    report.name
+                ) +
+
+                "</td>" +
+
+
+                "<td>" +
+
+                escapeHTML(
+                    report.username
+                ) +
+
+                "</td>" +
+
+
+                "<td>" +
+
+                escapeHTML(
+                    report.year
+                ) +
+
+                "</td>" +
+
+
+                "<td>Day " +
 
                 escapeHTML(
                     report.day
                 ) +
 
-                "</td>"
+                "</td>" +
 
-
-                +
 
                 "<td>" +
 
@@ -1623,10 +2025,8 @@ function displayReports(){
                     report.topic
                 ) +
 
-                "</td>"
+                "</td>" +
 
-
-                +
 
                 "<td>" +
 
@@ -1634,10 +2034,8 @@ function displayReports(){
 
                 "/12" +
 
-                "</td>"
+                "</td>" +
 
-
-                +
 
                 "<td>" +
 
@@ -1645,10 +2043,8 @@ function displayReports(){
 
                 "/3" +
 
-                "</td>"
+                "</td>" +
 
-
-                +
 
                 "<td>" +
 
@@ -1656,10 +2052,8 @@ function displayReports(){
 
                 "/15" +
 
-                "</td>"
+                "</td>" +
 
-
-                +
 
                 "<td>" +
 
@@ -1669,10 +2063,8 @@ function displayReports(){
 
                 "%" +
 
-                "</td>"
+                "</td>" +
 
-
-                +
 
                 "<td>" +
 
@@ -1680,10 +2072,8 @@ function displayReports(){
                     report.status
                 ) +
 
-                "</td>"
+                "</td>" +
 
-
-                +
 
                 "<td>" +
 
@@ -1693,10 +2083,8 @@ function displayReports(){
                     )
                 ) +
 
-                "</td>"
+                "</td>" +
 
-
-                +
 
                 "<td>" +
 
@@ -1705,7 +2093,9 @@ function displayReports(){
                 "class='view-btn' " +
 
                 "onclick='openReport(" +
+
                 index +
+
                 ")'>" +
 
                 "View" +
@@ -1734,15 +2124,31 @@ function displayReports(){
 
 
     success.textContent =
-        studentResults.length +
-        " assessment report" +
+
+        studentResults.length
+
+        +
+
+        " assessment report"
+
+        +
+
         (
+
             studentResults.length === 1
+
             ?
+
             ""
+
             :
+
             "s"
-        ) +
+
+        )
+
+        +
+
         " found.";
 
 }
@@ -1752,7 +2158,9 @@ function displayReports(){
    OPEN REPORT
 ===================================================== */
 
-function openReport(index){
+function openReport(
+    index
+){
 
     const report =
         window.studentResults[
@@ -1767,67 +2175,35 @@ function openReport(index){
     }
 
 
-    /*
-       ALWAYS use logged-in student's
-       identity for the report.
-
-       This guarantees:
-
-       Name = Student 1
-       Username = student1
-       Year = Final Year
-
-       instead of an old/incorrect
-       local report identity.
-    */
-
-    const displayName =
-        studentName
-        ||
-        report.name
-        ||
-        "Student";
-
-
-    const displayUsername =
-        studentUsername
-        ||
-        report.username
-        ||
-        "Not available";
-
-
-    const displayYear =
-        studentYear
-        ||
-        report.year
-        ||
-        "Not available";
-
-
     const objective =
+
         Number(
             report.mcqScore || 0
         )
+
         +
+
         Number(
             report.errorScore || 0
         );
 
 
     const coding =
+
         Number(
             report.codingScore || 0
         );
 
 
     const total =
+
         Number(
             report.totalScore || 0
         );
 
 
     const percentage =
+
         Number(
             report.percentage || 0
         );
@@ -1836,25 +2212,33 @@ function openReport(index){
     document.getElementById(
         "modalObjective"
     ).textContent =
-        objective + "/12";
+
+        objective +
+        "/12";
 
 
     document.getElementById(
         "modalCoding"
     ).textContent =
-        coding + "/3";
+
+        coding +
+        "/3";
 
 
     document.getElementById(
         "modalTotal"
     ).textContent =
-        total + "/15";
+
+        total +
+        "/15";
 
 
     document.getElementById(
         "modalPercentage"
     ).textContent =
-        percentage.toFixed(2) + "%";
+
+        percentage.toFixed(2) +
+        "%";
 
 
     document.getElementById(
@@ -1864,26 +2248,32 @@ function openReport(index){
         "<b>Name:</b> " +
 
         escapeHTML(
-            displayName
+            report.name ||
+            "Not available"
         ) +
 
         "<br>" +
+
 
         "<b>Username:</b> " +
 
         escapeHTML(
-            displayUsername
+            report.username ||
+            "Not available"
         ) +
 
         "<br>" +
+
 
         "<b>Year:</b> " +
 
         escapeHTML(
-            displayYear
+            report.year ||
+            "Not available"
         ) +
 
         "<br>" +
+
 
         "<b>Day:</b> Day " +
 
@@ -1893,6 +2283,7 @@ function openReport(index){
 
         "<br>" +
 
+
         "<b>Topic:</b> " +
 
         escapeHTML(
@@ -1901,6 +2292,7 @@ function openReport(index){
 
         "<br>" +
 
+
         "<b>Status:</b> " +
 
         escapeHTML(
@@ -1908,6 +2300,7 @@ function openReport(index){
         ) +
 
         "<br>" +
+
 
         "<b>Submitted:</b> " +
 
@@ -1935,7 +2328,9 @@ function openReport(index){
    ANSWER DETAILS
 ===================================================== */
 
-function displayAnswerDetails(report){
+function displayAnswerDetails(
+    report
+){
 
     const details =
         document.getElementById(
@@ -1948,12 +2343,17 @@ function displayAnswerDetails(report){
 
 
     const answers =
+
         Array.isArray(
             report.answers
         )
+
         ?
+
         report.answers
+
         :
+
         [];
 
 
@@ -1970,13 +2370,13 @@ function displayAnswerDetails(report){
             "<p>" +
 
             "Detailed answers are not available " +
-            "for this stored report."
 
-            +
+            "for this stored report." +
 
             "</p>" +
 
             "</div>";
+
 
         return;
 
@@ -1984,7 +2384,10 @@ function displayAnswerDetails(report){
 
 
     answers.forEach(
-        function(answer,index){
+        function(
+            answer,
+            index
+        ){
 
             const box =
                 document.createElement(
@@ -1997,51 +2400,81 @@ function displayAnswerDetails(report){
 
 
             const type =
+
                 String(
+
                     answer.type
+
                     ||
+
                     answer.Type
+
                     ||
+
                     ""
+
                 ).toUpperCase();
 
 
             const question =
+
                 answer.question
+
                 ||
+
                 answer.Question
+
                 ||
+
                 "Question " +
                 (index + 1);
 
 
             const studentAnswer =
+
                 answer.studentAnswer
+
                 ??
+
                 answer.answer
+
                 ??
+
                 answer.code
+
                 ??
+
                 "Not Answered";
 
 
             const correctAnswer =
+
                 answer.correctAnswer
+
                 ??
+
                 answer.correct
+
                 ??
+
                 "";
 
 
             const status =
+
                 answer.status
+
                 ||
+
                 "Not evaluated";
 
 
             const score =
+
                 answer.score
+
                 ??
+
                 0;
 
 
@@ -2049,18 +2482,24 @@ function displayAnswerDetails(report){
                 "wrong";
 
 
+            const statusText =
+                String(
+                    status
+                ).toLowerCase();
+
+
             if(
-                String(status)
-                .toLowerCase()
-                .includes(
+
+                statusText.includes(
                     "correct"
                 )
+
                 &&
-                !String(status)
-                .toLowerCase()
-                .includes(
+
+                !statusText.includes(
                     "incorrect"
                 )
+
             ){
 
                 statusClass =
@@ -2070,11 +2509,11 @@ function displayAnswerDetails(report){
 
 
             if(
-                String(status)
-                .toLowerCase()
-                .includes(
+
+                statusText.includes(
                     "partial"
                 )
+
             ){
 
                 statusClass =
@@ -2088,7 +2527,9 @@ function displayAnswerDetails(report){
                 "<h3>" +
 
                 "Q" +
+
                 (index + 1) +
+
                 ". " +
 
                 escapeHTML(
@@ -2161,7 +2602,9 @@ function displayAnswerDetails(report){
             html +=
 
                 "<p class='" +
+
                 statusClass +
+
                 "'>" +
 
                 "<b>Status:</b> " +
@@ -2200,11 +2643,11 @@ function displayAnswerDetails(report){
    FORMAT DATE
 ===================================================== */
 
-function formatDate(value){
+function formatDate(
+    value
+){
 
-    if(
-        !value
-    ){
+    if(!value){
 
         return "Not available";
 
@@ -2212,13 +2655,17 @@ function formatDate(value){
 
 
     const date =
-        new Date(value);
+        new Date(
+            value
+        );
 
 
     if(
+
         isNaN(
             date.getTime()
         )
+
     ){
 
         return String(
@@ -2237,7 +2684,9 @@ function formatDate(value){
    ESCAPE HTML
 ===================================================== */
 
-function escapeHTML(value){
+function escapeHTML(
+    value
+){
 
     return String(
         value ?? ""
@@ -2285,10 +2734,6 @@ function closeModal(){
 }
 
 
-/* =====================================================
-   CLOSE WHEN CLICKING OUTSIDE
-===================================================== */
-
 window.onclick =
 function(event){
 
@@ -2310,13 +2755,76 @@ function(event){
 
 
 /* =====================================================
-   BACK TO DASHBOARD
+   BACK BUTTON
 ===================================================== */
 
 function goBack(){
 
-    window.location.href =
-        "student.html";
+    if(isAdmin){
+
+        window.location.href =
+            "admin.html";
+
+    }
+    else{
+
+        window.location.href =
+            "student.html";
+
+    }
+
+}
+
+
+/* =====================================================
+   START REPORTS
+===================================================== */
+
+function startReports(){
+
+    document.getElementById(
+        "loading"
+    ).style.display =
+        "block";
+
+
+    document.getElementById(
+        "reportArea"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "success"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "error"
+    ).style.display =
+        "none";
+
+
+    localReports =
+        loadLocalReports();
+
+
+    googleReports = [];
+
+
+    /*
+     * Show local reports first.
+     */
+
+    mergeReports();
+
+
+    /*
+     * Then get latest Google Sheet data.
+     */
+
+    loadGoogleReports();
 
 }
 
@@ -2325,37 +2833,9 @@ function goBack(){
    START
 ===================================================== */
 
-function startReports(){
-
-    /*
-       First load local reports.
-    */
-
-    localReports =
-        loadLocalReports();
-
-
-    /*
-       Display local reports immediately.
-    */
-
-    mergeReports();
-
-
-    /*
-       Then load Google Sheet reports.
-    */
-
-    loadGoogleReports();
-
-}
-
-
 startReports();
-
 
 </script>
 
 </body>
-
 </html>
