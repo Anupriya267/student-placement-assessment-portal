@@ -40,6 +40,7 @@ body{
 
 .info{
     color:#555;
+    line-height:1.7;
 }
 
 .loading{
@@ -57,6 +58,15 @@ body{
     color:#a00000;
 }
 
+.success{
+    background:#effaf0;
+    border:1px solid #a8d5aa;
+    padding:15px;
+    border-radius:10px;
+    color:#17651b;
+    margin-bottom:15px;
+}
+
 .table-container{
     background:white;
     padding:20px;
@@ -70,7 +80,8 @@ table{
     border-collapse:collapse;
 }
 
-th,td{
+th,
+td{
     padding:12px;
     border-bottom:1px solid #ddd;
     text-align:left;
@@ -210,6 +221,10 @@ tr:hover{
 <div class="container">
 
 
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
 <div class="header">
 
 <h1>Student Reports</h1>
@@ -231,6 +246,7 @@ Year:
 
 </div>
 
+
 <button
 class="back-btn"
 onclick="goBack()">
@@ -242,6 +258,10 @@ Back to Dashboard
 </div>
 
 
+<!-- =====================================================
+     LOADING
+===================================================== -->
+
 <div id="loading"
      class="loading">
 
@@ -250,12 +270,31 @@ Loading reports...
 </div>
 
 
+<!-- =====================================================
+     ERROR
+===================================================== -->
+
 <div id="error"
      class="error"
      style="display:none;">
 
 </div>
 
+
+<!-- =====================================================
+     SUCCESS
+===================================================== -->
+
+<div id="success"
+     class="success"
+     style="display:none;">
+
+</div>
+
+
+<!-- =====================================================
+     REPORT TABLE
+===================================================== -->
 
 <div id="reportArea"
      class="table-container"
@@ -289,6 +328,7 @@ Loading reports...
 
 </thead>
 
+
 <tbody id="reportBody">
 
 </tbody>
@@ -302,13 +342,14 @@ Loading reports...
 
 
 <!-- =====================================================
-     MODAL
+     REPORT MODAL
 ===================================================== -->
 
 <div id="reportModal"
      class="modal">
 
 <div class="modal-content">
+
 
 <span
 class="close"
@@ -403,7 +444,7 @@ id="modalPercentage">
 
 
 /* =====================================================
-   UPDATED GOOGLE APPS SCRIPT URL
+   GOOGLE APPS SCRIPT
 ===================================================== */
 
 const GOOGLE_SCRIPT_URL =
@@ -414,19 +455,20 @@ const GOOGLE_SCRIPT_URL =
    STUDENT INFORMATION
 ===================================================== */
 
-function getStudent(){
+function getLoggedStudent(){
 
     try{
 
         return JSON.parse(
-            localStorage.getItem("loggedInStudent")
+            localStorage.getItem(
+                "loggedInStudent"
+            )
             ||
             "null"
         );
 
     }
-
-    catch(e){
+    catch(error){
 
         return null;
 
@@ -436,59 +478,154 @@ function getStudent(){
 
 
 const loggedStudent =
-getStudent();
+getLoggedStudent();
 
+
+/* =====================================================
+   NORMALIZE STUDENT IDENTITY
+===================================================== */
 
 const studentName =
-loggedStudent?.name
-||
-loggedStudent?.Name
-||
-localStorage.getItem("studentName")
-||
-"Student";
+    loggedStudent?.name
+    ||
+    loggedStudent?.Name
+    ||
+    localStorage.getItem("studentName")
+    ||
+    "Student";
 
 
 const studentUsername =
-loggedStudent?.username
-||
-loggedStudent?.Username
-||
-localStorage.getItem("studentUsername")
-||
-"";
+    loggedStudent?.username
+    ||
+    loggedStudent?.Username
+    ||
+    localStorage.getItem("studentUsername")
+    ||
+    "";
 
 
 const studentYear =
-loggedStudent?.year
-||
-loggedStudent?.Year
-||
-localStorage.getItem("studentYear")
-||
-"";
+    loggedStudent?.year
+    ||
+    loggedStudent?.Year
+    ||
+    localStorage.getItem("studentYear")
+    ||
+    "";
 
+
+const normalizedUsername =
+    String(studentUsername)
+    .trim()
+    .toLowerCase();
+
+
+/* =====================================================
+   DISPLAY STUDENT
+===================================================== */
 
 document.getElementById(
     "studentName"
 ).textContent =
-studentName;
+    studentName;
 
 
 document.getElementById(
     "studentUsername"
 ).textContent =
-studentUsername;
+    studentUsername;
 
 
 document.getElementById(
     "studentYear"
 ).textContent =
-studentYear;
+    studentYear;
 
 
 /* =====================================================
-   JSONP CALLBACK
+   STORAGE
+===================================================== */
+
+let localReports = [];
+
+let googleReports = [];
+
+let studentResults = [];
+
+
+/* =====================================================
+   READ LOCAL REPORTS
+===================================================== */
+
+function loadLocalReports(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(
+                "studentReports"
+            );
+
+
+        if(!saved){
+
+            return [];
+
+        }
+
+
+        const parsed =
+            JSON.parse(saved);
+
+
+        if(!Array.isArray(parsed)){
+
+            return [];
+
+        }
+
+
+        return parsed.filter(
+            function(report){
+
+                const username =
+                    String(
+                        report.username
+                        ||
+                        report.Username
+                        ||
+                        ""
+                    )
+                    .trim()
+                    .toLowerCase();
+
+
+                return (
+                    username ===
+                    normalizedUsername
+                );
+
+            }
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "Local reports error:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+/* =====================================================
+   GOOGLE JSONP CALLBACK
 ===================================================== */
 
 window.handleAssessmentResults =
@@ -499,20 +636,48 @@ function(data){
         if(!Array.isArray(data)){
 
             throw new Error(
-                "Invalid result data received."
+                "Invalid Google Sheet result data."
             );
 
         }
 
-        displayReports(data);
+
+        googleReports =
+            data.filter(
+                function(row){
+
+                    const username =
+                        String(
+                            row["Username"]
+                            ||
+                            row.username
+                            ||
+                            ""
+                        )
+                        .trim()
+                        .toLowerCase();
+
+
+                    return (
+                        username ===
+                        normalizedUsername
+                    );
+
+                }
+            );
+
+
+        mergeReports();
 
     }
-
     catch(error){
 
-        showError(
-            error.message
+        console.error(
+            error
         );
+
+
+        mergeReports();
 
     }
 
@@ -523,7 +688,7 @@ function(data){
    LOAD GOOGLE RESULTS
 ===================================================== */
 
-function loadReports(){
+function loadGoogleReports(){
 
     const oldScript =
         document.getElementById(
@@ -563,9 +728,12 @@ function loadReports(){
     script.onerror =
         function(){
 
-            showError(
-                "Unable to connect to Google Sheet. Please check the Apps Script deployment."
+            console.warn(
+                "Google Sheet could not be loaded."
             );
+
+
+            mergeReports();
 
         };
 
@@ -578,10 +746,416 @@ function loadReports(){
 
 
 /* =====================================================
+   MERGE LOCAL + GOOGLE RESULTS
+===================================================== */
+
+function mergeReports(){
+
+    const combined = [];
+
+
+    /* LOCAL FIRST */
+
+    localReports.forEach(
+        function(report){
+
+            combined.push(
+                normalizeReport(
+                    report,
+                    "local"
+                )
+            );
+
+        }
+    );
+
+
+    /* GOOGLE RESULTS */
+
+    googleReports.forEach(
+        function(report){
+
+            combined.push(
+                normalizeReport(
+                    report,
+                    "google"
+                )
+            );
+
+        }
+    );
+
+
+    /*
+       Remove duplicate student/day reports.
+       Local report is preferred because it is
+       immediately available after submission.
+    */
+
+    const map =
+        new Map();
+
+
+    combined.forEach(
+        function(report){
+
+            const key =
+                normalizedUsername
+                +
+                "_"
+                +
+                String(
+                    report.day
+                );
+
+
+            if(!map.has(key)){
+
+                map.set(
+                    key,
+                    report
+                );
+
+            }
+            else{
+
+                const existing =
+                    map.get(key);
+
+
+                /*
+                   Prefer Google if it has
+                   actual Answers data,
+                   otherwise keep local.
+                */
+
+                if(
+                    report.source === "google"
+                    &&
+                    report.answers
+                    &&
+                    report.answers.length
+                ){
+
+                    map.set(
+                        key,
+                        report
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+
+    studentResults =
+        Array.from(
+            map.values()
+        );
+
+
+    studentResults.sort(
+        function(a,b){
+
+            return (
+                Number(a.day || 0)
+                -
+                Number(b.day || 0)
+            );
+
+        }
+    );
+
+
+    displayReports();
+
+}
+
+
+/* =====================================================
+   NORMALIZE REPORT
+===================================================== */
+
+function normalizeReport(
+    row,
+    source
+){
+
+    const day =
+        parseInt(
+            row.day
+            ||
+            row.Day
+            ||
+            0,
+            10
+        );
+
+
+    const topic =
+        row.topic
+        ||
+        row.Topic
+        ||
+        "Java Placement Practice";
+
+
+    let mcqScore =
+        row.mcqScore;
+
+
+    let errorScore =
+        row.errorScore;
+
+
+    let codingScore =
+        row.codingScore;
+
+
+    let totalScore =
+        row.totalScore;
+
+
+    let percentage =
+        row.percentage;
+
+
+    /* GOOGLE FORMAT */
+
+    if(
+        mcqScore === undefined
+        &&
+        errorScore === undefined
+    ){
+
+        const objective =
+            String(
+                row["MCQ + Error"]
+                ||
+                "0"
+            );
+
+
+        const match =
+            objective.match(
+                /[\d.]+/
+            );
+
+
+        mcqScore =
+            match
+            ?
+            parseFloat(match[0])
+            :
+            0;
+
+
+        errorScore = 0;
+
+    }
+
+
+    if(codingScore === undefined){
+
+        const coding =
+            String(
+                row.Coding
+                ||
+                "0"
+            );
+
+
+        const match =
+            coding.match(
+                /[\d.]+/
+            );
+
+
+        codingScore =
+            match
+            ?
+            parseFloat(match[0])
+            :
+            0;
+
+    }
+
+
+    if(totalScore === undefined){
+
+        const total =
+            String(
+                row.Total
+                ||
+                ""
+            );
+
+
+        const match =
+            total.match(
+                /[\d.]+/
+            );
+
+
+        if(match){
+
+            totalScore =
+                parseFloat(
+                    match[0]
+                );
+
+        }
+        else{
+
+            totalScore =
+                Number(mcqScore || 0)
+                +
+                Number(errorScore || 0)
+                +
+                Number(codingScore || 0);
+
+        }
+
+    }
+
+
+    if(percentage === undefined){
+
+        const p =
+            String(
+                row.Percentage
+                ||
+                ""
+            )
+            .replace(
+                "%",
+                ""
+            );
+
+
+        percentage =
+            parseFloat(p);
+
+
+        if(isNaN(percentage)){
+
+            percentage =
+                (
+                    Number(totalScore || 0)
+                    /
+                    15
+                    *
+                    100
+                ).toFixed(2);
+
+        }
+
+    }
+
+
+    let answers =
+        row.answers
+        ||
+        row.Answers
+        ||
+        [];
+
+
+    if(typeof answers === "string"){
+
+        try{
+
+            answers =
+                JSON.parse(
+                    answers
+                );
+
+        }
+        catch(error){
+
+            answers = [];
+
+        }
+
+    }
+
+
+    return {
+
+        source:
+            source,
+
+        day:
+            day,
+
+        topic:
+            topic,
+
+        mcqScore:
+            Number(
+                mcqScore || 0
+            ),
+
+        errorScore:
+            Number(
+                errorScore || 0
+            ),
+
+        codingScore:
+            Number(
+                codingScore || 0
+            ),
+
+        totalScore:
+            Number(
+                totalScore || 0
+            ),
+
+        percentage:
+            Number(
+                percentage || 0
+            ),
+
+        status:
+            row.status
+            ||
+            row.Status
+            ||
+            "Completed",
+
+        submittedAt:
+            row.submittedAt
+            ||
+            row["Submission Date"]
+            ||
+            "",
+
+        answers:
+            Array.isArray(answers)
+            ?
+            answers
+            :
+            [],
+
+        codingEvaluations:
+            row.codingEvaluations
+            ||
+            row["Coding Evaluation"]
+            ||
+            []
+
+    };
+
+}
+
+
+/* =====================================================
    DISPLAY REPORTS
 ===================================================== */
 
-function displayReports(allResults){
+function displayReports(){
 
     const loading =
         document.getElementById(
@@ -601,55 +1175,6 @@ function displayReports(allResults){
         );
 
 
-    const myUsername =
-        String(
-            studentUsername || ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-    const myResults =
-        allResults.filter(
-            function(row){
-
-                const username =
-                    String(
-                        row["Username"]
-                        ||
-                        row.username
-                        ||
-                        ""
-                    )
-                    .trim()
-                    .toLowerCase();
-
-
-                return username === myUsername;
-
-            }
-        );
-
-
-    myResults.sort(
-        function(a,b){
-
-            return (
-                parseInt(
-                    a["Day"] || 0,
-                    10
-                )
-                -
-                parseInt(
-                    b["Day"] || 0,
-                    10
-                )
-            );
-
-        }
-    );
-
-
     loading.style.display =
         "none";
 
@@ -662,87 +1187,31 @@ function displayReports(allResults){
         "";
 
 
-    if(myResults.length === 0){
+    if(studentResults.length === 0){
 
         body.innerHTML =
 
-        "<tr>" +
+            "<tr>" +
 
-        "<td colspan='9' style='text-align:center'>" +
+            "<td colspan='9' " +
+            "style='text-align:center'>" +
 
-        "No assessment reports found."
+            "No assessment reports found."
 
-        +
+            +
 
-        "</td>" +
+            "</td>" +
 
-        "</tr>";
+            "</tr>";
+
 
         return;
 
     }
 
 
-    myResults.forEach(
-        function(row,index){
-
-            const day =
-                getField(
-                    row,
-                    "Day"
-                );
-
-
-            const topic =
-                getField(
-                    row,
-                    "Topic"
-                )
-                ||
-                "Java Placement Practice";
-
-
-            const objective =
-                getObjectiveScore(
-                    row
-                );
-
-
-            const coding =
-                getCodingScore(
-                    row
-                );
-
-
-            const total =
-                getTotalScore(
-                    row
-                );
-
-
-            const percentage =
-                getPercentage(
-                    row
-                );
-
-
-            const status =
-                getField(
-                    row,
-                    "Status"
-                )
-                ||
-                "Completed";
-
-
-            const date =
-                formatDate(
-                    getField(
-                        row,
-                        "Submission Date"
-                    )
-                );
-
+    studentResults.forEach(
+        function(report,index){
 
             const tr =
                 document.createElement(
@@ -750,95 +1219,110 @@ function displayReports(allResults){
                 );
 
 
+            const objective =
+                report.mcqScore
+                +
+                report.errorScore;
+
+
             tr.innerHTML =
 
-            "<td>Day "
-            +
-            escapeHTML(day)
-            +
-            "</td>"
+                "<td>Day " +
+                escapeHTML(
+                    report.day
+                ) +
+                "</td>"
 
-            +
 
-            "<td>"
-            +
-            escapeHTML(topic)
-            +
-            "</td>"
+                +
 
-            +
+                "<td>" +
+                escapeHTML(
+                    report.topic
+                ) +
+                "</td>"
 
-            "<td>"
-            +
-            escapeHTML(
-                objective + "/12"
-            )
-            +
-            "</td>"
 
-            +
+                +
 
-            "<td>"
-            +
-            escapeHTML(
-                coding + "/3"
-            )
-            +
-            "</td>"
+                "<td>" +
+                escapeHTML(
+                    objective +
+                    "/12"
+                ) +
+                "</td>"
 
-            +
 
-            "<td>"
-            +
-            escapeHTML(
-                total + "/15"
-            )
-            +
-            "</td>"
+                +
 
-            +
+                "<td>" +
+                escapeHTML(
+                    report.codingScore +
+                    "/3"
+                ) +
+                "</td>"
 
-            "<td>"
-            +
-            escapeHTML(
-                percentage + "%"
-            )
-            +
-            "</td>"
 
-            +
+                +
 
-            "<td class='completed'>"
-            +
-            escapeHTML(status)
-            +
-            "</td>"
+                "<td>" +
+                escapeHTML(
+                    report.totalScore +
+                    "/15"
+                ) +
+                "</td>"
 
-            +
 
-            "<td>"
-            +
-            escapeHTML(date)
-            +
-            "</td>"
+                +
 
-            +
+                "<td>" +
+                escapeHTML(
+                    Number(
+                        report.percentage
+                    ).toFixed(2)
+                    +
+                    "%"
+                ) +
+                "</td>"
 
-            "<td>" +
 
-            "<button class='view-btn' " +
+                +
 
-            "onclick='openReport("
-            +
-            index
-            +
-            ")'>" +
+                "<td class='completed'>" +
+                escapeHTML(
+                    report.status
+                ) +
+                "</td>"
 
-            "View" +
 
-            "</button>" +
+                +
 
-            "</td>";
+                "<td>" +
+                escapeHTML(
+                    formatDate(
+                        report.submittedAt
+                    )
+                ) +
+                "</td>"
+
+
+                +
+
+                "<td>" +
+
+                "<button " +
+
+                "class='view-btn' " +
+
+                "onclick='openReport(" +
+                index +
+                ")'>" +
+
+                "View" +
+
+                "</button>" +
+
+                "</td>";
 
 
             body.appendChild(
@@ -850,194 +1334,33 @@ function displayReports(allResults){
 
 
     window.studentResults =
-        myResults;
-
-}
+        studentResults;
 
 
-/* =====================================================
-   GET FIELD
-===================================================== */
-
-function getField(row,field){
-
-    if(
-        row[field] !== undefined &&
-        row[field] !== null
-    ){
-
-        return String(
-            row[field]
-        );
-
-    }
-
-    return "";
-
-}
-
-
-/* =====================================================
-   OBJECTIVE SCORE
-===================================================== */
-
-function getObjectiveScore(row){
-
-    const value =
-        getField(
-            row,
-            "MCQ + Error"
+    const success =
+        document.getElementById(
+            "success"
         );
 
 
-    if(!value){
-
-        return "0";
-
-    }
+    success.style.display =
+        "block";
 
 
-    const match =
-        value.match(
-            /[\d.]+/
-        );
-
-
-    return match
-        ? match[0]
-        : "0";
-
-}
-
-
-/* =====================================================
-   CODING SCORE
-===================================================== */
-
-function getCodingScore(row){
-
-    const value =
-        getField(
-            row,
-            "Coding"
-        );
-
-
-    if(!value){
-
-        return "0";
-
-    }
-
-
-    const match =
-        value.match(
-            /[\d.]+/
-        );
-
-
-    return match
-        ? match[0]
-        : "0";
-
-}
-
-
-/* =====================================================
-   TOTAL SCORE
-===================================================== */
-
-function getTotalScore(row){
-
-    const value =
-        getField(
-            row,
-            "Total"
-        );
-
-
-    if(!value){
-
-        const objective =
-            parseFloat(
-                getObjectiveScore(row)
-            )
-            ||
-            0;
-
-
-        const coding =
-            parseFloat(
-                getCodingScore(row)
-            )
-            ||
-            0;
-
-
-        return String(
-            objective + coding
-        );
-
-    }
-
-
-    const match =
-        value.match(
-            /[\d.]+/
-        );
-
-
-    return match
-        ? match[0]
-        : "0";
-
-}
-
-
-/* =====================================================
-   PERCENTAGE
-===================================================== */
-
-function getPercentage(row){
-
-    let value =
-        getField(
-            row,
-            "Percentage"
-        );
-
-
-    if(!value){
-
-        const total =
-            parseFloat(
-                getTotalScore(row)
-            )
-            ||
-            0;
-
-
-        return (
-            total / 15 * 100
-        ).toFixed(2);
-
-    }
-
-
-    value =
-        value.replace(
-            "%",
+    success.textContent =
+        studentResults.length
+        +
+        " assessment report"
+        +
+        (
+            studentResults.length === 1
+            ?
             ""
-        );
-
-
-    const number =
-        parseFloat(value);
-
-
-    return isNaN(number)
-        ? "0.00"
-        : number.toFixed(2);
+            :
+            "s"
+        )
+        +
+        " found.";
 
 }
 
@@ -1048,11 +1371,11 @@ function getPercentage(row){
 
 function openReport(index){
 
-    const row =
-        window.studentResults[index];
+    const report =
+        studentResults[index];
 
 
-    if(!row){
+    if(!report){
 
         return;
 
@@ -1060,51 +1383,9 @@ function openReport(index){
 
 
     const objective =
-        getObjectiveScore(row);
-
-
-    const coding =
-        getCodingScore(row);
-
-
-    const total =
-        getTotalScore(row);
-
-
-    const percentage =
-        getPercentage(row);
-
-
-    const day =
-        getField(
-            row,
-            "Day"
-        );
-
-
-    const topic =
-        getField(
-            row,
-            "Topic"
-        );
-
-
-    const status =
-        getField(
-            row,
-            "Status"
-        )
-        ||
-        "Completed";
-
-
-    const date =
-        formatDate(
-            getField(
-                row,
-                "Submission Date"
-            )
-        );
+        report.mcqScore
+        +
+        report.errorScore;
 
 
     document.getElementById(
@@ -1116,19 +1397,23 @@ function openReport(index){
     document.getElementById(
         "modalCoding"
     ).textContent =
-        coding + "/3";
+        report.codingScore + "/3";
 
 
     document.getElementById(
         "modalTotal"
     ).textContent =
-        total + "/15";
+        report.totalScore + "/15";
 
 
     document.getElementById(
         "modalPercentage"
     ).textContent =
-        percentage + "%";
+        Number(
+            report.percentage
+        ).toFixed(2)
+        +
+        "%";
 
 
     document.getElementById(
@@ -1137,64 +1422,75 @@ function openReport(index){
 
         "<p>" +
 
-        "<b>Name:</b> "
-        +
-        escapeHTML(studentName)
+        "<b>Name:</b> " +
+        escapeHTML(
+            studentName
+        )
 
         +
 
         "<br>" +
 
-        "<b>Username:</b> "
-        +
-        escapeHTML(studentUsername)
+        "<b>Username:</b> " +
+        escapeHTML(
+            studentUsername
+        )
 
         +
 
         "<br>" +
 
-        "<b>Year:</b> "
-        +
-        escapeHTML(studentYear)
+        "<b>Year:</b> " +
+        escapeHTML(
+            studentYear
+        )
 
         +
 
         "<br>" +
 
-        "<b>Day:</b> "
-        +
-        escapeHTML(day)
+        "<b>Day:</b> " +
+        escapeHTML(
+            report.day
+        )
 
         +
 
         "<br>" +
 
-        "<b>Topic:</b> "
-        +
-        escapeHTML(topic)
+        "<b>Topic:</b> " +
+        escapeHTML(
+            report.topic
+        )
 
         +
 
         "<br>" +
 
-        "<b>Status:</b> "
-        +
-        escapeHTML(status)
+        "<b>Status:</b> " +
+        escapeHTML(
+            report.status
+        )
 
         +
 
         "<br>" +
 
-        "<b>Submitted:</b> "
-        +
-        escapeHTML(date)
+        "<b>Submitted:</b> " +
+        escapeHTML(
+            formatDate(
+                report.submittedAt
+            )
+        )
 
         +
 
         "</p>";
 
 
-    displayAnswerDetails(row);
+    displayAnswerDetails(
+        report
+    );
 
 
     document.getElementById(
@@ -1209,7 +1505,7 @@ function openReport(index){
    DISPLAY ANSWERS
 ===================================================== */
 
-function displayAnswerDetails(row){
+function displayAnswerDetails(report){
 
     const details =
         document.getElementById(
@@ -1221,46 +1517,8 @@ function displayAnswerDetails(row){
         "";
 
 
-    let answers = [];
-
-
-    const answerText =
-        getField(
-            row,
-            "Answers"
-        );
-
-
-    if(answerText){
-
-        try{
-
-            answers =
-                JSON.parse(
-                    answerText
-                );
-
-        }
-
-        catch(error){
-
-            details.innerHTML =
-
-                "<h3>Answer Details</h3>" +
-
-                "<div class='answer-box'>" +
-
-                "<pre class='answer-code'>"
-                +
-                escapeHTML(answerText)
-                +
-                "</pre>" +
-
-                "</div>";
-
-        }
-
-    }
+    const answers =
+        report.answers;
 
 
     if(
@@ -1269,52 +1527,21 @@ function displayAnswerDetails(row){
         answers.length === 0
     ){
 
-        const codingEvaluation =
-            getField(
-                row,
-                "Coding Evaluation"
-            );
+        details.innerHTML =
 
+            "<h3>Answer Details</h3>" +
 
-        if(codingEvaluation){
+            "<div class='answer-box'>" +
 
-            details.innerHTML +=
+            "Detailed answers are not available."
 
-                "<h3>Coding Evaluation</h3>" +
+            +
 
-                "<div class='answer-box'>" +
-
-                "<pre class='answer-code'>"
-                +
-                escapeHTML(
-                    codingEvaluation
-                )
-                +
-                "</pre>" +
-
-                "</div>";
-
-        }
-
+            "</div>";
 
         return;
 
     }
-
-
-    const title =
-        document.createElement(
-            "h3"
-        );
-
-
-    title.textContent =
-        "Answer Details";
-
-
-    details.appendChild(
-        title
-    );
 
 
     answers.forEach(
@@ -1330,123 +1557,150 @@ function displayAnswerDetails(row){
                 "answer-box";
 
 
-            const question =
-                answer.question
+            let statusClass =
+                "wrong";
+
+
+            if(
+                answer.status ===
+                "Correct"
                 ||
-                "";
+                answer.status ===
+                "Complete"
+            ){
+
+                statusClass =
+                    "correct";
+
+            }
 
 
-            const type =
-                String(
-                    answer.type
-                    ||
-                    ""
-                )
-                .toUpperCase();
+            if(
+                answer.status ===
+                "Partially Correct"
+            ){
 
+                statusClass =
+                    "partial";
 
-            const studentAnswer =
-                answer.studentAnswer
-                ||
-                answer.code
-                ||
-                answer.answer
-                ||
-                "Not Answered";
-
-
-            const status =
-                answer.status
-                ||
-                "Wrong";
-
-
-            const score =
-                Number(
-                    answer.score
-                    ||
-                    0
-                );
+            }
 
 
             let html =
 
-                "<b>Question "
-                +
-                (index + 1)
-                +
-                ":</b> "
-                +
-                escapeHTML(question)
-                +
-                "<br><br>";
+                "<h3>" +
+
+                "Q" +
+                (index + 1) +
+
+                ". " +
+
+                escapeHTML(
+                    answer.question
+                    ||
+                    ""
+                ) +
+
+                "</h3>";
+
+
+            html +=
+
+                "<p><b>Type:</b> " +
+
+                escapeHTML(
+                    answer.type
+                    ||
+                    ""
+                ) +
+
+                "</p>";
+
+
+            html +=
+
+                "<p><b>Your Answer:</b></p>";
 
 
             if(
-                type === "CODING"
+                answer.type ===
+                "CODING"
             ){
 
                 html +=
 
-                    "<b>Your Java Code:</b>" +
+                    "<pre class='answer-code'>" +
 
-                    "<div class='answer-code'>"
-                    +
                     escapeHTML(
-                        studentAnswer
-                    )
-                    +
-                    "</div>" +
+                        answer.studentAnswer
+                        ||
+                        "Not Answered"
+                    ) +
 
-                    "<br>" +
-
-                    "<b>Status:</b> "
-                    +
-                    getStatusHTML(status)
-
-                    +
-
-                    "<br>" +
-
-                    "<b>Mark:</b> "
-                    +
-                    score
-                    +
-                    "/1";
+                    "</pre>";
 
             }
-
             else{
 
                 html +=
 
-                    "<b>Your Answer:</b> "
-                    +
+                    "<p>" +
+
                     escapeHTML(
-                        studentAnswer
-                    )
-
-                    +
-
-                    "<br>" +
-
-                    "<b>Correct Answer:</b> "
-                    +
-                    escapeHTML(
-                        answer.correctAnswer
+                        answer.studentAnswer
                         ||
-                        "-"
-                    )
+                        "Not Answered"
+                    ) +
 
-                    +
-
-                    "<br>" +
-
-                    "<b>Status:</b> "
-                    +
-                    getStatusHTML(status);
+                    "</p>";
 
             }
+
+
+            if(answer.correctAnswer){
+
+                html +=
+
+                    "<p><b>Correct Answer:</b> " +
+
+                    escapeHTML(
+                        answer.correctAnswer
+                    ) +
+
+                    "</p>";
+
+            }
+
+
+            html +=
+
+                "<p class='" +
+                statusClass +
+                "'>" +
+
+                escapeHTML(
+                    answer.status
+                    ||
+                    ""
+                ) +
+
+                "</p>";
+
+
+            html +=
+
+                "<p><b>Score:</b> " +
+
+                escapeHTML(
+                    answer.score
+                    !== undefined
+                    ?
+                    answer.score
+                    :
+                    "0"
+                ) +
+
+                "</p>";
 
 
             box.innerHTML =
@@ -1464,60 +1718,39 @@ function displayAnswerDetails(row){
 
 
 /* =====================================================
-   STATUS
+   CLOSE MODAL
 ===================================================== */
 
-function getStatusHTML(status){
+function closeModal(){
 
-    const value =
-        String(status);
-
-
-    const lower =
-        value.toLowerCase();
-
-
-    if(
-        lower.includes("complete")
-        ||
-        lower.includes("correct")
-    ){
-
-        return (
-            "<span class='correct'>"
-            +
-            escapeHTML(value)
-            +
-            "</span>"
-        );
-
-    }
-
-
-    if(
-        lower.includes("partial")
-    ){
-
-        return (
-            "<span class='partial'>"
-            +
-            escapeHTML(value)
-            +
-            "</span>"
-        );
-
-    }
-
-
-    return (
-        "<span class='wrong'>"
-        +
-        escapeHTML(value)
-        +
-        "</span>"
-    );
+    document.getElementById(
+        "reportModal"
+    ).style.display =
+        "none";
 
 }
+
+
+/* =====================================================
+   CLICK OUTSIDE MODAL
+===================================================== */
+
+window.onclick =
+function(event){
+
+    const modal =
+        document.getElementById(
+            "reportModal"
+        );
+
+
+    if(event.target === modal){
+
+        closeModal();
+
+    }
+
+};
 
 
 /* =====================================================
@@ -1537,11 +1770,7 @@ function formatDate(value){
         new Date(value);
 
 
-    if(
-        isNaN(
-            date.getTime()
-        )
-    ){
+    if(isNaN(date.getTime())){
 
         return String(value);
 
@@ -1554,41 +1783,45 @@ function formatDate(value){
 
 
 /* =====================================================
-   CLOSE MODAL
+   ESCAPE HTML
 ===================================================== */
 
-function closeModal(){
+function escapeHTML(value){
 
-    document.getElementById(
-        "reportModal"
-    ).style.display =
-        "none";
+    return String(
+        value ?? ""
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
 
-window.onclick =
-function(event){
-
-    const modal =
-        document.getElementById(
-            "reportModal"
-        );
-
-
-    if(
-        event.target === modal
-    ){
-
-        closeModal();
-
-    }
-
-};
-
-
 /* =====================================================
-   BACK
+   BACK TO DASHBOARD
 ===================================================== */
 
 function goBack(){
@@ -1600,74 +1833,39 @@ function goBack(){
 
 
 /* =====================================================
-   ERROR
-===================================================== */
-
-function showError(message){
-
-    document.getElementById(
-        "loading"
-    ).style.display =
-        "none";
-
-
-    const error =
-        document.getElementById(
-            "error"
-        );
-
-
-    error.style.display =
-        "block";
-
-
-    error.textContent =
-        message;
-
-}
-
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHTML(value){
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-/* =====================================================
    START
 ===================================================== */
 
-loadReports();
+function startReports(){
+
+    /*
+       Load local reports immediately.
+       This is important because the assessment
+       has just saved the result locally.
+    */
+
+    localReports =
+        loadLocalReports();
+
+
+    /*
+       Display immediately.
+    */
+
+    mergeReports();
+
+
+    /*
+       Then also fetch Google Sheet results.
+    */
+
+    loadGoogleReports();
+
+}
+
+
+startReports();
+
 
 </script>
 
