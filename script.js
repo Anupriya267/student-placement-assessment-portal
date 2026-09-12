@@ -2,59 +2,215 @@
 
 function login(){
 
-    let username =
-        document.getElementById("username").value.trim();
+    const username =
+        document.getElementById("username")
+        .value
+        .trim();
 
-    let password =
-        document.getElementById("password").value.trim();
+    const password =
+        document.getElementById("password")
+        .value
+        .trim();
 
-    if(username === "admin" && password === "admin123"){
 
-        window.location.href = "admin.html";
+    // ================= ADMIN LOGIN =================
+
+    if(
+        username === "admin" &&
+        password === "admin123"
+    ){
+
+        localStorage.setItem(
+            "loggedInUser",
+            "admin"
+        );
+
+        window.location.href =
+            "admin.html";
+
+        return;
 
     }
 
-    else if(username === "student1" && password === "1234"){
 
-        window.location.href = "student.html";
+    // ================= STUDENT LOGIN =================
+
+    const students =
+        JSON.parse(
+            localStorage.getItem(
+                "students"
+            )
+            ||
+            "[]"
+        );
+
+
+    const student =
+        students.find(
+            function(s){
+
+                return (
+                    String(s.username)
+                    .trim()
+                    ===
+                    username
+                )
+                &&
+                (
+                    String(s.password)
+                    .trim()
+                    ===
+                    password
+                );
+
+            }
+        );
+
+
+    if(student){
+
+        // Save logged-in student
+
+        localStorage.setItem(
+            "loggedInUser",
+            "student"
+        );
+
+
+        localStorage.setItem(
+            "studentName",
+            student.name
+        );
+
+
+        localStorage.setItem(
+            "studentUsername",
+            student.username
+        );
+
+
+        localStorage.setItem(
+            "studentYear",
+            student.year
+        );
+
+
+        // IMPORTANT:
+        // Student receives assigned day
+
+        localStorage.setItem(
+            "assignedDay",
+            student.assignedDay
+        );
+
+
+        window.location.href =
+            "student.html";
+
+        return;
 
     }
 
-    else{
 
-        alert("Invalid Username or Password");
+    // ================= OLD TEST LOGIN =================
+    // Keeps your existing student1 login working
+
+    if(
+        username === "student1" &&
+        password === "1234"
+    ){
+
+        localStorage.setItem(
+            "loggedInUser",
+            "student"
+        );
+
+
+        localStorage.setItem(
+            "studentName",
+            "Student 1"
+        );
+
+
+        localStorage.setItem(
+            "studentUsername",
+            "student1"
+        );
+
+
+        localStorage.setItem(
+            "studentYear",
+            "Final Year"
+        );
+
+
+        localStorage.setItem(
+            "assignedDay",
+            "1"
+        );
+
+
+        window.location.href =
+            "student.html";
+
+        return;
 
     }
+
+
+    // ================= INVALID LOGIN =================
+
+    alert(
+        "Invalid Username or Password"
+    );
 
 }
 
 
-// ================= ASSESSMENT SUBMISSION =================
+
+// =====================================================
+// ASSESSMENT SUBMISSION
+// =====================================================
 
 function calculateAndSaveResult(){
 
     let questionBank =
         JSON.parse(
-            localStorage.getItem("questionBank") || "[]"
+            localStorage.getItem(
+                "questionBank"
+            )
+            ||
+            "[]"
         );
 
+
     let assignedDay =
-        localStorage.getItem("assignedDay") || "1";
+        localStorage.getItem(
+            "assignedDay"
+        )
+        ||
+        "1";
 
-
-    // Get questions for current day
 
     let dayQuestions =
-        questionBank.filter(function(q){
+        questionBank.filter(
+            function(q){
 
-            return String(q.Day) === String(assignedDay);
+                return String(q.Day)
+                ===
+                String(assignedDay);
 
-        });
+            }
+        );
 
 
-    if(dayQuestions.length === 0){
+    if(
+        dayQuestions.length === 0
+    ){
 
-        alert("No questions found for this assessment.");
+        alert(
+            "No questions found for this assessment."
+        );
 
         return;
 
@@ -68,180 +224,206 @@ function calculateAndSaveResult(){
     let answerSheet = [];
 
 
+    dayQuestions.forEach(
+        function(q,index){
 
-    // ================= CHECK QUESTIONS =================
-
-    dayQuestions.forEach(function(q, index){
-
-        let type =
-            String(q.Type || "").toUpperCase();
-
-        let questionNumber =
-            index + 1;
-
-        let studentAnswer = "Not Answered";
+            let type =
+                String(
+                    q["Question Type"]
+                    ||
+                    ""
+                )
+                .trim()
+                .toUpperCase();
 
 
-        // ---------- MCQ ----------
+            let questionNumber =
+                index + 1;
 
-        if(type === "MCQ"){
 
-            totalObjective++;
+            let studentAnswer =
+                "Not Answered";
 
-            let selected =
-                document.querySelector(
-                    'input[name="mcq_' +
-                    questionNumber +
-                    '"]:checked'
-                );
 
-            if(selected){
+            // ================= MCQ =================
 
-                studentAnswer =
-                    selected.value;
+            if(type === "MCQ"){
+
+                totalObjective++;
+
+
+                let selected =
+                    document.querySelector(
+                        'input[name="question_' +
+                        questionNumber +
+                        '"]:checked'
+                    );
+
+
+                if(selected){
+
+                    studentAnswer =
+                        selected.value;
+
+                }
+
+
+                let correctAnswer =
+                    String(
+                        q["Correct Answer"]
+                        ||
+                        ""
+                    )
+                    .trim();
+
+
+                let isCorrect =
+                    studentAnswer
+                    ===
+                    correctAnswer;
+
+
+                if(isCorrect){
+
+                    score++;
+
+                }
+
+
+                answerSheet.push({
+
+                    question:
+                        q.Question,
+
+                    studentAnswer:
+                        studentAnswer,
+
+                    correctAnswer:
+                        correctAnswer,
+
+                    status:
+                        isCorrect
+                        ? "Correct"
+                        : "Wrong"
+
+                });
 
             }
 
 
-            let correctAnswer =
-                String(q["Correct Answer"] || "")
-                .trim();
+            // ================= ERROR =================
+
+            else if(
+                type === "ERROR"
+                ||
+                type === "ERROR CORRECTION"
+            ){
+
+                totalObjective++;
 
 
-            let isCorrect =
-                studentAnswer === correctAnswer;
+                let selected =
+                    document.querySelector(
+                        'input[name="question_' +
+                        questionNumber +
+                        '"]:checked'
+                    );
 
 
-            if(isCorrect){
+                if(selected){
 
-                score++;
+                    studentAnswer =
+                        selected.value;
+
+                }
+
+
+                let correctAnswer =
+                    String(
+                        q["Correct Answer"]
+                        ||
+                        ""
+                    )
+                    .trim();
+
+
+                let isCorrect =
+                    studentAnswer
+                    ===
+                    correctAnswer;
+
+
+                if(isCorrect){
+
+                    score++;
+
+                }
+
+
+                answerSheet.push({
+
+                    question:
+                        q.Question,
+
+                    studentAnswer:
+                        studentAnswer,
+
+                    correctAnswer:
+                        correctAnswer,
+
+                    status:
+                        isCorrect
+                        ? "Correct"
+                        : "Wrong"
+
+                });
 
             }
 
 
-            answerSheet.push({
+            // ================= CODING =================
 
-                question:
-                    q.Question,
+            else if(type === "CODING"){
 
-                studentAnswer:
-                    studentAnswer,
+                let codingBox =
+                    document.getElementById(
+                        "coding_" +
+                        questionNumber
+                    );
 
-                correctAnswer:
-                    correctAnswer,
 
-                status:
-                    isCorrect
-                    ? "Correct"
-                    : "Wrong"
+                let studentCode =
+                    codingBox
+                    ?
+                    codingBox.value.trim()
+                    :
+                    "";
 
-            });
+
+                answerSheet.push({
+
+                    question:
+                        q.Question,
+
+                    studentAnswer:
+                        studentCode
+                        ?
+                        studentCode
+                        :
+                        "Not Answered",
+
+                    correctAnswer:
+                        "Coding evaluation pending",
+
+                    status:
+                        "Pending"
+
+                });
+
+            }
 
         }
-
-
-
-        // ---------- ERROR CORRECTION ----------
-
-        else if(
-            type === "ERROR" ||
-            type === "ERROR CORRECTION"
-        ){
-
-            totalObjective++;
-
-            let selected =
-                document.querySelector(
-                    'input[name="error_' +
-                    questionNumber +
-                    '"]:checked'
-                );
-
-
-            if(selected){
-
-                studentAnswer =
-                    selected.value;
-
-            }
-
-
-            let correctAnswer =
-                String(q["Correct Answer"] || "")
-                .trim();
-
-
-            let isCorrect =
-                studentAnswer === correctAnswer;
-
-
-            if(isCorrect){
-
-                score++;
-
-            }
-
-
-            answerSheet.push({
-
-                question:
-                    q.Question,
-
-                studentAnswer:
-                    studentAnswer,
-
-                correctAnswer:
-                    correctAnswer,
-
-                status:
-                    isCorrect
-                    ? "Correct"
-                    : "Wrong"
-
-            });
-
-        }
-
-
-
-        // ---------- CODING ----------
-
-        else if(type === "CODING"){
-
-            let codingBox =
-                document.getElementById(
-                    "coding_" + questionNumber
-                );
-
-
-            let studentCode =
-                codingBox
-                ? codingBox.value.trim()
-                : "";
-
-
-            answerSheet.push({
-
-                question:
-                    q.Question,
-
-                studentAnswer:
-                    studentCode
-                    ? studentCode
-                    : "Not Answered",
-
-                correctAnswer:
-                    "Automatic coding evaluation will be added later.",
-
-                status:
-                    "Pending"
-
-            });
-
-        }
-
-    });
-
+    );
 
 
     // ================= SAVE RESULT =================
@@ -260,7 +442,9 @@ function calculateAndSaveResult(){
 
     localStorage.setItem(
         "answerSheet",
-        JSON.stringify(answerSheet)
+        JSON.stringify(
+            answerSheet
+        )
     );
 
 
@@ -270,7 +454,7 @@ function calculateAndSaveResult(){
     );
 
 
-    // ================= GO TO RESULT =================
+    // ================= RESULT PAGE =================
 
     window.location.href =
         "results.html";
