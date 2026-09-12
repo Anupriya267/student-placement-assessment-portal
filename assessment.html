@@ -1,250 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Java Placement Assessment</title>
-
 <link rel="stylesheet" href="style.css">
-
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
-
-body{
-    margin:0;
-    padding:20px;
-    font-family:Arial,sans-serif;
-    background:#f4f6fb;
-}
-
-.container{
-    max-width:1100px;
-    margin:auto;
-}
-
-.header{
-    background:white;
-    padding:20px;
-    border-radius:12px;
-    margin-bottom:20px;
-    box-shadow:0 3px 12px rgba(0,0,0,.1);
-}
-
-.question-card{
-    background:white;
-    padding:20px;
-    margin-bottom:18px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.question-title{
-    font-weight:bold;
-    margin-bottom:15px;
-    font-size:18px;
-}
-
-.option{
-    display:block;
-    margin:10px 0;
-    padding:12px;
-    border:1px solid #ddd;
-    border-radius:7px;
-    cursor:pointer;
-}
-
-.option:hover{
-    background:#f1f5ff;
-}
-
-textarea{
-    width:100%;
-    min-height:220px;
-    padding:12px;
-    box-sizing:border-box;
-    font-family:Consolas,monospace;
-    font-size:14px;
-    border:1px solid #ccc;
-    border-radius:7px;
-    resize:vertical;
-}
-
-.timer{
-    position:sticky;
-    top:10px;
-    z-index:100;
-    background:#222;
-    color:white;
-    padding:12px;
-    text-align:center;
-    border-radius:8px;
-    margin-bottom:20px;
-    font-size:20px;
-    font-weight:bold;
-}
-
-.submit-btn{
-    width:100%;
-    padding:15px;
-    background:#2864d7;
-    color:white;
-    border:none;
-    border-radius:8px;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.submit-btn:hover{
-    background:#1e4fae;
-}
-
-.section-title{
-    background:#eaf0ff;
-    padding:12px;
-    border-radius:8px;
-    margin:25px 0 15px;
-    font-size:20px;
-    font-weight:bold;
-}
-
-.loading{
-    text-align:center;
-    background:white;
-    padding:30px;
-    border-radius:10px;
-}
-
-.error{
-    background:#fff1f1;
-    border:1px solid #e0aaaa;
-    padding:20px;
-    border-radius:10px;
-    color:#a00000;
-}
-
+body{margin:0;padding:20px;font-family:Arial,sans-serif;background:#f4f6fb}
+.container{max-width:1100px;margin:auto}
+.header{background:white;padding:20px;border-radius:12px;margin-bottom:20px;box-shadow:0 3px 12px rgba(0,0,0,.1)}
+.question-card{background:white;padding:20px;margin-bottom:18px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.question-title{font-weight:bold;margin-bottom:15px;font-size:18px}
+.option{display:block;margin:10px 0;padding:12px;border:1px solid #ddd;border-radius:7px;cursor:pointer}
+.option:hover{background:#f1f5ff}
+textarea{width:100%;min-height:220px;padding:12px;box-sizing:border-box;font-family:Consolas,monospace;font-size:14px;border:1px solid #ccc;border-radius:7px;resize:vertical}
+.timer{position:sticky;top:10px;z-index:100;background:#222;color:white;padding:12px;text-align:center;border-radius:8px;margin-bottom:20px;font-size:20px;font-weight:bold}
+.submit-btn{width:100%;padding:15px;background:#2864d7;color:white;border:none;border-radius:8px;font-size:18px;font-weight:bold;cursor:pointer}
+.submit-btn:hover{background:#1e4fae}
+.section-title{background:#eaf0ff;padding:12px;border-radius:8px;margin:25px 0 15px;font-size:20px;font-weight:bold}
+.loading{text-align:center;background:white;padding:30px;border-radius:10px}
+.error{background:#fff1f1;border:1px solid #e0aaaa;padding:20px;border-radius:10px;color:#a00000}
+.error-code-title{margin:12px 0 6px;font-weight:bold;color:#9a5a00}
+.error-code{background:#1e1e1e;color:#f5f5f5;padding:14px;border-radius:8px;overflow:auto;font-family:Consolas,Monaco,monospace;font-size:14px;line-height:1.5;white-space:pre-wrap}
+.status-note{background:#fff8e6;border:1px solid #f0d58a;padding:10px;border-radius:7px;margin-bottom:15px}
 </style>
-
 </head>
 
 <body>
-
 <div class="container">
 
-    <div class="header">
-
-        <h1>Java Placement Assessment</h1>
-
-        <div>
-            Student:
-            <b id="studentName">Loading...</b>
-        </div>
-
-        <div>
-            Username:
-            <b id="studentUsername">Loading...</b>
-        </div>
-
-        <div>
-            Year:
-            <b id="studentYear">Loading...</b>
-        </div>
-
-        <div>
-            Assessment Day:
-            <b id="assessmentDay">Loading...</b>
-        </div>
-
-    </div>
-
-
-    <div id="loading" class="loading">
-        Loading questions...
-    </div>
-
-
-    <div id="error"
-         class="error"
-         style="display:none;">
-    </div>
-
-
-    <div id="assessmentArea"
-         style="display:none;">
-
-        <div class="timer">
-            Time Remaining:
-            <span id="timer">40:00</span>
-        </div>
-
-
-        <form id="assessmentForm">
-
-            <div id="questionContainer"></div>
-
-            <button
-                type="button"
-                class="submit-btn"
-                onclick="finishAssessment()">
-
-                Submit Assessment
-
-            </button>
-
-        </form>
-
-    </div>
-
+<div class="header">
+<h1>Java Placement Assessment</h1>
+<div>Student: <b id="studentName">Loading...</b></div>
+<div>Username: <b id="studentUsername">Loading...</b></div>
+<div>Year: <b id="studentYear">Loading...</b></div>
+<div>Assessment Day: <b id="assessmentDay">Loading...</b></div>
 </div>
 
+<div id="loading" class="loading">Loading questions...</div>
+<div id="error" class="error" style="display:none"></div>
+
+<div id="assessmentArea" style="display:none">
+
+<div class="status-note">
+Your answers are saved while you work. Refreshing the page will keep the same day,
+same questions, answers, and remaining time.
+</div>
+
+<div class="timer">
+Time Remaining: <span id="timer">40:00</span>
+</div>
+
+<form id="assessmentForm">
+<div id="questionContainer"></div>
+
+<button type="button" class="submit-btn" onclick="finishAssessment()">
+Submit Assessment
+</button>
+
+</form>
+</div>
+</div>
 
 <script>
-
-/* =====================================================
-   GOOGLE APPS SCRIPT
-===================================================== */
 
 const GOOGLE_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbxrrb6gSB12hmilk7j5BEWqeOmSAJad9Zi-ZbpaoS1kaJRHhUAoDh02-teDu2O_hbSnRA/exec";
 
 
-/* =====================================================
-   EXCEL FILES
-===================================================== */
-
+/* ONLY FINAL EXCEL FILE */
 const EXCEL_FILES = [
-
-    "./Java_Placement_41_Day_MASTER_WITH_CODING_EVALUATION (2).xlsx",
-
-    "./Java_Placement_41_Day_FINAL_CORRECTED.xlsx"
-
+"./Java_Placement_41_Day_COMPLETE_MCQQ_ERROR_CODING (1).xlsx"
 ];
 
 
-/* =====================================================
-   GET LOGGED STUDENT
-===================================================== */
-
 function getLoggedStudent(){
-
     try{
-
         return JSON.parse(
             localStorage.getItem("loggedInStudent") || "null"
         );
-
-    }
-    catch(error){
-
+    }catch(e){
         return null;
-
     }
-
 }
-
 
 const loggedStudent = getLoggedStudent();
 
@@ -260,89 +100,328 @@ const studentUsername =
     loggedStudent?.username ||
     loggedStudent?.Username ||
     localStorage.getItem("studentUsername") ||
-    "";
+    studentName;
 
 
 const studentYear =
     loggedStudent?.year ||
     loggedStudent?.Year ||
     localStorage.getItem("studentYear") ||
-    "";
+    "Final Year";
 
 
-/* =====================================================
-   GET ASSESSMENT DAY
-===================================================== */
+/*
+IMPORTANT:
+Refresh does NOT increase the day.
+Day changes ONLY after submission.
+*/
 
 let assignedDay = parseInt(
-
     localStorage.getItem("assessmentDay") ||
-
     localStorage.getItem("assignedDay") ||
-
     localStorage.getItem("currentDay") ||
-
     "1",
-
     10
-
 );
 
-
-if(isNaN(assignedDay) || assignedDay < 1){
-
+if(!Number.isFinite(assignedDay) || assignedDay < 1){
     assignedDay = 1;
-
 }
-
 
 if(assignedDay > 41){
-
     assignedDay = 41;
-
 }
 
 
-/* =====================================================
-   DISPLAY STUDENT
-===================================================== */
-
-document.getElementById("studentName").textContent =
-    studentName;
-
-document.getElementById("studentUsername").textContent =
-    studentUsername;
-
-document.getElementById("studentYear").textContent =
-    studentYear;
-
+document.getElementById("studentName").textContent = studentName;
+document.getElementById("studentUsername").textContent = studentUsername;
+document.getElementById("studentYear").textContent = studentYear;
 document.getElementById("assessmentDay").textContent =
     "Day " + assignedDay;
 
 
-/* =====================================================
-   VARIABLES
-===================================================== */
-
 let allQuestions = [];
-
 let selectedQuestions = [];
-
 let timeRemaining = 40 * 60;
-
 let timerInterval = null;
-
 let submitting = false;
 
 
-/* =====================================================
-   LOAD EXCEL
-===================================================== */
+const safeStudentKey =
+    String(studentUsername || studentName)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]/g,"_");
+
+
+const draftKey =
+    "assessmentDraft_" +
+    safeStudentKey +
+    "_day_" +
+    assignedDay;
+
+
+const endTimeKey = draftKey + "_endTime";
+const selectionKey = draftKey + "_selection";
+
+
+function getExcelField(row,names){
+
+    for(const name of names){
+
+        if(
+            row[name] !== undefined &&
+            row[name] !== null &&
+            String(row[name]).trim() !== ""
+        ){
+            return String(row[name]).trim();
+        }
+
+    }
+
+    return "";
+}
+
+
+function getQuestion(row){
+
+    return getExcelField(row,[
+        "Question",
+        "question",
+        "Question Text",
+        "QuestionText",
+        "Question Text/Problem",
+        "Problem",
+        "problem"
+    ]);
+
+}
+
+
+function getDay(row){
+
+    return parseInt(
+        getExcelField(row,[
+            "Day",
+            "day",
+            "Day Number",
+            "day number",
+            "DayNumber",
+            "dayNumber"
+        ]),
+        10
+    );
+
+}
+
+
+function getSection(row){
+
+    return getExcelField(row,[
+        "Section",
+        "section",
+        "Type",
+        "type",
+        "Question Type",
+        "question type",
+        "QuestionType",
+        "questionType",
+        "Question_Type",
+        "QUESTION TYPE",
+        "Category",
+        "category"
+    ])
+    .toUpperCase()
+    .replace(/[_-]+/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+
+}
+
+
+function isMCQ(row){
+
+    const s = getSection(row);
+
+    return (
+        s === "MCQ" ||
+        s.includes("MCQ") ||
+        s.includes("MULTIPLE CHOICE")
+    );
+
+}
+
+
+function isErrorQuestion(row){
+
+    const s = getSection(row);
+
+    return (
+        s.includes("ERROR") ||
+        s.includes("DEBUG")
+    );
+
+}
+
+
+function isCoding(row){
+
+    const s = getSection(row);
+
+    return (
+        s.includes("CODING") ||
+        s === "PROGRAM" ||
+        s.includes("PROGRAMMING")
+    );
+
+}
+
+
+function getOption(row,letter){
+
+    return getExcelField(row,[
+        "Option "+letter,
+        "option "+letter,
+        "option"+letter,
+        "Option"+letter,
+        letter
+    ]);
+
+}
+
+
+function getCorrectAnswer(row){
+
+    return getExcelField(row,[
+        "Correct Answer",
+        "correctAnswer",
+        "CorrectAnswer",
+        "Answer",
+        "answer"
+    ]);
+
+}
+
+
+function questionIdentity(row){
+
+    return [
+        getDay(row),
+        getSection(row),
+        getExcelField(row,[
+            "Question No.",
+            "QuestionNo",
+            "No.",
+            "ID",
+            "id"
+        ]),
+        getQuestion(row)
+    ].join("|");
+
+}
+
+
+function splitErrorQuestion(question,row){
+
+    const explicitCode = getExcelField(row,[
+        "Error Code",
+        "errorCode",
+        "Buggy Code",
+        "buggyCode"
+    ]);
+
+
+    if(explicitCode){
+
+        return {
+            title:question,
+            code:explicitCode
+        };
+
+    }
+
+
+    const parts =
+        String(question || "")
+        .split(/\n\s*\n/);
+
+
+    if(parts.length >= 2){
+
+        return {
+            title:parts[0].trim(),
+            code:parts.slice(1).join("\n\n").trim()
+        };
+
+    }
+
+
+    return {
+        title:question,
+        code:""
+    };
+
+}
+
+
+function saveSelection(){
+
+    localStorage.setItem(
+        selectionKey,
+        JSON.stringify(
+            selectedQuestions.map(questionIdentity)
+        )
+    );
+
+}
+
+
+function loadSavedSelection(dayQuestions){
+
+    try{
+
+        const saved =
+            JSON.parse(
+                localStorage.getItem(selectionKey) || "[]"
+            );
+
+
+        if(
+            !Array.isArray(saved) ||
+            saved.length !== 15
+        ){
+            return null;
+        }
+
+
+        const map =
+            new Map(
+                dayQuestions.map(
+                    row => [questionIdentity(row),row]
+                )
+            );
+
+
+        const rows =
+            saved
+            .map(id => map.get(id))
+            .filter(Boolean);
+
+
+        return rows.length === 15 ? rows : null;
+
+    }catch(e){
+
+        return null;
+
+    }
+
+}
+
 
 async function loadExcel(){
 
     let workbook = null;
-
     let lastError = null;
 
 
@@ -350,9 +429,13 @@ async function loadExcel(){
 
         try{
 
-            const response = await fetch(
-                file + "?v=" + Date.now()
-            );
+            const response =
+                await fetch(
+                    file + "?v=" + Date.now(),
+                    {
+                        cache:"no-store"
+                    }
+                );
 
 
             if(!response.ok){
@@ -377,16 +460,11 @@ async function loadExcel(){
                 );
 
 
-            if(workbook){
+            break;
 
-                break;
+        }catch(e){
 
-            }
-
-        }
-        catch(error){
-
-            lastError = error;
+            lastError = e;
 
         }
 
@@ -395,34 +473,25 @@ async function loadExcel(){
 
     if(!workbook){
 
-        throw lastError ||
-        new Error(
-            "Excel file could not be loaded."
+        throw (
+            lastError ||
+            new Error(
+                "Excel file could not be loaded."
+            )
         );
 
     }
 
 
-    let sheetName =
-
+    const sheetName =
         workbook.SheetNames.includes("Question Bank")
-
-        ?
-
-        "Question Bank"
-
-        :
-
-        workbook.SheetNames[0];
-
-
-    const sheet =
-        workbook.Sheets[sheetName];
+        ? "Question Bank"
+        : workbook.SheetNames[0];
 
 
     const rows =
         XLSX.utils.sheet_to_json(
-            sheet,
+            workbook.Sheets[sheetName],
             {
                 defval:""
             }
@@ -440,274 +509,24 @@ async function loadExcel(){
 
     allQuestions = rows;
 
-
-    console.log(
-        "Total imported questions:",
-        allQuestions.length
-    );
-
-
     prepareQuestions();
 
 }
 
 
-/* =====================================================
-   GENERIC EXCEL FIELD
-===================================================== */
-
-function getExcelField(row,names){
-
-    for(const name of names){
-
-        if(
-            row[name] !== undefined &&
-            row[name] !== null &&
-            String(row[name]).trim() !== ""
-        ){
-
-            return String(row[name]).trim();
-
-        }
-
-    }
-
-
-    return "";
-
-}
-
-
-/* =====================================================
-   QUESTION
-===================================================== */
-
-function getQuestion(row){
-
-    return getExcelField(
-        row,
-        [
-            "Question",
-            "question",
-            "Question Text",
-            "QuestionText",
-            "questionText",
-            "Question Text/Problem",
-            "Problem",
-            "problem"
-        ]
-    );
-
-}
-
-
-/* =====================================================
-   DAY
-===================================================== */
-
-function getDay(row){
-
-    const value =
-        getExcelField(
-            row,
-            [
-                "Day",
-                "day",
-                "Day Number",
-                "day number",
-                "DayNumber",
-                "dayNumber"
-            ]
-        );
-
-
-    return parseInt(value,10);
-
-}
-
-
-/* =====================================================
-   QUESTION TYPE / SECTION
-===================================================== */
-
-function getSection(row){
-
-    const value =
-        getExcelField(
-            row,
-            [
-                "Section",
-                "section",
-                "Type",
-                "type",
-                "Question Type",
-                "question type",
-                "QuestionType",
-                "questionType",
-                "Question_Type",
-                "QUESTION TYPE",
-                "Category",
-                "category"
-            ]
-        );
-
-
-    return String(value || "")
-        .trim()
-        .toUpperCase()
-        .replace(/[_-]+/g," ")
-        .replace(/\s+/g," ");
-
-}
-
-
-/* =====================================================
-   CHECK MCQ
-===================================================== */
-
-function isMCQ(row){
-
-    const section = getSection(row);
-
-
-    return (
-
-        section === "MCQ"
-
-        ||
-
-        section.includes("MCQ")
-
-        ||
-
-        section.includes("MULTIPLE CHOICE")
-
-    );
-
-}
-
-
-/* =====================================================
-   CHECK ERROR
-===================================================== */
-
-function isErrorQuestion(row){
-
-    const section = getSection(row);
-
-
-    return (
-
-        section.includes("ERROR")
-
-        ||
-
-        section.includes("DEBUG")
-
-        ||
-
-        section.includes("ERROR FINDING")
-
-        ||
-
-        section.includes("ERROR CORRECTION")
-
-    );
-
-}
-
-
-/* =====================================================
-   CHECK CODING
-===================================================== */
-
-function isCoding(row){
-
-    const section = getSection(row);
-
-
-    return (
-
-        section.includes("CODING")
-
-        ||
-
-        section.includes("PROGRAM")
-
-        ||
-
-        section.includes("PROGRAMMING")
-
-    );
-
-}
-
-
-/* =====================================================
-   OPTIONS
-===================================================== */
-
-function getOption(row,letter){
-
-    return getExcelField(
-        row,
-        [
-            "Option " + letter,
-            "option " + letter,
-            "option" + letter,
-            "Option" + letter,
-            letter
-        ]
-    );
-
-}
-
-
-/* =====================================================
-   CORRECT ANSWER
-===================================================== */
-
-function getCorrectAnswer(row){
-
-    return getExcelField(
-        row,
-        [
-            "Correct Answer",
-            "correctAnswer",
-            "CorrectAnswer",
-            "Answer",
-            "answer"
-        ]
-    );
-
-}
-
-
-/* =====================================================
-   PREPARE DAY QUESTIONS
-===================================================== */
-
 function prepareQuestions(){
 
     const dayQuestions =
         allQuestions.filter(
-            row =>
-                getDay(row) === assignedDay
+            row => getDay(row) === assignedDay
         );
 
 
-    console.log(
-        "Questions for Day " + assignedDay + ":",
-        dayQuestions.length
-    );
-
-
-    if(dayQuestions.length === 0){
+    if(!dayQuestions.length){
 
         throw new Error(
             "No questions found for Day " +
-            assignedDay +
-            "."
+            assignedDay + "."
         );
 
     }
@@ -717,7 +536,7 @@ function prepareQuestions(){
         dayQuestions.filter(isMCQ);
 
 
-    const errorQuestions =
+    const errors =
         dayQuestions.filter(isErrorQuestion);
 
 
@@ -725,136 +544,81 @@ function prepareQuestions(){
         dayQuestions.filter(isCoding);
 
 
-    console.log(
-        "Day " + assignedDay +
-        " MCQ:",
-        mcq.length
-    );
-
-    console.log(
-        "Day " + assignedDay +
-        " Error:",
-        errorQuestions.length
-    );
-
-    console.log(
-        "Day " + assignedDay +
-        " Coding:",
-        coding.length
-    );
-
-
-    shuffle(mcq);
-
-    shuffle(errorQuestions);
-
-    shuffle(coding);
-
-
-    const selectedMCQ =
-        mcq.slice(0,10);
-
-
-    const selectedError =
-        errorQuestions.slice(0,2);
-
-
-    const selectedCoding =
-        coding.slice(0,3);
-
-
-    if(selectedMCQ.length < 10){
+    if(mcq.length < 10){
 
         throw new Error(
             "Day " +
             assignedDay +
-            " has only " +
-            selectedMCQ.length +
-            " MCQ questions. Need 10."
+            " needs 10 MCQ questions."
         );
 
     }
 
 
-    if(selectedError.length < 2){
+    if(errors.length < 2){
 
         throw new Error(
             "Day " +
             assignedDay +
-            " has only " +
-            selectedError.length +
-            " Error questions. Need 2."
+            " needs 2 Error Correction questions."
         );
 
     }
 
 
-    if(selectedCoding.length < 3){
+    if(coding.length < 3){
 
         throw new Error(
             "Day " +
             assignedDay +
-            " has only " +
-            selectedCoding.length +
-            " Coding questions. Need 3."
+            " needs 3 Coding questions."
         );
 
     }
 
 
-    selectedQuestions = [
+    /*
+    NO RANDOM SHUFFLE.
 
-        ...selectedMCQ,
+    Refresh keeps the same 15 questions.
+    */
 
-        ...selectedError,
 
-        ...selectedCoding
+    const saved =
+        loadSavedSelection(dayQuestions);
 
-    ];
+
+    if(saved){
+
+        selectedQuestions = saved;
+
+    }else{
+
+        selectedQuestions = [
+
+            ...mcq.slice(0,10),
+
+            ...errors.slice(0,2),
+
+            ...coding.slice(0,3)
+
+        ];
+
+        saveSelection();
+
+    }
 
 
     renderQuestions();
+
+    restoreDraft();
+
+    setupDraftSaving();
 
     startTimer();
 
 }
 
-
-/* =====================================================
-   SHUFFLE
-===================================================== */
-
-function shuffle(array){
-
-    for(
-        let i = array.length - 1;
-        i > 0;
-        i--
-    ){
-
-        const j =
-            Math.floor(
-                Math.random() *
-                (i + 1)
-            );
-
-
-        [
-            array[i],
-            array[j]
-        ] = [
-            array[j],
-            array[i]
-        ];
-
-    }
-
-}
-
-
-/* =====================================================
-   RENDER ALL QUESTIONS
-===================================================== */
 
 function renderQuestions(){
 
@@ -875,7 +639,7 @@ function renderQuestions(){
 
                 container.innerHTML +=
                     "<div class='section-title'>" +
-                    "MCQ Questions" +
+                    "MCQ Questions (10)" +
                     "</div>";
 
             }
@@ -885,7 +649,7 @@ function renderQuestions(){
 
                 container.innerHTML +=
                     "<div class='section-title'>" +
-                    "Error Correction Questions" +
+                    "Error Correction Questions (2)" +
                     "</div>";
 
             }
@@ -895,7 +659,7 @@ function renderQuestions(){
 
                 container.innerHTML +=
                     "<div class='section-title'>" +
-                    "Coding Questions" +
+                    "Coding Questions (3)" +
                     "</div>";
 
             }
@@ -909,24 +673,39 @@ function renderQuestions(){
                 "question-card";
 
 
-            const question =
-                getQuestion(row);
+            if(isErrorQuestion(row)){
+
+                const parts =
+                    splitErrorQuestion(
+                        getQuestion(row),
+                        row
+                    );
 
 
-            let html =
-
-                "<div class='question-title'>" +
-
-                "Q" +
-                (index + 1) +
-                ". " +
-
-                escapeHTML(question) +
-
-                "</div>";
+                let html =
+                    "<div class='question-title'>" +
+                    "Q" +
+                    (index + 1) +
+                    ". " +
+                    escapeHTML(parts.title) +
+                    "</div>";
 
 
-            if(index < 12){
+                if(parts.code){
+
+                    html +=
+                        "<div class='error-code-title'>" +
+                        "Buggy Java Code:" +
+                        "</div>";
+
+
+                    html +=
+                        "<pre class='error-code'>" +
+                        escapeHTML(parts.code) +
+                        "</pre>";
+
+                }
+
 
                 html +=
                     renderObjective(
@@ -934,19 +713,45 @@ function renderQuestions(){
                         index
                     );
 
+
+                card.innerHTML = html;
+
+
+            }else{
+
+                let html =
+                    "<div class='question-title'>" +
+                    "Q" +
+                    (index + 1) +
+                    ". " +
+                    escapeHTML(
+                        getQuestion(row)
+                    ) +
+                    "</div>";
+
+
+                if(index < 12){
+
+                    html +=
+                        renderObjective(
+                            row,
+                            index
+                        );
+
+                }else{
+
+                    html +=
+                        renderCoding(
+                            row,
+                            index
+                        );
+
+                }
+
+
+                card.innerHTML = html;
+
             }
-            else{
-
-                html +=
-                    renderCoding(
-                        row,
-                        index
-                    );
-
-            }
-
-
-            card.innerHTML = html;
 
 
             container.appendChild(card);
@@ -967,57 +772,46 @@ function renderQuestions(){
 }
 
 
-/* =====================================================
-   RENDER MCQ / ERROR
-===================================================== */
-
 function renderObjective(row,index){
-
-    const letters =
-        ["A","B","C","D"];
-
 
     let html = "";
 
 
-    letters.forEach(letter => {
-
-        const option =
-            getOption(row,letter);
+    ["A","B","C","D"].forEach(
+        letter => {
 
 
-        if(!option){
+            const option =
+                getOption(
+                    row,
+                    letter
+                );
 
-            return;
+
+            if(!option) return;
+
+
+            html +=
+                "<label class='option'>" +
+
+                "<input type='radio' " +
+                "name='q" +
+                index +
+                "' " +
+                "value='" +
+                escapeAttribute(letter) +
+                "'>" +
+
+                "<b>" +
+                letter +
+                ".</b> " +
+
+                escapeHTML(option) +
+
+                "</label>";
 
         }
-
-
-        html +=
-
-            "<label class='option'>" +
-
-            "<input " +
-
-            "type='radio' " +
-
-            "name='q" +
-            index +
-            "' " +
-
-            "value='" +
-            escapeAttribute(letter) +
-            "'>" +
-
-            "<b>" +
-            letter +
-            ".</b> " +
-
-            escapeHTML(option) +
-
-            "</label>";
-
-    });
+    );
 
 
     return html;
@@ -1025,38 +819,237 @@ function renderObjective(row,index){
 }
 
 
-/* =====================================================
-   RENDER CODING
-===================================================== */
-
 function renderCoding(row,index){
 
     return (
-
         "<p><b>Write your Java code:</b></p>" +
 
-        "<textarea " +
-
-        "id='coding" +
+        "<textarea id='coding" +
         index +
         "' " +
-
         "placeholder='Write your Java code here...'>" +
-
         "</textarea>"
-
     );
 
 }
 
 
-/* =====================================================
-   TIMER
-===================================================== */
+function getDraft(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                draftKey
+            ) || "{}"
+        );
+
+    }catch(e){
+
+        return {};
+
+    }
+
+}
+
+
+function saveDraft(){
+
+    if(!selectedQuestions.length) return;
+
+
+    const draft = getDraft();
+
+
+    selectedQuestions.forEach(
+        (row,index) => {
+
+
+            if(index < 12){
+
+                const selected =
+                    document.querySelector(
+                        "input[name='q" +
+                        index +
+                        "']:checked"
+                    );
+
+
+                draft["q"+index] =
+                    selected
+                    ? selected.value
+                    : "";
+
+            }else{
+
+                const area =
+                    document.getElementById(
+                        "coding" + index
+                    );
+
+
+                draft["q"+index] =
+                    area
+                    ? area.value
+                    : "";
+
+            }
+
+        }
+    );
+
+
+    draft.day = assignedDay;
+
+
+    localStorage.setItem(
+        draftKey,
+        JSON.stringify(draft)
+    );
+
+}
+
+
+function restoreDraft(){
+
+    const draft = getDraft();
+
+
+    selectedQuestions.forEach(
+        (row,index) => {
+
+
+            const value =
+                draft["q"+index];
+
+
+            if(value === undefined) return;
+
+
+            if(index < 12){
+
+                const inputs =
+                    document.querySelectorAll(
+                        "input[name='q" +
+                        index +
+                        "']"
+                    );
+
+
+                inputs.forEach(
+                    input => {
+
+                        if(
+                            input.value === value
+                        ){
+
+                            input.checked = true;
+
+                        }
+
+                    }
+                );
+
+            }else{
+
+                const area =
+                    document.getElementById(
+                        "coding" + index
+                    );
+
+
+                if(area){
+
+                    area.value = value;
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+function setupDraftSaving(){
+
+    document
+    .querySelectorAll(
+        "input[type='radio']"
+    )
+    .forEach(
+        el => {
+
+            el.addEventListener(
+                "change",
+                saveDraft
+            );
+
+        }
+    );
+
+
+    document
+    .querySelectorAll(
+        "textarea"
+    )
+    .forEach(
+        el => {
+
+            el.addEventListener(
+                "input",
+                saveDraft
+            );
+
+        }
+    );
+
+}
+
+
+window.addEventListener(
+    "beforeunload",
+    saveDraft
+);
+
 
 function startTimer(){
 
     clearInterval(timerInterval);
+
+
+    const savedEnd =
+        parseInt(
+            localStorage.getItem(
+                endTimeKey
+            ) || "0",
+            10
+        );
+
+
+    if(savedEnd > 0){
+
+        timeRemaining =
+            Math.max(
+                0,
+                Math.ceil(
+                    (savedEnd - Date.now()) /
+                    1000
+                )
+            );
+
+    }else{
+
+        localStorage.setItem(
+            endTimeKey,
+            String(
+                Date.now() +
+                timeRemaining * 1000
+            )
+        );
+
+    }
 
 
     updateTimer();
@@ -1066,7 +1059,24 @@ function startTimer(){
         setInterval(
             () => {
 
-                timeRemaining--;
+
+                const end =
+                    parseInt(
+                        localStorage.getItem(
+                            endTimeKey
+                        ) || "0",
+                        10
+                    );
+
+
+                timeRemaining =
+                    Math.max(
+                        0,
+                        Math.ceil(
+                            (end - Date.now()) /
+                            1000
+                        )
+                    );
 
 
                 updateTimer();
@@ -1095,10 +1105,6 @@ function startTimer(){
 }
 
 
-/* =====================================================
-   UPDATE TIMER
-===================================================== */
-
 function updateTimer(){
 
     const minutes =
@@ -1114,46 +1120,27 @@ function updateTimer(){
     document.getElementById(
         "timer"
     ).textContent =
-
-        String(minutes)
-            .padStart(2,"0")
-
-        +
-
-        ":"
-
-        +
-
-        String(seconds)
-            .padStart(2,"0");
+        String(minutes).padStart(2,"0") +
+        ":" +
+        String(seconds).padStart(2,"0");
 
 }
 
-
-/* =====================================================
-   FINISH ASSESSMENT
-===================================================== */
 
 async function finishAssessment(
     automaticSubmit = false
 ){
 
-    if(submitting){
-
-        return;
-
-    }
+    if(submitting) return;
 
 
     if(!automaticSubmit){
 
-        const ok =
-            confirm(
+        if(
+            !confirm(
                 "Are you sure you want to submit the assessment?"
-            );
-
-
-        if(!ok){
+            )
+        ){
 
             return;
 
@@ -1170,19 +1157,16 @@ async function finishAssessment(
     );
 
 
+    saveDraft();
+
+
     let mcqScore = 0;
-
     let errorScore = 0;
-
     let codingScore = 0;
 
 
     const answerSheet = [];
 
-
-    /* =================================================
-       COLLECT ANSWERS
-    ================================================= */
 
     selectedQuestions.forEach(
         (row,index) => {
@@ -1191,8 +1175,6 @@ async function finishAssessment(
             const question =
                 getQuestion(row);
 
-
-            /* OBJECTIVE */
 
             if(index < 12){
 
@@ -1206,10 +1188,8 @@ async function finishAssessment(
 
                 const studentAnswer =
                     selected
-                    ?
-                    selected.value
-                    :
-                    "";
+                    ? selected.value
+                    : "";
 
 
                 const correctAnswer =
@@ -1219,19 +1199,10 @@ async function finishAssessment(
                 const isCorrect =
                     normalizeAnswer(
                         studentAnswer
-                    )
-                    ===
+                    ) ===
                     normalizeAnswer(
                         correctAnswer
                     );
-
-
-                let status =
-                    isCorrect
-                    ?
-                    "Correct"
-                    :
-                    "Wrong";
 
 
                 if(isCorrect){
@@ -1240,8 +1211,7 @@ async function finishAssessment(
 
                         mcqScore++;
 
-                    }
-                    else{
+                    }else{
 
                         errorScore++;
 
@@ -1254,13 +1224,19 @@ async function finishAssessment(
 
                     type:
                         index < 10
-                        ?
-                        "MCQ"
-                        :
-                        "ERROR",
+                        ? "MCQ"
+                        : "ERROR",
 
                     question:
                         question,
+
+                    errorCode:
+                        isErrorQuestion(row)
+                        ? splitErrorQuestion(
+                            question,
+                            row
+                          ).code
+                        : "",
 
                     studentAnswer:
                         studentAnswer ||
@@ -1271,42 +1247,36 @@ async function finishAssessment(
                         "-",
 
                     status:
-                        status,
+                        isCorrect
+                        ? "Correct"
+                        : "Wrong",
 
                     score:
                         isCorrect
-                        ?
-                        1
-                        :
-                        0
+                        ? 1
+                        : 0
 
                 });
 
-            }
 
+            }else{
 
-            /* CODING */
-
-            else{
-
-                const textarea =
+                const area =
                     document.getElementById(
                         "coding" + index
                     );
 
 
                 const code =
-                    textarea
-                    ?
-                    textarea.value
-                    :
-                    "";
+                    area
+                    ? area.value
+                    : "";
 
 
                 const evaluation =
                     evaluateCoding(
                         code,
-                        question
+                        row
                     );
 
 
@@ -1316,8 +1286,7 @@ async function finishAssessment(
 
                 answerSheet.push({
 
-                    type:
-                        "CODING",
+                    type:"CODING",
 
                     question:
                         question,
@@ -1333,7 +1302,7 @@ async function finishAssessment(
                         evaluation.score,
 
                     evaluation:
-                        "Automatic rubric evaluation"
+                        evaluation.details
 
                 });
 
@@ -1343,10 +1312,6 @@ async function finishAssessment(
     );
 
 
-    /* =================================================
-       SCORE
-    ================================================= */
-
     const totalScore =
         mcqScore +
         errorScore +
@@ -1355,7 +1320,9 @@ async function finishAssessment(
 
     const percentage =
         (
-            totalScore / 15 * 100
+            totalScore /
+            15 *
+            100
         ).toFixed(2);
 
 
@@ -1365,10 +1332,6 @@ async function finishAssessment(
                 answer.type === "CODING"
         );
 
-
-    /* =================================================
-       REPORT
-    ================================================= */
 
     const report = {
 
@@ -1426,16 +1389,8 @@ async function finishAssessment(
     };
 
 
-    /* =================================================
-       SAVE STUDENT REPORT
-    ================================================= */
-
     saveLocalReport(report);
 
-
-    /* =================================================
-       SAVE RESULT PAGE DATA
-    ================================================= */
 
     localStorage.setItem(
         "latestAssessmentResult",
@@ -1449,16 +1404,13 @@ async function finishAssessment(
     );
 
 
-    /* =================================================
-       SEND TO GOOGLE SHEET
-    ================================================= */
-
     try{
 
-        await sendToGoogleSheet(report);
+        await sendToGoogleSheet(
+            report
+        );
 
-    }
-    catch(error){
+    }catch(error){
 
         console.error(
             "Google Sheet error:",
@@ -1468,28 +1420,19 @@ async function finishAssessment(
     }
 
 
-    /* =================================================
-       NEXT DAY
-    ================================================= */
-
     const completedDay =
         assignedDay;
 
 
-    let nextDay =
-        completedDay + 1;
+    const nextDay =
+        Math.min(
+            completedDay + 1,
+            41
+        );
 
 
-    if(nextDay > 41){
+    clearDraft();
 
-        nextDay = 41;
-
-    }
-
-
-    /*
-       Keep all three keys synchronized.
-    */
 
     localStorage.setItem(
         "assignedDay",
@@ -1509,10 +1452,6 @@ async function finishAssessment(
     );
 
 
-    /* =================================================
-       FINAL DAY FLAG
-    ================================================= */
-
     if(completedDay === 41){
 
         localStorage.setItem(
@@ -1523,19 +1462,30 @@ async function finishAssessment(
     }
 
 
-    /* =================================================
-       OPEN RESULTS
-    ================================================= */
-
     window.location.href =
         "results.html";
 
 }
 
 
-/* =====================================================
-   SAVE LOCAL REPORT
-===================================================== */
+function clearDraft(){
+
+    localStorage.removeItem(
+        draftKey
+    );
+
+
+    localStorage.removeItem(
+        selectionKey
+    );
+
+
+    localStorage.removeItem(
+        endTimeKey
+    );
+
+}
+
 
 function saveLocalReport(report){
 
@@ -1551,30 +1501,30 @@ function saveLocalReport(report){
                 ) || "[]"
             );
 
-    }
-    catch(error){
+
+        if(!Array.isArray(reports)){
+
+            reports = [];
+
+        }
+
+    }catch(e){
 
         reports = [];
 
     }
 
 
-    /*
-       Prevent duplicate submission
-       for the same student and day.
-    */
-
     reports =
         reports.filter(
-            item => !(
-                String(item.username) ===
-                String(report.username)
+            item =>
+                !(
+                    String(item.username) ===
+                    String(report.username) &&
 
-                &&
-
-                Number(item.day) ===
-                Number(report.day)
-            )
+                    Number(item.day) ===
+                    Number(report.day)
+                )
         );
 
 
@@ -1589,11 +1539,9 @@ function saveLocalReport(report){
 }
 
 
-/* =====================================================
-   SEND TO GOOGLE SHEET
-===================================================== */
-
-async function sendToGoogleSheet(report){
+async function sendToGoogleSheet(
+    report
+){
 
     const payload = {
 
@@ -1616,9 +1564,7 @@ async function sendToGoogleSheet(report){
             (
                 report.mcqScore +
                 report.errorScore
-            )
-            +
-            "/12",
+            ) + "/12",
 
         Coding:
             report.codingScore +
@@ -1654,32 +1600,34 @@ async function sendToGoogleSheet(report){
     await fetch(
         GOOGLE_SCRIPT_URL,
         {
-
             method:"POST",
-
             mode:"no-cors",
-
             headers:{
                 "Content-Type":
                     "text/plain"
             },
-
             body:
                 JSON.stringify(payload)
-
         }
     );
 
 }
 
 
-/* =====================================================
-   CODING EVALUATION
-===================================================== */
+/*
+CODING RESULT
+
+Correct = 1 mark
+Partial = 0.5 mark
+Wrong = 0 mark
+
+This is a browser-side rubric evaluator.
+*/
+
 
 function evaluateCoding(
     code,
-    question
+    row
 ){
 
     if(
@@ -1689,11 +1637,12 @@ function evaluateCoding(
 
         return {
 
-            status:
-                "Wrong",
+            status:"Wrong",
 
-            score:
-                0
+            score:0,
+
+            details:
+                "No usable Java solution submitted."
 
         };
 
@@ -1706,411 +1655,355 @@ function evaluateCoding(
         .replace(/\s+/g," ");
 
 
-    const q =
-        question
+    const question =
+        getQuestion(row)
         .toLowerCase();
 
 
-    let score = 0;
+    const rubric =
+        getExcelField(row,[
 
-    let required = 0;
+            "Coding Evaluation",
+
+            "Full-Mark Logic / Answer Key",
+
+            "Full Mark Logic / Answer Key",
+
+            "Full-Mark Logic",
+
+            "Full Mark Logic"
+
+        ])
+        .toLowerCase();
 
 
-    /* JAVA STRUCTURE */
+    const contract =
+        getExcelField(row,[
 
-    required++;
+            "Constraints / Contract",
+
+            "Student Input Format",
+
+            "Student Output Format"
+
+        ])
+        .toLowerCase();
+
+
+    const text =
+        question +
+        " " +
+        rubric +
+        " " +
+        contract;
+
+
+    const checks = [];
+
+
+    function add(
+        name,
+        condition
+    ){
+
+        checks.push({
+
+            name:name,
+
+            ok:Boolean(condition)
+
+        });
+
+    }
+
+
+    add(
+        "Java structure",
+
+        /class\s+\w+|public\s+static\s+void\s+main|static\s+void/.test(c)
+
+    );
 
 
     if(
-        c.includes("class")
-        ||
-        c.includes("public static void")
-        ||
-        c.includes("static void")
+        /array|elements|index|travers/.test(text)
     ){
 
-        score++;
+        add(
+
+            "Array handling",
+
+            /\[\]|int\s*\[\]|string\s*\[|array/.test(c)
+
+        );
 
     }
 
 
-    /* LOOP */
+    if(
+        /string|character|substring|palindrome|anagram/.test(text)
+    ){
 
-    const needsLoop =
+        add(
 
-        q.includes("loop")
-        ||
-        q.includes("for")
-        ||
-        q.includes("while")
-        ||
-        q.includes("iterate")
-        ||
-        q.includes("fibonacci")
-        ||
-        q.includes("prime")
-        ||
-        q.includes("factorial")
-        ||
-        q.includes("sum");
+            "String handling",
 
+            /string|charat|substring|tolowercase|touppercase|equals/.test(c)
 
-    if(needsLoop){
-
-        required++;
-
-
-        if(
-            c.includes("for(")
-            ||
-            c.includes("for (")
-            ||
-            c.includes("while(")
-            ||
-            c.includes("while (")
-            ||
-            c.includes("do{")
-            ||
-            c.includes("do {")
-        ){
-
-            score++;
-
-        }
+        );
 
     }
 
 
-    /* ARRAY */
+    if(
+        /loop|iterate|for loop|while|fibonacci|factorial|prime|pattern/.test(text)
+    ){
 
-    const needsArray =
+        add(
 
-        q.includes("array")
-        ||
-        q.includes("elements");
+            "Loop logic",
 
+            /for\s*\(|while\s*\(|do\s*\{/.test(c)
 
-    if(needsArray){
-
-        required++;
-
-
-        if(
-            c.includes("[]")
-            ||
-            c.includes("array")
-        ){
-
-            score++;
-
-        }
+        );
 
     }
 
 
-    /* STRING */
+    if(
+        /even|odd|remainder|divisible|digit/.test(text)
+    ){
 
-    const needsString =
+        add(
 
-        q.includes("string")
-        ||
-        q.includes("character")
-        ||
-        q.includes("palindrome");
+            "Condition/modulo",
 
+            /%|\bif\s*\(/.test(c)
 
-    if(needsString){
-
-        required++;
-
-
-        if(
-            c.includes("string")
-            ||
-            c.includes(".length")
-            ||
-            c.includes("charat")
-            ||
-            c.includes("substring")
-            ||
-            c.includes("tolowercase")
-            ||
-            c.includes("touppercase")
-        ){
-
-            score++;
-
-        }
+        );
 
     }
 
 
-    /* MODULO */
+    if(
+        /sum|add|average|product|area|perimeter|total/.test(text)
+    ){
 
-    const needsModulo =
+        add(
 
-        q.includes("digit")
-        ||
-        q.includes("remainder")
-        ||
-        q.includes("even")
-        ||
-        q.includes("odd")
-        ||
-        q.includes("divisible")
-        ||
-        q.includes("prime");
+            "Arithmetic",
 
+            /[+\-*/]/.test(c)
 
-    if(needsModulo){
-
-        required++;
-
-
-        if(c.includes("%")){
-
-            score++;
-
-        }
+        );
 
     }
 
 
-    /* ARITHMETIC */
+    if(
+        /print|display|output|result/.test(text)
+    ){
 
-    const needsArithmetic =
+        add(
 
-        q.includes("sum")
-        ||
-        q.includes("add")
-        ||
-        q.includes("average")
-        ||
-        q.includes("area")
-        ||
-        q.includes("perimeter")
-        ||
-        q.includes("product");
+            "Output",
 
+            /system\.out\.(print|println)/.test(c)
 
-    if(needsArithmetic){
-
-        required++;
-
-
-        if(
-            c.includes("+")
-            ||
-            c.includes("-")
-            ||
-            c.includes("*")
-            ||
-            c.includes("/")
-        ){
-
-            score++;
-
-        }
+        );
 
     }
 
 
-    /* OUTPUT */
+    if(
+        /return/.test(text)
+    ){
 
-    const needsOutput =
+        add(
 
-        q.includes("print")
-        ||
-        q.includes("display")
-        ||
-        q.includes("output")
-        ||
-        q.includes("find");
+            "Return/result",
 
+            /\breturn\b/.test(c)
 
-    if(needsOutput){
-
-        required++;
-
-
-        if(
-            c.includes("system.out.print")
-        ){
-
-            score++;
-
-        }
+        );
 
     }
 
 
-    /* METHOD */
+    if(
+        /method|function/.test(text)
+    ){
 
-    const needsMethod =
+        add(
 
-        q.includes("method")
-        ||
-        q.includes("function");
+            "Method",
 
+            /static\s+\w+\s+\w+\s*\(|\w+\s+\w+\s*\([^)]*\)\s*\{/.test(c)
 
-    if(needsMethod){
-
-        required++;
-
-
-        if(
-            c.includes("(")
-            &&
-            c.includes(")")
-        ){
-
-            score++;
-
-        }
+        );
 
     }
 
 
-    /* OOP */
+    if(
+        /class|object|inheritance|polymorphism|encapsulation|constructor|oops/.test(text)
+    ){
 
-    const needsOOP =
+        add(
 
-        q.includes("class")
-        ||
-        q.includes("object")
-        ||
-        q.includes("inheritance")
-        ||
-        q.includes("polymorphism")
-        ||
-        q.includes("encapsulation")
-        ||
-        q.includes("constructor");
+            "OOP",
 
+            /class\s+|extends\s+|implements\s+|new\s+|private\s+|public\s+|interface\s+/.test(c)
 
-    if(needsOOP){
-
-        required++;
-
-
-        if(
-            c.includes("class")
-            ||
-            c.includes("extends")
-            ||
-            c.includes("new ")
-            ||
-            c.includes("private")
-            ||
-            c.includes("public")
-            ||
-            c.includes("interface")
-        ){
-
-            score++;
-
-        }
+        );
 
     }
 
 
-    /* COLLECTIONS */
+    if(
+        /arraylist|linkedlist|collection|list|set|map|hashmap|hashset/.test(text)
+    ){
 
-    const needsCollection =
+        add(
 
-        q.includes("arraylist")
-        ||
-        q.includes("list")
-        ||
-        q.includes("set")
-        ||
-        q.includes("map")
-        ||
-        q.includes("hashmap");
+            "Collection",
 
+            /arraylist|linkedlist|hashmap|hashset|list\s*<|set\s*<|map\s*</.test(c)
 
-    if(needsCollection){
-
-        required++;
-
-
-        if(
-            c.includes("arraylist")
-            ||
-            c.includes("hashmap")
-            ||
-            c.includes("hashset")
-            ||
-            c.includes("list<")
-            ||
-            c.includes("set<")
-            ||
-            c.includes("map<")
-        ){
-
-            score++;
-
-        }
+        );
 
     }
 
 
-    /* FINAL CODING SCORE */
+    if(
+        /sort|sorting/.test(text)
+    ){
+
+        add(
+
+            "Sorting",
+
+            /arrays\.sort|collections\.sort|sort\s*\(/.test(c)
+
+        );
+
+    }
+
+
+    if(
+        /reverse|reversing/.test(text)
+    ){
+
+        add(
+
+            "Reverse logic",
+
+            /reverse|reversed|for\s*\(|while\s*\(/.test(c)
+
+        );
+
+    }
+
+
+    if(
+        /search|binary search|linear search/.test(text)
+    ){
+
+        add(
+
+            "Search logic",
+
+            /indexof|contains|binary|search|for\s*\(|while\s*\(/.test(c)
+
+        );
+
+    }
+
+
+    if(
+        /duplicate|duplicates|unique/.test(text)
+    ){
+
+        add(
+
+            "Duplicate/unique logic",
+
+            /set|contains|duplicate|unique/.test(c)
+
+        );
+
+    }
+
+
+    if(
+        /maximum|minimum|max|min|largest|smallest/.test(text)
+    ){
+
+        add(
+
+            "Min/max logic",
+
+            /math\.max|math\.min|\bmax\b|\bmin\b|largest|smallest|if\s*\(/.test(c)
+
+        );
+
+    }
+
+
+    const total =
+        checks.length;
+
+
+    const passed =
+        checks.filter(
+            x => x.ok
+        ).length;
+
 
     const ratio =
-        required > 0
-        ?
-        score / required
-        :
-        0;
+        total
+        ? passed / total
+        : 0;
+
+
+    let status;
+    let score;
 
 
     if(ratio >= 0.75){
 
-        return {
+        status = "Correct";
+        score = 1;
 
-            status:
-                "Complete",
+    }else if(ratio >= 0.35){
 
-            score:
-                1
+        status = "Partial";
+        score = 0.5;
 
-        };
+    }else{
 
-    }
-
-
-    if(ratio >= 0.35){
-
-        return {
-
-            status:
-                "Partially Correct",
-
-            score:
-                0.5
-
-        };
+        status = "Wrong";
+        score = 0;
 
     }
 
 
     return {
 
-        status:
-            "Wrong",
+        status:status,
 
-        score:
-            0
+        score:score,
+
+        details:
+            passed +
+            " of " +
+            total +
+            " required coding checks satisfied."
 
     };
 
 }
 
-
-/* =====================================================
-   NORMALIZE ANSWER
-===================================================== */
 
 function normalizeAnswer(value){
 
@@ -2118,93 +2011,36 @@ function normalizeAnswer(value){
         .trim()
         .toLowerCase()
         .replace(/\s+/g," ")
-        .replace(
-            /^[a-d]\.\s*/,
-            ""
-        );
+        .replace(/^[a-d]\.\s*/,"");
 
 }
 
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
 
 function escapeHTML(value){
 
     return String(value || "")
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
 }
 
-
-/* =====================================================
-   ESCAPE ATTRIBUTE
-===================================================== */
 
 function escapeAttribute(value){
 
     return String(value || "")
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        );
+        .replace(/&/g,"&amp;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
 
 }
 
 
-/* =====================================================
-   START
-===================================================== */
-
-loadExcel()
-
-.catch(
+loadExcel().catch(
     error => {
 
         console.error(error);
@@ -2212,21 +2048,20 @@ loadExcel()
 
         document.getElementById(
             "loading"
-        ).style.display =
-            "none";
+        ).style.display = "none";
 
 
-        const errorBox =
+        const box =
             document.getElementById(
                 "error"
             );
 
 
-        errorBox.style.display =
+        box.style.display =
             "block";
 
 
-        errorBox.textContent =
+        box.textContent =
             error.message ||
             "Unable to load assessment.";
 
@@ -2236,5 +2071,4 @@ loadExcel()
 </script>
 
 </body>
-
 </html>
