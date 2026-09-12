@@ -403,11 +403,11 @@ id="modalPercentage">
 
 
 /* =====================================================
-   GOOGLE APPS SCRIPT URL
+   UPDATED GOOGLE APPS SCRIPT URL
 ===================================================== */
 
 const GOOGLE_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbzS_bzFzjBlBo_k6Jdm0w7qulI0PJypJglUqnYe4pnBXuj4p54A0iahIZfumbSrSzd3Ow/exec";
+"https://script.google.com/macros/s/AKfycbxrrb6gSB12hmilk7j5BEWqeOmSAJad9Zi-ZbpaoS1kaJRHhUAoDh02-teDu2O_hbSnRA/exec";
 
 
 /* =====================================================
@@ -419,14 +419,13 @@ function getStudent(){
     try{
 
         return JSON.parse(
-            localStorage.getItem(
-                "loggedInStudent"
-            )
+            localStorage.getItem("loggedInStudent")
             ||
             "null"
         );
 
     }
+
     catch(e){
 
         return null;
@@ -497,9 +496,7 @@ function(data){
 
     try{
 
-        if(
-            !Array.isArray(data)
-        ){
+        if(!Array.isArray(data)){
 
             throw new Error(
                 "Invalid result data received."
@@ -507,10 +504,10 @@ function(data){
 
         }
 
-
         displayReports(data);
 
     }
+
     catch(error){
 
         showError(
@@ -527,10 +524,6 @@ function(data){
 ===================================================== */
 
 function loadReports(){
-
-    /*
-       Remove previous callback script
-    */
 
     const oldScript =
         document.getElementById(
@@ -588,9 +581,7 @@ function loadReports(){
    DISPLAY REPORTS
 ===================================================== */
 
-function displayReports(
-    allResults
-){
+function displayReports(allResults){
 
     const loading =
         document.getElementById(
@@ -610,15 +601,9 @@ function displayReports(
         );
 
 
-    /*
-       Match username safely.
-    */
-
     const myUsername =
         String(
-            studentUsername
-            ||
-            ""
+            studentUsername || ""
         )
         .trim()
         .toLowerCase();
@@ -640,35 +625,23 @@ function displayReports(
                     .toLowerCase();
 
 
-                return (
-                    username
-                    ===
-                    myUsername
-                );
+                return username === myUsername;
 
             }
         );
 
-
-    /*
-       Sort Day ascending.
-    */
 
     myResults.sort(
         function(a,b){
 
             return (
                 parseInt(
-                    a["Day"]
-                    ||
-                    0,
+                    a["Day"] || 0,
                     10
                 )
                 -
                 parseInt(
-                    b["Day"]
-                    ||
-                    0,
+                    b["Day"] || 0,
                     10
                 )
             );
@@ -689,9 +662,7 @@ function displayReports(
         "";
 
 
-    if(
-        myResults.length === 0
-    ){
+    if(myResults.length === 0){
 
         body.innerHTML =
 
@@ -787,7 +758,6 @@ function displayReports(
             +
             "</td>"
 
-
             +
 
             "<td>"
@@ -796,80 +766,61 @@ function displayReports(
             +
             "</td>"
 
+            +
+
+            "<td>"
+            +
+            escapeHTML(
+                objective + "/12"
+            )
+            +
+            "</td>"
 
             +
 
             "<td>"
             +
             escapeHTML(
-                objective
-                +
-                "/12"
+                coding + "/3"
             )
             +
             "</td>"
-
 
             +
 
             "<td>"
             +
             escapeHTML(
-                coding
-                +
-                "/3"
+                total + "/15"
             )
             +
             "</td>"
-
 
             +
 
             "<td>"
             +
             escapeHTML(
-                total
-                +
-                "/15"
+                percentage + "%"
             )
             +
             "</td>"
-
-
-            +
-
-            "<td>"
-            +
-            escapeHTML(
-                percentage
-                +
-                "%"
-            )
-            +
-            "</td>"
-
 
             +
 
             "<td class='completed'>"
             +
-            escapeHTML(
-                status
-            )
+            escapeHTML(status)
             +
             "</td>"
-
 
             +
 
             "<td>"
             +
-            escapeHTML(
-                date
-            )
+            escapeHTML(date)
             +
             "</td>"
-
 
             +
 
@@ -898,10 +849,6 @@ function displayReports(
     );
 
 
-    /*
-       Keep reports available to modal.
-    */
-
     window.studentResults =
         myResults;
 
@@ -912,14 +859,10 @@ function displayReports(
    GET FIELD
 ===================================================== */
 
-function getField(
-    row,
-    field
-){
+function getField(row,field){
 
     if(
-        row[field] !== undefined
-        &&
+        row[field] !== undefined &&
         row[field] !== null
     ){
 
@@ -928,7 +871,6 @@ function getField(
         );
 
     }
-
 
     return "";
 
@@ -939,9 +881,7 @@ function getField(
    OBJECTIVE SCORE
 ===================================================== */
 
-function getObjectiveScore(
-    row
-){
+function getObjectiveScore(row){
 
     const value =
         getField(
@@ -956,11 +896,6 @@ function getObjectiveScore(
 
     }
 
-
-    /*
-       Example:
-       8/12
-    */
 
     const match =
         value.match(
@@ -979,9 +914,7 @@ function getObjectiveScore(
    CODING SCORE
 ===================================================== */
 
-function getCodingScore(
-    row
-){
+function getCodingScore(row){
 
     const value =
         getField(
@@ -996,11 +929,6 @@ function getCodingScore(
 
     }
 
-
-    /*
-       Example:
-       2.5/3
-    */
 
     const match =
         value.match(
@@ -1019,9 +947,7 @@ function getCodingScore(
    TOTAL SCORE
 ===================================================== */
 
-function getTotalScore(
-    row
-){
+function getTotalScore(row){
 
     const value =
         getField(
@@ -1034,9 +960,7 @@ function getTotalScore(
 
         const objective =
             parseFloat(
-                getObjectiveScore(
-                    row
-                )
+                getObjectiveScore(row)
             )
             ||
             0;
@@ -1044,18 +968,14 @@ function getTotalScore(
 
         const coding =
             parseFloat(
-                getCodingScore(
-                    row
-                )
+                getCodingScore(row)
             )
             ||
             0;
 
 
         return String(
-            objective
-            +
-            coding
+            objective + coding
         );
 
     }
@@ -1078,9 +998,7 @@ function getTotalScore(
    PERCENTAGE
 ===================================================== */
 
-function getPercentage(
-    row
-){
+function getPercentage(row){
 
     let value =
         getField(
@@ -1093,20 +1011,14 @@ function getPercentage(
 
         const total =
             parseFloat(
-                getTotalScore(
-                    row
-                )
+                getTotalScore(row)
             )
             ||
             0;
 
 
         return (
-            total
-            /
-            15
-            *
-            100
+            total / 15 * 100
         ).toFixed(2);
 
     }
@@ -1120,9 +1032,7 @@ function getPercentage(
 
 
     const number =
-        parseFloat(
-            value
-        );
+        parseFloat(value);
 
 
     return isNaN(number)
@@ -1136,14 +1046,10 @@ function getPercentage(
    OPEN REPORT
 ===================================================== */
 
-function openReport(
-    index
-){
+function openReport(index){
 
     const row =
-        window.studentResults[
-            index
-        ];
+        window.studentResults[index];
 
 
     if(!row){
@@ -1154,27 +1060,19 @@ function openReport(
 
 
     const objective =
-        getObjectiveScore(
-            row
-        );
+        getObjectiveScore(row);
 
 
     const coding =
-        getCodingScore(
-            row
-        );
+        getCodingScore(row);
 
 
     const total =
-        getTotalScore(
-            row
-        );
+        getTotalScore(row);
 
 
     const percentage =
-        getPercentage(
-            row
-        );
+        getPercentage(row);
 
 
     const day =
@@ -1212,33 +1110,25 @@ function openReport(
     document.getElementById(
         "modalObjective"
     ).textContent =
-        objective
-        +
-        "/12";
+        objective + "/12";
 
 
     document.getElementById(
         "modalCoding"
     ).textContent =
-        coding
-        +
-        "/3";
+        coding + "/3";
 
 
     document.getElementById(
         "modalTotal"
     ).textContent =
-        total
-        +
-        "/15";
+        total + "/15";
 
 
     document.getElementById(
         "modalPercentage"
     ).textContent =
-        percentage
-        +
-        "%";
+        percentage + "%";
 
 
     document.getElementById(
@@ -1249,9 +1139,7 @@ function openReport(
 
         "<b>Name:</b> "
         +
-        escapeHTML(
-            studentName
-        )
+        escapeHTML(studentName)
 
         +
 
@@ -1259,9 +1147,7 @@ function openReport(
 
         "<b>Username:</b> "
         +
-        escapeHTML(
-            studentUsername
-        )
+        escapeHTML(studentUsername)
 
         +
 
@@ -1269,9 +1155,7 @@ function openReport(
 
         "<b>Year:</b> "
         +
-        escapeHTML(
-            studentYear
-        )
+        escapeHTML(studentYear)
 
         +
 
@@ -1279,9 +1163,7 @@ function openReport(
 
         "<b>Day:</b> "
         +
-        escapeHTML(
-            day
-        )
+        escapeHTML(day)
 
         +
 
@@ -1289,9 +1171,7 @@ function openReport(
 
         "<b>Topic:</b> "
         +
-        escapeHTML(
-            topic
-        )
+        escapeHTML(topic)
 
         +
 
@@ -1299,9 +1179,7 @@ function openReport(
 
         "<b>Status:</b> "
         +
-        escapeHTML(
-            status
-        )
+        escapeHTML(status)
 
         +
 
@@ -1309,18 +1187,14 @@ function openReport(
 
         "<b>Submitted:</b> "
         +
-        escapeHTML(
-            date
-        )
+        escapeHTML(date)
 
         +
 
         "</p>";
 
 
-    displayAnswerDetails(
-        row
-    );
+    displayAnswerDetails(row);
 
 
     document.getElementById(
@@ -1335,9 +1209,7 @@ function openReport(
    DISPLAY ANSWERS
 ===================================================== */
 
-function displayAnswerDetails(
-    row
-){
+function displayAnswerDetails(row){
 
     const details =
         document.getElementById(
@@ -1369,12 +1241,8 @@ function displayAnswerDetails(
                 );
 
         }
-        catch(error){
 
-            /*
-               Older reports may contain
-               plain text instead of JSON.
-            */
+        catch(error){
 
             details.innerHTML =
 
@@ -1384,9 +1252,7 @@ function displayAnswerDetails(
 
                 "<pre class='answer-code'>"
                 +
-                escapeHTML(
-                    answerText
-                )
+                escapeHTML(answerText)
                 +
                 "</pre>" +
 
@@ -1402,11 +1268,6 @@ function displayAnswerDetails(
         ||
         answers.length === 0
     ){
-
-        /*
-           Show coding evaluation text
-           if available.
-        */
 
         const codingEvaluation =
             getField(
@@ -1487,6 +1348,8 @@ function displayAnswerDetails(
             const studentAnswer =
                 answer.studentAnswer
                 ||
+                answer.code
+                ||
                 answer.answer
                 ||
                 "Not Answered";
@@ -1514,9 +1377,7 @@ function displayAnswerDetails(
                 +
                 ":</b> "
                 +
-                escapeHTML(
-                    question
-                )
+                escapeHTML(question)
                 +
                 "<br><br>";
 
@@ -1541,9 +1402,7 @@ function displayAnswerDetails(
 
                     "<b>Status:</b> "
                     +
-                    getStatusHTML(
-                        status
-                    )
+                    getStatusHTML(status)
 
                     +
 
@@ -1556,7 +1415,8 @@ function displayAnswerDetails(
                     "/1";
 
             }
-            else {
+
+            else{
 
                 html +=
 
@@ -1584,9 +1444,7 @@ function displayAnswerDetails(
 
                     "<b>Status:</b> "
                     +
-                    getStatusHTML(
-                        status
-                    );
+                    getStatusHTML(status);
 
             }
 
@@ -1606,17 +1464,13 @@ function displayAnswerDetails(
 
 
 /* =====================================================
-   STATUS HTML
+   STATUS
 ===================================================== */
 
-function getStatusHTML(
-    status
-){
+function getStatusHTML(status){
 
     const value =
-        String(
-            status
-        );
+        String(status);
 
 
     const lower =
@@ -1624,21 +1478,15 @@ function getStatusHTML(
 
 
     if(
-        lower.includes(
-            "complete"
-        )
+        lower.includes("complete")
         ||
-        lower.includes(
-            "correct"
-        )
+        lower.includes("correct")
     ){
 
         return (
             "<span class='correct'>"
             +
-            escapeHTML(
-                value
-            )
+            escapeHTML(value)
             +
             "</span>"
         );
@@ -1647,17 +1495,13 @@ function getStatusHTML(
 
 
     if(
-        lower.includes(
-            "partial"
-        )
+        lower.includes("partial")
     ){
 
         return (
             "<span class='partial'>"
             +
-            escapeHTML(
-                value
-            )
+            escapeHTML(value)
             +
             "</span>"
         );
@@ -1668,9 +1512,7 @@ function getStatusHTML(
     return (
         "<span class='wrong'>"
         +
-        escapeHTML(
-            value
-        )
+        escapeHTML(value)
         +
         "</span>"
     );
@@ -1679,12 +1521,10 @@ function getStatusHTML(
 
 
 /* =====================================================
-   DATE FORMAT
+   DATE
 ===================================================== */
 
-function formatDate(
-    value
-){
+function formatDate(value){
 
     if(!value){
 
@@ -1694,9 +1534,7 @@ function formatDate(
 
 
     const date =
-        new Date(
-            value
-        );
+        new Date(value);
 
 
     if(
@@ -1705,9 +1543,7 @@ function formatDate(
         )
     ){
 
-        return String(
-            value
-        );
+        return String(value);
 
     }
 
@@ -1767,9 +1603,7 @@ function goBack(){
    ERROR
 ===================================================== */
 
-function showError(
-    message
-){
+function showError(message){
 
     document.getElementById(
         "loading"
@@ -1797,38 +1631,34 @@ function showError(
    ESCAPE HTML
 ===================================================== */
 
-function escapeHTML(
-    value
-){
+function escapeHTML(value){
 
-    return String(
-        value
-    )
+    return String(value)
 
-    .replace(
-        /&/g,
-        "&amp;"
-    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-    .replace(
-        /</g,
-        "&lt;"
-    )
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-    .replace(
-        />/g,
-        "&gt;"
-    )
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-    .replace(
-        /"/g,
-        "&quot;"
-    )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
