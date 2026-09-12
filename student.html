@@ -115,45 +115,52 @@
 // STUDENT INFORMATION
 // =====================================================
 
-
 let studentName =
-    localStorage.getItem(
-        "studentName"
-    )
+    localStorage.getItem("studentName")
     ||
     "Student";
 
 
 let studentYear =
-    localStorage.getItem(
-        "studentYear"
-    )
+    localStorage.getItem("studentYear")
     ||
     "Final Year";
 
 
 let username =
-    localStorage.getItem(
-        "studentUsername"
-    )
+    localStorage.getItem("studentUsername")
     ||
     "student1";
 
 
 
 // =====================================================
-// GET ALL REPORTS
+// GET LOCAL REPORTS
 // =====================================================
 
+let reports = [];
 
-let reports =
-    JSON.parse(
-        localStorage.getItem(
-            "studentReports"
-        )
-        ||
-        "[]"
-    );
+try {
+
+    reports =
+        JSON.parse(
+            localStorage.getItem("studentReports")
+            ||
+            "[]"
+        );
+
+    if (!Array.isArray(reports)) {
+
+        reports = [];
+
+    }
+
+}
+catch(error){
+
+    reports = [];
+
+}
 
 
 
@@ -161,18 +168,24 @@ let reports =
 // GET ONLY THIS STUDENT'S REPORTS
 // =====================================================
 
-
 let myReports =
     reports.filter(
         function(report){
 
-            return String(
+            let reportUsername =
                 report.username
-            ).trim()
-            ===
-            String(
-                username
-            ).trim();
+                ||
+                report.Username
+                ||
+                "";
+
+            return String(reportUsername)
+                .trim()
+                .toLowerCase()
+                ===
+                String(username)
+                .trim()
+                .toLowerCase();
 
         }
     );
@@ -180,55 +193,59 @@ let myReports =
 
 
 // =====================================================
+// DETERMINE HIGHEST COMPLETED DAY
+// =====================================================
+
+let highestCompletedDay = 0;
+
+
+myReports.forEach(
+    function(report){
+
+        let reportDay =
+            parseInt(
+                report.day
+                ||
+                report.Day
+                ||
+                0
+            );
+
+
+        if(
+            !isNaN(reportDay)
+            &&
+            reportDay > highestCompletedDay
+        ){
+
+            highestCompletedDay =
+                reportDay;
+
+        }
+
+    }
+);
+
+
+
+// =====================================================
 // DETERMINE ASSIGNED DAY
 // =====================================================
 
+// Default
 
-// Start with the saved assigned day
-
-let assignedDay =
-    parseInt(
-        localStorage.getItem(
-            "assignedDay"
-        )
-        ||
-        "1"
-    );
+let assignedDay = 1;
 
 
-// If this student already has completed reports,
-// find the highest completed day.
+
+// If a previous assessment was completed,
+// assign the NEXT day.
 
 if(
-    myReports.length > 0
+    highestCompletedDay > 0
 ){
 
-    let completedDays =
-        myReports.map(
-            function(report){
-
-                return parseInt(
-                    report.day
-                )
-                ||
-                0;
-
-            }
-        );
-
-
-    let highestCompletedDay =
-        Math.max.apply(
-            null,
-            completedDays
-        );
-
-
-    // Next day after highest completed day
-
     if(
-        highestCompletedDay >= 1
-        &&
         highestCompletedDay < 41
     ){
 
@@ -236,14 +253,7 @@ if(
             highestCompletedDay + 1;
 
     }
-
-
-    // If Day 41 is completed,
-    // keep the student at Day 41.
-
-    if(
-        highestCompletedDay >= 41
-    ){
+    else{
 
         assignedDay = 41;
 
@@ -253,7 +263,36 @@ if(
 
 
 
-// Make sure day stays between 1 and 41
+// =====================================================
+// ALSO CHECK SAVED ASSIGNED DAY
+// =====================================================
+
+let savedAssignedDay =
+    parseInt(
+        localStorage.getItem("assignedDay")
+        ||
+        0
+    );
+
+
+if(
+    highestCompletedDay === 0
+    &&
+    savedAssignedDay >= 1
+    &&
+    savedAssignedDay <= 41
+){
+
+    assignedDay =
+        savedAssignedDay;
+
+}
+
+
+
+// =====================================================
+// FORCE CORRECT DAY RANGE
+// =====================================================
 
 if(
     assignedDay < 1
@@ -274,11 +313,32 @@ if(
 
 
 
-// Save the current assigned day
+// =====================================================
+// IMPORTANT
+// SAVE DAY FOR ALL PAGES
+// =====================================================
+
+// Dashboard uses assignedDay
 
 localStorage.setItem(
     "assignedDay",
-    assignedDay
+    String(assignedDay)
+);
+
+
+// Assessment page uses assessmentDay
+
+localStorage.setItem(
+    "assessmentDay",
+    String(assignedDay)
+);
+
+
+// Also save currentDay for compatibility
+
+localStorage.setItem(
+    "currentDay",
+    String(assignedDay)
 );
 
 
@@ -286,7 +346,6 @@ localStorage.setItem(
 // =====================================================
 // DISPLAY STUDENT DETAILS
 // =====================================================
-
 
 document.getElementById(
     "studentName"
@@ -316,7 +375,6 @@ document.getElementById(
 // =====================================================
 // TOPICS
 // =====================================================
-
 
 let topics = {
 
@@ -461,8 +519,28 @@ document.getElementById(
 // START ASSESSMENT
 // =====================================================
 
-
 function startAssessment(){
+
+    // Make absolutely sure assessment receives
+    // the same day shown on dashboard.
+
+    localStorage.setItem(
+        "assessmentDay",
+        String(assignedDay)
+    );
+
+
+    localStorage.setItem(
+        "currentDay",
+        String(assignedDay)
+    );
+
+
+    localStorage.setItem(
+        "assignedDay",
+        String(assignedDay)
+    );
+
 
     window.location.href =
         "assessment.html";
@@ -474,7 +552,6 @@ function startAssessment(){
 // =====================================================
 // DISPLAY PREVIOUS RESULTS
 // =====================================================
-
 
 if(
     myReports.length > 0
@@ -488,16 +565,70 @@ if(
         .sort(
             function(a,b){
 
-                return (
-                    parseInt(a.day)
-                    -
-                    parseInt(b.day)
-                );
+                let dayA =
+                    parseInt(
+                        a.day
+                        ||
+                        a.Day
+                        ||
+                        0
+                    );
+
+
+                let dayB =
+                    parseInt(
+                        b.day
+                        ||
+                        b.Day
+                        ||
+                        0
+                    );
+
+
+                return dayA - dayB;
 
             }
         )
         .forEach(
             function(report){
+
+                let day =
+                    report.day
+                    ||
+                    report.Day
+                    ||
+                    "-";
+
+
+                let score =
+                    report.score
+                    ||
+                    report.Total
+                    ||
+                    "0";
+
+
+                let total =
+                    report.total
+                    ||
+                    "15";
+
+
+                let percentage =
+                    report.percentage
+                    ||
+                    report.Percentage
+                    ||
+                    "0";
+
+
+                let status =
+                    report.status
+                    ||
+                    report.Status
+                    ||
+                    "Completed";
+
 
                 html +=
 
@@ -509,23 +640,23 @@ if(
                     "'>" +
 
                     "<b>Day " +
-                    report.day +
+                    day +
                     "</b>" +
 
                     " — Score: " +
 
-                    report.score +
+                    score +
                     "/" +
-                    report.total +
+                    total +
 
                     " — " +
 
-                    report.percentage +
+                    percentage +
                     "%" +
 
                     " — " +
 
-                    report.status +
+                    status +
 
                     "</div>";
 
