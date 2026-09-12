@@ -1,294 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Assessment Result</title>
 
 <link rel="stylesheet" href="style.css">
 
 <style>
-*{
-    box-sizing:border-box;
+* {
+    box-sizing: border-box;
 }
 
-body{
-    margin:0;
-    padding:20px;
-    font-family:Arial,sans-serif;
-    background:#f4f6fb;
-    color:#222;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
 }
 
-.container{
-    max-width:1000px;
-    margin:auto;
+.container {
+    width: min(1000px, calc(100% - 30px));
+    margin: 0 auto;
+    padding: 30px 0 50px;
 }
 
-.card{
-    background:white;
-    padding:25px;
-    margin-bottom:20px;
-    border-radius:14px;
-    box-shadow:0 4px 15px rgba(0,0,0,.1);
+.card {
+    background: #ffffff;
+    padding: 25px;
+    margin-bottom: 22px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
 }
 
-h1{
-    margin-top:0;
+.main-title {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin: -30px 0 22px;
+    padding: 20px 0;
+    background: #ffffff;
+    color: #1d4ed8;
+    font-size: 30px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.student-info{
-    line-height:1.8;
-    margin-bottom:20px;
+.student-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
-.summary{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:12px;
-    margin:20px 0;
+.info-box {
+    padding: 13px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
 }
 
-.summary-box{
-    background:#eef3ff;
-    padding:18px 10px;
-    border-radius:10px;
-    text-align:center;
+.info-box span {
+    display: block;
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 5px;
 }
 
-.summary-title{
-    font-size:14px;
+.info-box b {
+    color: #111827;
 }
 
-.summary-value{
-    font-size:25px;
-    font-weight:bold;
-    margin-top:7px;
+.success {
+    padding: 14px;
+    border-radius: 9px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+    font-weight: 600;
 }
 
-.answer{
-    border:1px solid #ddd;
-    border-radius:10px;
-    padding:18px;
-    margin:15px 0;
-    background:#fff;
+.summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 20px 0;
 }
 
-.answer h3{
-    margin-top:0;
-    line-height:1.5;
+.summary-box {
+    padding: 20px 10px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    text-align: center;
 }
 
-.answer-code{
-    background:#1e1e1e;
-    color:white;
-    padding:15px;
-    border-radius:8px;
-    white-space:pre-wrap;
-    overflow-x:auto;
-    font-family:Consolas,monospace;
+.summary-title {
+    color: #6b7280;
+    font-size: 14px;
 }
 
-.correct{
-    color:green;
-    font-weight:bold;
+.summary-value {
+    color: #1d4ed8;
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 7px;
 }
 
-.wrong{
-    color:red;
-    font-weight:bold;
+.status-box {
+    margin-top: 15px;
+    padding: 12px;
+    background: #eff6ff;
+    border-radius: 8px;
 }
 
-.partial{
-    color:#b36b00;
-    font-weight:bold;
+.answer {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+    background: #ffffff;
 }
 
-.buttons{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    margin-top:25px;
+.answer h3 {
+    margin-top: 0;
+    line-height: 1.55;
+    color: #111827;
 }
 
-button{
-    border:0;
-    padding:13px 20px;
-    border-radius:8px;
-    color:white;
-    background:#2864d7;
-    font-size:16px;
-    cursor:pointer;
+.answer-code {
+    background: #111827;
+    color: #f9fafb;
+    padding: 15px;
+    border-radius: 9px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-button:hover{
-    opacity:.9;
+.correct {
+    color: #047857;
+    font-weight: bold;
 }
 
-.secondary{
-    background:#555;
+.wrong {
+    color: #dc2626;
+    font-weight: bold;
 }
 
-.success{
-    background:#edf9ef;
-    border:1px solid #b7dfbc;
-    color:#17621d;
-    padding:15px;
-    border-radius:8px;
+.partial {
+    color: #b45309;
+    font-weight: bold;
 }
 
-@media(max-width:700px){
+.mark-box {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 7px 10px;
+    border-radius: 7px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    font-weight: 600;
+}
 
-    body{
-        padding:10px;
+.buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+button {
+    border: 0;
+    padding: 13px 20px;
+    border-radius: 9px;
+    color: #ffffff;
+    background: #2563eb;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.secondary {
+    background: #475569;
+}
+
+.secondary:hover {
+    background: #334155;
+}
+
+@media (max-width: 700px) {
+
+    .container {
+        width: calc(100% - 16px);
+        padding-top: 15px;
     }
 
-    .card{
-        padding:18px;
+    .main-title {
+        margin-top: -15px;
+        font-size: 24px;
     }
 
-    .summary{
-        grid-template-columns:repeat(2,1fr);
+    .card {
+        padding: 18px;
+    }
+
+    .student-info {
+        grid-template-columns: 1fr;
+    }
+
+    .summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .buttons button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 430px) {
+
+    .summary {
+        grid-template-columns: 1fr;
     }
 }
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-<div class="card">
 
-<h1>Assessment Result</h1>
-
-<div class="student-info">
-
-<div>
-<b>Name:</b>
-<span id="studentName">Student</span>
-</div>
-
-<div>
-<b>Username:</b>
-<span id="studentUsername">-</span>
-</div>
-
-<div>
-<b>Year:</b>
-<span id="studentYear">Final Year</span>
-</div>
-
-<div>
-<b>Assessment:</b>
-Day <span id="assessmentDay">-</span>
-</div>
-
-</div>
-
-<div class="success">
-Assessment submitted successfully.
-</div>
-
-</div>
-
+<!-- =====================================================
+     STUDENT INFORMATION
+     ===================================================== -->
 
 <div class="card">
 
-<h2>Score Summary</h2>
+    <h1 class="main-title">
+        Assessment Result
+    </h1>
 
-<div class="summary">
+    <div class="student-info">
 
-<div class="summary-box">
+        <div class="info-box">
+            <span>Name</span>
+            <b id="studentName">Student</b>
+        </div>
 
-<div class="summary-title">
-MCQ + Error
-</div>
+        <div class="info-box">
+            <span>Username</span>
+            <b id="studentUsername">-</b>
+        </div>
 
-<div
-id="objectiveScore"
-class="summary-value">
-0/12
-</div>
+        <div class="info-box">
+            <span>Year</span>
+            <b id="studentYear">Final Year</b>
+        </div>
 
-</div>
+        <div class="info-box">
+            <span>Assessment</span>
+            <b>
+                Day <span id="assessmentDay">-</span>
+            </b>
+        </div>
 
+    </div>
 
-<div class="summary-box">
-
-<div class="summary-title">
-Coding
-</div>
-
-<div
-id="codingScore"
-class="summary-value">
-0/3
-</div>
-
-</div>
-
-
-<div class="summary-box">
-
-<div class="summary-title">
-Total
-</div>
-
-<div
-id="totalScore"
-class="summary-value">
-0/15
-</div>
+    <div class="success">
+        Assessment submitted successfully.
+    </div>
 
 </div>
 
 
-<div class="summary-box">
-
-<div class="summary-title">
-Percentage
-</div>
-
-<div
-id="percentage"
-class="summary-value">
-0%
-</div>
-
-</div>
-
-</div>
-
-<div>
-<b>Status:</b>
-<span id="status">Completed</span>
-</div>
-
-</div>
-
+<!-- =====================================================
+     SCORE SUMMARY
+     ===================================================== -->
 
 <div class="card">
 
-<h2>Answer Sheet</h2>
+    <h2>Score Summary</h2>
 
-<div id="answers">
-Loading answers...
+    <div class="summary">
+
+        <div class="summary-box">
+
+            <div class="summary-title">
+                MCQ + Error
+            </div>
+
+            <div
+                id="objectiveScore"
+                class="summary-value">
+                0/12
+            </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+            <div class="summary-title">
+                Coding
+            </div>
+
+            <div
+                id="codingScore"
+                class="summary-value">
+                0/3
+            </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+            <div class="summary-title">
+                Total
+            </div>
+
+            <div
+                id="totalScore"
+                class="summary-value">
+                0/15
+            </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+            <div class="summary-title">
+                Percentage
+            </div>
+
+            <div
+                id="percentage"
+                class="summary-value">
+                0%
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="status-box">
+
+        <b>Status:</b>
+
+        <span id="status">
+            Completed
+        </span>
+
+    </div>
+
 </div>
 
-<div class="buttons">
 
-<button onclick="goDashboard()">
-Back to Dashboard
-</button>
+<!-- =====================================================
+     ANSWER SHEET
+     ===================================================== -->
 
-<button
-class="secondary"
-onclick="goReports()">
-View Reports
-</button>
+<div class="card">
 
-</div>
+    <h2>Answer Sheet</h2>
+
+    <div id="answers">
+        Loading answers...
+    </div>
+
+
+    <div class="buttons">
+
+        <button onclick="goDashboard()">
+            Back to Dashboard
+        </button>
+
+        <button
+            class="secondary"
+            onclick="goReports()">
+            View Reports
+        </button>
+
+    </div>
 
 </div>
 
@@ -297,59 +404,40 @@ View Reports
 
 <script>
 
-/*
-=====================================================
-GET STORED RESULT
-=====================================================
-*/
+/* =====================================================
+   GET STORED RESULT
+   ===================================================== */
 
-function getStoredResult(){
+function getStoredResult() {
 
     const possibleKeys = [
 
         "latestAssessmentResult",
-
         "lastAssessmentResult",
-
         "assessmentResult",
-
         "result"
 
     ];
 
+    for (const key of possibleKeys) {
 
-    for(
-        const key of possibleKeys
-    ){
-
-        try{
+        try {
 
             const value =
-                localStorage.getItem(
-                    key
-                );
+                localStorage.getItem(key);
 
-
-            if(!value){
-
+            if (!value) {
                 continue;
-
             }
-
 
             const result =
-                JSON.parse(
-                    value
-                );
+                JSON.parse(value);
 
-
-            if(result){
-
+            if (result) {
                 return result;
-
             }
 
-        }catch(error){
+        } catch (error) {
 
             console.error(
                 "Result read error:",
@@ -360,9 +448,7 @@ function getStoredResult(){
 
     }
 
-
     return null;
-
 }
 
 
@@ -370,16 +456,13 @@ const result =
     getStoredResult();
 
 
-/*
-=====================================================
-STUDENT DETAILS
-=====================================================
-*/
+/* =====================================================
+   STUDENT
+   ===================================================== */
 
 let student = null;
 
-
-try{
+try {
 
     student =
         JSON.parse(
@@ -388,9 +471,9 @@ try{
             ) || "null"
         );
 
-}catch(error){
+} catch (error) {
 
-    student=null;
+    student = null;
 
 }
 
@@ -428,6 +511,26 @@ const studentYear =
     "Final Year";
 
 
+/* =====================================================
+   DAY
+   ===================================================== */
+
+function parseDay(value) {
+
+    const match =
+        String(
+            value || ""
+        ).match(/\d+/);
+
+    return match
+        ? parseInt(
+            match[0],
+            10
+        )
+        : 0;
+}
+
+
 const day =
     parseDay(
         result?.day ||
@@ -462,147 +565,89 @@ document.getElementById(
     day;
 
 
-/*
-=====================================================
-PARSE DAY
-=====================================================
-*/
+/* =====================================================
+   NUMBER PARSER
+   ===================================================== */
 
-function parseDay(value){
+function parseNumber(value) {
 
-    const match =
-        String(
-            value || ""
-        ).match(
-            /\d+/
-        );
-
-
-    return match
-        ? parseInt(
-            match[0],
-            10
-        )
-        : 0;
-
-}
-
-
-/*
-=====================================================
-PARSE NUMBER
-=====================================================
-*/
-
-function parseNumber(value){
-
-    if(
+    if (
         value === null ||
         value === undefined ||
         value === ""
-    ){
-
+    ) {
         return 0;
-
     }
 
-
     const match =
-        String(
-            value
-        ).match(
+        String(value).match(
             /-?\d+(?:\.\d+)?/
         );
 
-
     return match
-        ? Number(
-            match[0]
-        )
+        ? Number(match[0])
         : 0;
-
 }
 
 
-/*
-=====================================================
-GET ANSWERS
-=====================================================
-*/
+/* =====================================================
+   ANSWERS
+   ===================================================== */
 
 let answers = [];
 
 
-if(
+if (
     result &&
-    Array.isArray(
-        result.answers
-    )
-){
+    Array.isArray(result.answers)
+) {
 
     answers =
         result.answers;
 
 }
-else if(
+else if (
     result &&
-    Array.isArray(
-        result.Answers
-    )
-){
+    Array.isArray(result.Answers)
+) {
 
     answers =
         result.Answers;
 
 }
-else if(
+else if (
     result &&
-    typeof result.Answers ===
-    "string"
-){
+    typeof result.Answers === "string"
+) {
 
-    try{
+    try {
 
         answers =
             JSON.parse(
                 result.Answers
             );
 
-    }catch(error){
+    } catch (error) {
 
-        answers=[];
+        answers = [];
 
     }
 
 }
 
 
-/*
-=====================================================
-IMPORTANT BUG FIX
-
-NOT ANSWERED CODING QUESTION
-MUST ALWAYS BE:
-
-Wrong
-0/1
-
-It can NEVER be:
-
-Correct
-1/1
-=====================================================
-*/
+/* =====================================================
+   HARD FIX:
+   UNANSWERED CODING = WRONG / 0
+   ===================================================== */
 
 answers =
     answers.map(
-        function(answer){
+        function(answer) {
 
-            const item =
-                {
-                    ...answer
-                };
-
+            const item = {
+                ...answer
+            };
 
             const type =
                 String(
@@ -636,13 +681,17 @@ answers =
 
 
             /*
-            HARD FIX
-            */
+             * CRITICAL FIX
+             *
+             * If coding has no code:
+             * status = Wrong
+             * score = 0
+             */
 
-            if(
+            if (
                 type === "CODING" &&
                 isNotAnswered
-            ){
+            ) {
 
                 item.studentAnswer =
                     "Not Answered";
@@ -658,18 +707,15 @@ answers =
 
             }
 
-
             return item;
 
         }
     );
 
 
-/*
-=====================================================
-CALCULATE SCORES FROM ANSWERS
-=====================================================
-*/
+/* =====================================================
+   CALCULATE SCORES
+   ===================================================== */
 
 let mcqScore = 0;
 let errorScore = 0;
@@ -677,7 +723,7 @@ let codingScore = 0;
 
 
 answers.forEach(
-    function(answer){
+    function(answer) {
 
         const type =
             String(
@@ -710,16 +756,13 @@ answers.forEach(
             "not answered";
 
 
-        if(
+        /* CODING */
+
+        if (
             type === "CODING"
-        ){
+        ) {
 
-            /*
-            NEVER give marks
-            to an unanswered coding question.
-            */
-
-            if(unanswered){
+            if (unanswered) {
 
                 answer.status =
                     "Wrong";
@@ -742,23 +785,25 @@ answers.forEach(
         }
 
 
+        /* MCQ */
+
         const score =
             parseNumber(
                 answer.score
             );
 
 
-        if(
+        if (
             type === "MCQ"
-        ){
+        ) {
 
             mcqScore +=
                 score;
 
         }
-        else if(
+        else if (
             type === "ERROR"
-        ){
+        ) {
 
             errorScore +=
                 score;
@@ -769,28 +814,24 @@ answers.forEach(
 );
 
 
-/*
-=====================================================
-FALLBACK FOR OLD RESULTS
-=====================================================
-*/
+/* =====================================================
+   FALLBACK FOR OLD RESULTS
+   ===================================================== */
 
-if(
+if (
     answers.length === 0 &&
     result
-){
+) {
 
     mcqScore =
         parseNumber(
             result.mcqScore
         );
 
-
     errorScore =
         parseNumber(
             result.errorScore
         );
-
 
     codingScore =
         parseNumber(
@@ -800,11 +841,9 @@ if(
 }
 
 
-/*
-=====================================================
-FINAL SCORE
-=====================================================
-*/
+/* =====================================================
+   FINAL SCORE
+   ===================================================== */
 
 const objectiveScore =
     mcqScore +
@@ -859,26 +898,21 @@ document.getElementById(
     "Completed";
 
 
-/*
-=====================================================
-DISPLAY ANSWERS
-=====================================================
-*/
+/* =====================================================
+   DISPLAY ANSWERS
+   ===================================================== */
 
-function displayAnswers(){
+function displayAnswers() {
 
     const container =
         document.getElementById(
             "answers"
         );
 
-
     container.innerHTML = "";
 
 
-    if(
-        !answers.length
-    ){
+    if (!answers.length) {
 
         container.innerHTML =
             "<p>No answer details available.</p>";
@@ -889,7 +923,7 @@ function displayAnswers(){
 
 
     answers.forEach(
-        function(answer,index){
+        function(answer,index) {
 
             const type =
                 String(
@@ -929,10 +963,6 @@ function displayAnswers(){
                 "not answered";
 
 
-            /*
-            FINAL SAFETY CHECK
-            */
-
             let status =
                 answer.status ||
                 "";
@@ -944,10 +974,17 @@ function displayAnswers(){
                 );
 
 
-            if(
+            /*
+             * SECOND SAFETY CHECK
+             *
+             * This prevents old bad records from
+             * displaying Correct 1/1.
+             */
+
+            if (
                 type === "CODING" &&
                 unanswered
-            ){
+            ) {
 
                 rawAnswer =
                     "Not Answered";
@@ -961,25 +998,27 @@ function displayAnswers(){
             }
 
 
-            if(!status){
+            /* STATUS FALLBACK */
 
-                if(
+            if (!status) {
+
+                if (
                     score >= 1
-                ){
+                ) {
 
                     status =
                         "Correct";
 
                 }
-                else if(
+                else if (
                     score > 0
-                ){
+                ) {
 
                     status =
                         "Partial";
 
                 }
-                else{
+                else {
 
                     status =
                         "Wrong";
@@ -989,33 +1028,28 @@ function displayAnswers(){
             }
 
 
+            /* STATUS CLASS */
+
             let statusClass =
                 "wrong";
 
 
             const lower =
-                status
-                .toLowerCase();
+                status.toLowerCase();
 
 
-            if(
-                lower.includes(
-                    "partial"
-                )
-            ){
+            if (
+                lower.includes("partial")
+            ) {
 
                 statusClass =
                     "partial";
 
             }
-            else if(
-                lower.includes(
-                    "correct"
-                ) &&
-                !lower.includes(
-                    "incorrect"
-                )
-            ){
+            else if (
+                lower.includes("correct") &&
+                !lower.includes("incorrect")
+            ) {
 
                 statusClass =
                     "correct";
@@ -1023,11 +1057,12 @@ function displayAnswers(){
             }
 
 
+            /* ANSWER CARD */
+
             const box =
                 document.createElement(
                     "div"
                 );
-
 
             box.className =
                 "answer";
@@ -1050,9 +1085,11 @@ function displayAnswers(){
                 "</p>";
 
 
-            if(
+            /* CODING */
+
+            if (
                 type === "CODING"
-            ){
+            ) {
 
                 html +=
 
@@ -1088,14 +1125,40 @@ function displayAnswers(){
 
                     "</p>" +
 
-                    "<p><b>Coding Mark:</b> " +
+                    "<div class='mark-box'>" +
+
+                    "<b>Coding Mark:</b> " +
 
                     score +
 
-                    "/1</p>";
+                    "/1" +
+
+                    "</div>";
+
+
+                if (
+                    answer.evaluation &&
+                    !unanswered
+                ) {
+
+                    html +=
+
+                        "<p><b>Evaluation Details:</b> " +
+
+                        escapeHTML(
+                            answer.evaluation
+                        ) +
+
+                        "</p>";
+
+                }
 
             }
-            else{
+
+
+            /* MCQ / ERROR */
+
+            else {
 
                 html +=
 
@@ -1110,11 +1173,11 @@ function displayAnswers(){
                     "</p>";
 
 
-                if(
+                if (
                     answer.correctAnswer !==
                     undefined &&
                     answer.correctAnswer !== ""
-                ){
+                ) {
 
                     html +=
 
@@ -1160,13 +1223,11 @@ function displayAnswers(){
 }
 
 
-/*
-=====================================================
-ESCAPE HTML
-=====================================================
-*/
+/* =====================================================
+   ESCAPE HTML
+   ===================================================== */
 
-function escapeHTML(value){
+function escapeHTML(value) {
 
     return String(
         value ?? ""
@@ -1195,13 +1256,11 @@ function escapeHTML(value){
 }
 
 
-/*
-=====================================================
-NAVIGATION
-=====================================================
-*/
+/* =====================================================
+   NAVIGATION
+   ===================================================== */
 
-function goDashboard(){
+function goDashboard() {
 
     window.location.href =
         "student.html";
@@ -1209,7 +1268,7 @@ function goDashboard(){
 }
 
 
-function goReports(){
+function goReports() {
 
     window.location.href =
         "reports.html";
@@ -1217,11 +1276,9 @@ function goReports(){
 }
 
 
-/*
-=====================================================
-SHOW ANSWERS
-=====================================================
-*/
+/* =====================================================
+   DISPLAY
+   ===================================================== */
 
 displayAnswers();
 
