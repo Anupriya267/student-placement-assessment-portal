@@ -1,100 +1,202 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-<title>Student Reports</title>
+<meta charset="UTF-8">
 
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet"
-      href="style.css">
+<title>Student Reports</title>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="style.css">
 
 <style>
 
 body{
+    margin:0;
+    padding:20px;
     font-family:Arial,sans-serif;
+    background:#f4f6fb;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+}
+
+.header{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 3px 12px rgba(0,0,0,.10);
+    margin-bottom:20px;
+}
+
+.header h1{
+    margin-top:0;
+}
+
+.info{
+    color:#555;
+}
+
+.loading{
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.error{
+    background:#fff1f1;
+    border:1px solid #e0aaaa;
+    padding:18px;
+    border-radius:10px;
+    color:#a00000;
+}
+
+.table-container{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 3px 12px rgba(0,0,0,.10);
+    overflow-x:auto;
 }
 
 table{
+    width:100%;
     border-collapse:collapse;
 }
 
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+    text-align:left;
+    white-space:nowrap;
+}
+
 th{
-    background:#f2f2f2;
+    background:#eeeeee;
+}
+
+tr:hover{
+    background:#f8f8f8;
+}
+
+.completed{
     font-weight:bold;
 }
 
-td,th{
-    padding:10px;
-    border:1px solid #999;
-}
-
-button{
-    background:#2855d9;
+.view-btn{
+    background:#2864d7;
     color:white;
     border:none;
-    padding:10px 18px;
+    padding:8px 14px;
     border-radius:6px;
     cursor:pointer;
 }
 
-button:hover{
-    background:#1d43b5;
+.view-btn:hover{
+    background:#1e4fae;
 }
 
-.status-complete{
+.back-btn{
+    background:#555;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:7px;
+    cursor:pointer;
+    margin-top:15px;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    z-index:999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.55);
+    overflow:auto;
+}
+
+.modal-content{
+    background:white;
+    width:90%;
+    max-width:850px;
+    margin:40px auto;
+    padding:25px;
+    border-radius:12px;
+}
+
+.close{
+    float:right;
+    font-size:28px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.summary-box{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin:20px 0;
+}
+
+.summary-item{
+    background:#f1f5ff;
+    padding:15px;
+    border-radius:8px;
+    text-align:center;
+}
+
+.summary-value{
+    font-size:24px;
+    font-weight:bold;
+    margin-top:5px;
+}
+
+.answer-box{
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:15px;
+    margin:12px 0;
+}
+
+.answer-code{
+    background:#f4f4f4;
+    padding:12px;
+    border-radius:6px;
+    white-space:pre-wrap;
+    font-family:Consolas,monospace;
+    overflow:auto;
+}
+
+.correct{
     color:green;
     font-weight:bold;
 }
 
-.status-partial{
-    color:#c58a00;
-    font-weight:bold;
-}
-
-.status-wrong{
+.wrong{
     color:red;
     font-weight:bold;
 }
 
-.loading{
-    text-align:center;
-    padding:25px;
-    font-size:18px;
-}
-
-.error-message{
-    color:red;
-    padding:20px;
+.partial{
+    color:#c47a00;
     font-weight:bold;
 }
 
-.report-box{
-    border:1px solid #ddd;
-    padding:15px;
-    margin-bottom:15px;
-    border-radius:8px;
-    background:#fafafa;
-}
+@media(max-width:700px){
 
-.answer-box{
-    background:#f4f4f4;
-    border:1px solid #ddd;
-    padding:12px;
-    white-space:pre-wrap;
-    overflow:auto;
-    font-family:Consolas,monospace;
-}
+    .summary-box{
+        grid-template-columns:repeat(2,1fr);
+    }
 
-.coding-box{
-    border-left:5px solid #2855d9;
-    padding:12px;
-    background:#f5f8ff;
-    margin-bottom:12px;
 }
 
 </style>
@@ -108,39 +210,66 @@ button:hover{
 <div class="container">
 
 
+<div class="header">
+
 <h1>Student Reports</h1>
 
+<div class="info">
 
-<div class="card">
+Student:
+<b id="studentName">Loading...</b>
 
-<h2>Assessment Reports</h2>
+<br>
+
+Username:
+<b id="studentUsername">Loading...</b>
+
+<br>
+
+Year:
+<b id="studentYear">Loading...</b>
+
+</div>
+
+<button
+class="back-btn"
+onclick="goBack()">
+
+Back to Dashboard
+
+</button>
+
+</div>
 
 
 <div id="loading"
      class="loading">
 
-Loading student reports...
+Loading reports...
 
 </div>
 
 
-<div style="overflow-x:auto;">
+<div id="error"
+     class="error"
+     style="display:none;">
 
-<table border="1"
-       width="100%"
-       cellpadding="8">
+</div>
+
+
+<div id="reportArea"
+     class="table-container"
+     style="display:none;">
+
+<table>
 
 <thead>
 
 <tr>
 
-<th>Name</th>
-
-<th>Username</th>
-
-<th>Year</th>
-
 <th>Day</th>
+
+<th>Topic</th>
 
 <th>MCQ + Error</th>
 
@@ -152,14 +281,15 @@ Loading student reports...
 
 <th>Status</th>
 
-<th>Actions</th>
+<th>Date</th>
+
+<th>Report</th>
 
 </tr>
 
 </thead>
 
-
-<tbody id="reportTable">
+<tbody id="reportBody">
 
 </tbody>
 
@@ -167,93 +297,113 @@ Loading student reports...
 
 </div>
 
-</div>
-
-
-<div class="card">
-
-<button onclick="backToAdmin()">
-
-Back to Admin Dashboard
-
-</button>
 
 </div>
-
-
-</div>
-
 
 
 <!-- =====================================================
-     REPORT MODAL
+     MODAL
 ===================================================== -->
 
 <div id="reportModal"
+     class="modal">
 
-style="
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.6);
-overflow:auto;
-z-index:1000;
-">
+<div class="modal-content">
 
+<span
+class="close"
+onclick="closeModal()">
 
-<div style="
-background:white;
-width:90%;
-max-width:900px;
-margin:40px auto;
-padding:25px;
-border-radius:10px;
-">
+&times;
+
+</span>
 
 
-<h2 id="modalTitle">
-
-Student Report
-
-</h2>
+<h2>Assessment Report</h2>
 
 
-<div id="reportDetails">
-
-</div>
+<div id="modalStudent"></div>
 
 
-<br>
+<div class="summary-box">
 
 
-<button onclick="downloadPDF()">
+<div class="summary-item">
 
-Download PDF
+<div>MCQ + Error</div>
 
-</button>
+<div
+class="summary-value"
+id="modalObjective">
 
-
-<button onclick="closeReport()">
-
-Close
-
-</button>
-
+0/12
 
 </div>
 
 </div>
 
+
+<div class="summary-item">
+
+<div>Coding</div>
+
+<div
+class="summary-value"
+id="modalCoding">
+
+0/3
+
+</div>
+
+</div>
+
+
+<div class="summary-item">
+
+<div>Total</div>
+
+<div
+class="summary-value"
+id="modalTotal">
+
+0/15
+
+</div>
+
+</div>
+
+
+<div class="summary-item">
+
+<div>Percentage</div>
+
+<div
+class="summary-value"
+id="modalPercentage">
+
+0%
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<div id="modalDetails"></div>
+
+
+</div>
+
+</div>
 
 
 <script>
 
 
 /* =====================================================
-   GOOGLE APPS SCRIPT
+   GOOGLE APPS SCRIPT URL
 ===================================================== */
 
 const GOOGLE_SCRIPT_URL =
@@ -261,117 +411,175 @@ const GOOGLE_SCRIPT_URL =
 
 
 /* =====================================================
-   GLOBAL VARIABLES
+   STUDENT INFORMATION
 ===================================================== */
 
-let reports = [];
+function getStudent(){
 
-let selectedReport = null;
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "loggedInStudent"
+            )
+            ||
+            "null"
+        );
+
+    }
+    catch(e){
+
+        return null;
+
+    }
+
+}
+
+
+const loggedStudent =
+getStudent();
+
+
+const studentName =
+loggedStudent?.name
+||
+loggedStudent?.Name
+||
+localStorage.getItem("studentName")
+||
+"Student";
+
+
+const studentUsername =
+loggedStudent?.username
+||
+loggedStudent?.Username
+||
+localStorage.getItem("studentUsername")
+||
+"";
+
+
+const studentYear =
+loggedStudent?.year
+||
+loggedStudent?.Year
+||
+localStorage.getItem("studentYear")
+||
+"";
+
+
+document.getElementById(
+    "studentName"
+).textContent =
+studentName;
+
+
+document.getElementById(
+    "studentUsername"
+).textContent =
+studentUsername;
+
+
+document.getElementById(
+    "studentYear"
+).textContent =
+studentYear;
 
 
 /* =====================================================
-   LOAD REPORTS FROM GOOGLE SHEET
+   JSONP CALLBACK
 ===================================================== */
 
-function loadReportsFromGoogleSheet(){
+window.handleAssessmentResults =
+function(data){
 
-    document.getElementById("loading")
-        .style.display = "block";
+    try{
 
+        if(
+            !Array.isArray(data)
+        ){
 
-    const callbackName =
-        "googleReportsCallback_" +
-        Date.now();
+            throw new Error(
+                "Invalid result data received."
+            );
 
-
-    window[callbackName] =
-        function(data){
-
-            try{
-
-                reports =
-                    Array.isArray(data)
-                    ? data
-                    : [];
+        }
 
 
-                displayReports();
+        displayReports(data);
+
+    }
+    catch(error){
+
+        showError(
+            error.message
+        );
+
+    }
+
+};
 
 
-            }catch(error){
+/* =====================================================
+   LOAD GOOGLE RESULTS
+===================================================== */
 
-                showError(
-                    "Unable to read student reports."
-                );
+function loadReports(){
 
-            }
+    /*
+       Remove previous callback script
+    */
+
+    const oldScript =
+        document.getElementById(
+            "googleResultsScript"
+        );
 
 
-            document.getElementById("loading")
-                .style.display = "none";
+    if(oldScript){
 
+        oldScript.remove();
 
-            delete window[callbackName];
-
-            script.remove();
-
-        };
+    }
 
 
     const script =
-        document.createElement("script");
+        document.createElement(
+            "script"
+        );
+
+
+    script.id =
+        "googleResultsScript";
 
 
     script.src =
-        GOOGLE_SCRIPT_URL +
-        "?action=getResults&callback=" +
-        callbackName;
+        GOOGLE_SCRIPT_URL
+        +
+        "?action=getResults"
+        +
+        "&callback=handleAssessmentResults"
+        +
+        "&_="
+        +
+        Date.now();
 
 
     script.onerror =
         function(){
 
-            document.getElementById("loading")
-                .style.display = "none";
-
-
             showError(
-                "Unable to connect to Google Sheet."
+                "Unable to connect to Google Sheet. Please check the Apps Script deployment."
             );
-
-
-            delete window[callbackName];
-
-            script.remove();
 
         };
 
 
-    document.body.appendChild(script);
-
-}
-
-
-/* =====================================================
-   DISPLAY ERROR
-===================================================== */
-
-function showError(message){
-
-    document.getElementById(
-        "reportTable"
-    ).innerHTML =
-
-        "<tr>" +
-
-        "<td colspan='10' " +
-        "class='error-message'>" +
-
-        escapeHTML(message) +
-
-        "</td>" +
-
-        "</tr>";
+    document.body.appendChild(
+        script
+    );
 
 }
 
@@ -380,187 +588,322 @@ function showError(message){
    DISPLAY REPORTS
 ===================================================== */
 
-function displayReports(){
+function displayReports(
+    allResults
+){
 
-    const table =
+    const loading =
         document.getElementById(
-            "reportTable"
+            "loading"
         );
 
 
-    table.innerHTML = "";
+    const reportArea =
+        document.getElementById(
+            "reportArea"
+        );
 
 
-    if(!reports || reports.length === 0){
+    const body =
+        document.getElementById(
+            "reportBody"
+        );
 
-        table.innerHTML =
 
-            "<tr>" +
+    /*
+       Match username safely.
+    */
 
-            "<td colspan='10'>" +
+    const myUsername =
+        String(
+            studentUsername
+            ||
+            ""
+        )
+        .trim()
+        .toLowerCase();
 
-            "No student reports available yet." +
 
-            "</td>" +
+    const myResults =
+        allResults.filter(
+            function(row){
 
-            "</tr>";
+                const username =
+                    String(
+                        row["Username"]
+                        ||
+                        row.username
+                        ||
+                        ""
+                    )
+                    .trim()
+                    .toLowerCase();
+
+
+                return (
+                    username
+                    ===
+                    myUsername
+                );
+
+            }
+        );
+
+
+    /*
+       Sort Day ascending.
+    */
+
+    myResults.sort(
+        function(a,b){
+
+            return (
+                parseInt(
+                    a["Day"]
+                    ||
+                    0,
+                    10
+                )
+                -
+                parseInt(
+                    b["Day"]
+                    ||
+                    0,
+                    10
+                )
+            );
+
+        }
+    );
+
+
+    loading.style.display =
+        "none";
+
+
+    reportArea.style.display =
+        "block";
+
+
+    body.innerHTML =
+        "";
+
+
+    if(
+        myResults.length === 0
+    ){
+
+        body.innerHTML =
+
+        "<tr>" +
+
+        "<td colspan='9' style='text-align:center'>" +
+
+        "No assessment reports found."
+
+        +
+
+        "</td>" +
+
+        "</tr>";
 
         return;
 
     }
 
 
-    reports.forEach(
-        function(report,index){
-
-            const row =
-                document.createElement("tr");
-
-
-            const name =
-                getField(
-                    report,
-                    "Name"
-                );
-
-
-            const username =
-                getField(
-                    report,
-                    "Username"
-                );
-
-
-            const year =
-                getField(
-                    report,
-                    "Year"
-                );
-
+    myResults.forEach(
+        function(row,index){
 
             const day =
                 getField(
-                    report,
+                    row,
                     "Day"
                 );
 
 
+            const topic =
+                getField(
+                    row,
+                    "Topic"
+                )
+                ||
+                "Java Placement Practice";
+
+
             const objective =
                 getObjectiveScore(
-                    report
+                    row
                 );
 
 
             const coding =
                 getCodingScore(
-                    report
+                    row
                 );
 
 
             const total =
                 getTotalScore(
-                    report,
-                    objective,
-                    coding
+                    row
                 );
 
 
             const percentage =
                 getPercentage(
-                    report,
-                    total
+                    row
                 );
 
 
             const status =
                 getField(
-                    report,
+                    row,
                     "Status"
-                ) ||
+                )
+                ||
                 "Completed";
 
 
-            const codingEvaluation =
-                getField(
-                    report,
-                    "Coding Evaluation"
+            const date =
+                formatDate(
+                    getField(
+                        row,
+                        "Submission Date"
+                    )
                 );
 
 
-            let codingDisplay =
-                coding + "/3";
+            const tr =
+                document.createElement(
+                    "tr"
+                );
 
 
-            if(codingEvaluation){
+            tr.innerHTML =
 
-                codingDisplay +=
-                    "<br><small>" +
-                    getShortCodingStatus(
-                        codingEvaluation
-                    ) +
-                    "</small>";
-
-            }
+            "<td>Day "
+            +
+            escapeHTML(day)
+            +
+            "</td>"
 
 
-            row.innerHTML =
+            +
 
-                "<td>" +
-                escapeHTML(name) +
-                "</td>" +
-
-                "<td>" +
-                escapeHTML(username) +
-                "</td>" +
-
-                "<td>" +
-                escapeHTML(year) +
-                "</td>" +
-
-                "<td>" +
-                escapeHTML(day) +
-                "</td>" +
-
-                "<td>" +
-                objective +
-                "/12" +
-                "</td>" +
-
-                "<td>" +
-                codingDisplay +
-                "</td>" +
-
-                "<td>" +
-                total +
-                "/15" +
-                "</td>" +
-
-                "<td>" +
-                percentage +
-                "%" +
-                "</td>" +
-
-                "<td>" +
-                escapeHTML(status) +
-                "</td>" +
-
-                "<td>" +
-
-                "<button onclick='viewReport(" +
-                index +
-                ")'>" +
-
-                "View Report" +
-
-                "</button>" +
-
-                "</td>";
+            "<td>"
+            +
+            escapeHTML(topic)
+            +
+            "</td>"
 
 
-            table.appendChild(row);
+            +
+
+            "<td>"
+            +
+            escapeHTML(
+                objective
+                +
+                "/12"
+            )
+            +
+            "</td>"
+
+
+            +
+
+            "<td>"
+            +
+            escapeHTML(
+                coding
+                +
+                "/3"
+            )
+            +
+            "</td>"
+
+
+            +
+
+            "<td>"
+            +
+            escapeHTML(
+                total
+                +
+                "/15"
+            )
+            +
+            "</td>"
+
+
+            +
+
+            "<td>"
+            +
+            escapeHTML(
+                percentage
+                +
+                "%"
+            )
+            +
+            "</td>"
+
+
+            +
+
+            "<td class='completed'>"
+            +
+            escapeHTML(
+                status
+            )
+            +
+            "</td>"
+
+
+            +
+
+            "<td>"
+            +
+            escapeHTML(
+                date
+            )
+            +
+            "</td>"
+
+
+            +
+
+            "<td>" +
+
+            "<button class='view-btn' " +
+
+            "onclick='openReport("
+            +
+            index
+            +
+            ")'>" +
+
+            "View" +
+
+            "</button>" +
+
+            "</td>";
+
+
+            body.appendChild(
+                tr
+            );
 
         }
     );
+
+
+    /*
+       Keep reports available to modal.
+    */
+
+    window.studentResults =
+        myResults;
 
 }
 
@@ -569,14 +912,20 @@ function displayReports(){
    GET FIELD
 ===================================================== */
 
-function getField(report,name){
+function getField(
+    row,
+    field
+){
 
     if(
-        report[name] !== undefined &&
-        report[name] !== null
+        row[field] !== undefined
+        &&
+        row[field] !== null
     ){
 
-        return report[name];
+        return String(
+            row[field]
+        );
 
     }
 
@@ -590,46 +939,38 @@ function getField(report,name){
    OBJECTIVE SCORE
 ===================================================== */
 
-function getObjectiveScore(report){
+function getObjectiveScore(
+    row
+){
 
     const value =
         getField(
-            report,
+            row,
             "MCQ + Error"
         );
 
 
-    if(
-        typeof value === "string" &&
-        value.includes("/")
-    ){
+    if(!value){
 
-        return Number(
-            value.split("/")[0]
-        ) || 0;
+        return "0";
 
     }
 
 
-    if(report.objectiveScore !== undefined){
+    /*
+       Example:
+       8/12
+    */
 
-        return Number(
-            report.objectiveScore
-        ) || 0;
-
-    }
-
-
-    if(report.score !== undefined){
-
-        return Number(
-            report.score
-        ) || 0;
-
-    }
+    const match =
+        value.match(
+            /[\d.]+/
+        );
 
 
-    return 0;
+    return match
+        ? match[0]
+        : "0";
 
 }
 
@@ -638,37 +979,38 @@ function getObjectiveScore(report){
    CODING SCORE
 ===================================================== */
 
-function getCodingScore(report){
+function getCodingScore(
+    row
+){
 
     const value =
         getField(
-            report,
+            row,
             "Coding"
         );
 
 
-    if(
-        typeof value === "string" &&
-        value.includes("/")
-    ){
+    if(!value){
 
-        return Number(
-            value.split("/")[0]
-        ) || 0;
+        return "0";
 
     }
 
 
-    if(report.codingScore !== undefined){
+    /*
+       Example:
+       2.5/3
+    */
 
-        return Number(
-            report.codingScore
-        ) || 0;
+    const match =
+        value.match(
+            /[\d.]+/
+        );
 
-    }
 
-
-    return 0;
+    return match
+        ? match[0]
+        : "0";
 
 }
 
@@ -678,40 +1020,56 @@ function getCodingScore(report){
 ===================================================== */
 
 function getTotalScore(
-    report,
-    objective,
-    coding
+    row
 ){
 
     const value =
         getField(
-            report,
+            row,
             "Total"
         );
 
 
-    if(
-        typeof value === "string" &&
-        value.includes("/")
-    ){
+    if(!value){
 
-        return Number(
-            value.split("/")[0]
-        ) || 0;
+        const objective =
+            parseFloat(
+                getObjectiveScore(
+                    row
+                )
+            )
+            ||
+            0;
+
+
+        const coding =
+            parseFloat(
+                getCodingScore(
+                    row
+                )
+            )
+            ||
+            0;
+
+
+        return String(
+            objective
+            +
+            coding
+        );
 
     }
 
 
-    if(report.totalScore !== undefined){
-
-        return Number(
-            report.totalScore
-        ) || 0;
-
-    }
+    const match =
+        value.match(
+            /[\d.]+/
+        );
 
 
-    return objective + coding;
+    return match
+        ? match[0]
+        : "0";
 
 }
 
@@ -721,722 +1079,716 @@ function getTotalScore(
 ===================================================== */
 
 function getPercentage(
-    report,
-    total
+    row
 ){
 
-    const value =
+    let value =
         getField(
-            report,
+            row,
             "Percentage"
         );
 
 
+    if(!value){
+
+        const total =
+            parseFloat(
+                getTotalScore(
+                    row
+                )
+            )
+            ||
+            0;
+
+
+        return (
+            total
+            /
+            15
+            *
+            100
+        ).toFixed(2);
+
+    }
+
+
+    value =
+        value.replace(
+            "%",
+            ""
+        );
+
+
+    const number =
+        parseFloat(
+            value
+        );
+
+
+    return isNaN(number)
+        ? "0.00"
+        : number.toFixed(2);
+
+}
+
+
+/* =====================================================
+   OPEN REPORT
+===================================================== */
+
+function openReport(
+    index
+){
+
+    const row =
+        window.studentResults[
+            index
+        ];
+
+
+    if(!row){
+
+        return;
+
+    }
+
+
+    const objective =
+        getObjectiveScore(
+            row
+        );
+
+
+    const coding =
+        getCodingScore(
+            row
+        );
+
+
+    const total =
+        getTotalScore(
+            row
+        );
+
+
+    const percentage =
+        getPercentage(
+            row
+        );
+
+
+    const day =
+        getField(
+            row,
+            "Day"
+        );
+
+
+    const topic =
+        getField(
+            row,
+            "Topic"
+        );
+
+
+    const status =
+        getField(
+            row,
+            "Status"
+        )
+        ||
+        "Completed";
+
+
+    const date =
+        formatDate(
+            getField(
+                row,
+                "Submission Date"
+            )
+        );
+
+
+    document.getElementById(
+        "modalObjective"
+    ).textContent =
+        objective
+        +
+        "/12";
+
+
+    document.getElementById(
+        "modalCoding"
+    ).textContent =
+        coding
+        +
+        "/3";
+
+
+    document.getElementById(
+        "modalTotal"
+    ).textContent =
+        total
+        +
+        "/15";
+
+
+    document.getElementById(
+        "modalPercentage"
+    ).textContent =
+        percentage
+        +
+        "%";
+
+
+    document.getElementById(
+        "modalStudent"
+    ).innerHTML =
+
+        "<p>" +
+
+        "<b>Name:</b> "
+        +
+        escapeHTML(
+            studentName
+        )
+
+        +
+
+        "<br>" +
+
+        "<b>Username:</b> "
+        +
+        escapeHTML(
+            studentUsername
+        )
+
+        +
+
+        "<br>" +
+
+        "<b>Year:</b> "
+        +
+        escapeHTML(
+            studentYear
+        )
+
+        +
+
+        "<br>" +
+
+        "<b>Day:</b> "
+        +
+        escapeHTML(
+            day
+        )
+
+        +
+
+        "<br>" +
+
+        "<b>Topic:</b> "
+        +
+        escapeHTML(
+            topic
+        )
+
+        +
+
+        "<br>" +
+
+        "<b>Status:</b> "
+        +
+        escapeHTML(
+            status
+        )
+
+        +
+
+        "<br>" +
+
+        "<b>Submitted:</b> "
+        +
+        escapeHTML(
+            date
+        )
+
+        +
+
+        "</p>";
+
+
+    displayAnswerDetails(
+        row
+    );
+
+
+    document.getElementById(
+        "reportModal"
+    ).style.display =
+        "block";
+
+}
+
+
+/* =====================================================
+   DISPLAY ANSWERS
+===================================================== */
+
+function displayAnswerDetails(
+    row
+){
+
+    const details =
+        document.getElementById(
+            "modalDetails"
+        );
+
+
+    details.innerHTML =
+        "";
+
+
+    let answers = [];
+
+
+    const answerText =
+        getField(
+            row,
+            "Answers"
+        );
+
+
+    if(answerText){
+
+        try{
+
+            answers =
+                JSON.parse(
+                    answerText
+                );
+
+        }
+        catch(error){
+
+            /*
+               Older reports may contain
+               plain text instead of JSON.
+            */
+
+            details.innerHTML =
+
+                "<h3>Answer Details</h3>" +
+
+                "<div class='answer-box'>" +
+
+                "<pre class='answer-code'>"
+                +
+                escapeHTML(
+                    answerText
+                )
+                +
+                "</pre>" +
+
+                "</div>";
+
+        }
+
+    }
+
+
     if(
-        value !== "" &&
-        value !== null &&
-        value !== undefined
+        !Array.isArray(answers)
+        ||
+        answers.length === 0
     ){
 
-        return String(value)
-            .replace("%","");
+        /*
+           Show coding evaluation text
+           if available.
+        */
+
+        const codingEvaluation =
+            getField(
+                row,
+                "Coding Evaluation"
+            );
+
+
+        if(codingEvaluation){
+
+            details.innerHTML +=
+
+                "<h3>Coding Evaluation</h3>" +
+
+                "<div class='answer-box'>" +
+
+                "<pre class='answer-code'>"
+                +
+                escapeHTML(
+                    codingEvaluation
+                )
+                +
+                "</pre>" +
+
+                "</div>";
+
+        }
+
+
+        return;
+
+    }
+
+
+    const title =
+        document.createElement(
+            "h3"
+        );
+
+
+    title.textContent =
+        "Answer Details";
+
+
+    details.appendChild(
+        title
+    );
+
+
+    answers.forEach(
+        function(answer,index){
+
+            const box =
+                document.createElement(
+                    "div"
+                );
+
+
+            box.className =
+                "answer-box";
+
+
+            const question =
+                answer.question
+                ||
+                "";
+
+
+            const type =
+                String(
+                    answer.type
+                    ||
+                    ""
+                )
+                .toUpperCase();
+
+
+            const studentAnswer =
+                answer.studentAnswer
+                ||
+                answer.answer
+                ||
+                "Not Answered";
+
+
+            const status =
+                answer.status
+                ||
+                "Wrong";
+
+
+            const score =
+                Number(
+                    answer.score
+                    ||
+                    0
+                );
+
+
+            let html =
+
+                "<b>Question "
+                +
+                (index + 1)
+                +
+                ":</b> "
+                +
+                escapeHTML(
+                    question
+                )
+                +
+                "<br><br>";
+
+
+            if(
+                type === "CODING"
+            ){
+
+                html +=
+
+                    "<b>Your Java Code:</b>" +
+
+                    "<div class='answer-code'>"
+                    +
+                    escapeHTML(
+                        studentAnswer
+                    )
+                    +
+                    "</div>" +
+
+                    "<br>" +
+
+                    "<b>Status:</b> "
+                    +
+                    getStatusHTML(
+                        status
+                    )
+
+                    +
+
+                    "<br>" +
+
+                    "<b>Mark:</b> "
+                    +
+                    score
+                    +
+                    "/1";
+
+            }
+            else {
+
+                html +=
+
+                    "<b>Your Answer:</b> "
+                    +
+                    escapeHTML(
+                        studentAnswer
+                    )
+
+                    +
+
+                    "<br>" +
+
+                    "<b>Correct Answer:</b> "
+                    +
+                    escapeHTML(
+                        answer.correctAnswer
+                        ||
+                        "-"
+                    )
+
+                    +
+
+                    "<br>" +
+
+                    "<b>Status:</b> "
+                    +
+                    getStatusHTML(
+                        status
+                    );
+
+            }
+
+
+            box.innerHTML =
+                html;
+
+
+            details.appendChild(
+                box
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   STATUS HTML
+===================================================== */
+
+function getStatusHTML(
+    status
+){
+
+    const value =
+        String(
+            status
+        );
+
+
+    const lower =
+        value.toLowerCase();
+
+
+    if(
+        lower.includes(
+            "complete"
+        )
+        ||
+        lower.includes(
+            "correct"
+        )
+    ){
+
+        return (
+            "<span class='correct'>"
+            +
+            escapeHTML(
+                value
+            )
+            +
+            "</span>"
+        );
+
+    }
+
+
+    if(
+        lower.includes(
+            "partial"
+        )
+    ){
+
+        return (
+            "<span class='partial'>"
+            +
+            escapeHTML(
+                value
+            )
+            +
+            "</span>"
+        );
 
     }
 
 
     return (
-        (total / 15) * 100
-    ).toFixed(2);
+        "<span class='wrong'>"
+        +
+        escapeHTML(
+            value
+        )
+        +
+        "</span>"
+    );
 
 }
 
 
 /* =====================================================
-   CODING STATUS
+   DATE FORMAT
 ===================================================== */
 
-function getShortCodingStatus(text){
+function formatDate(
+    value
+){
 
-    if(!text){
+    if(!value){
 
-        return "";
-
-    }
-
-
-    const matches =
-        text.match(
-            /Coding Q\d+:\s*([^-]+)-/g
-        );
-
-
-    if(!matches){
-
-        return "";
+        return "-";
 
     }
-
-
-    return matches
-        .map(function(item){
-
-            return item
-                .replace(
-                    /Coding Q\d+:\s*/,
-                    ""
-                )
-                .trim();
-
-        })
-        .join("<br>");
-
-}
-
-
-/* =====================================================
-   VIEW REPORT
-===================================================== */
-
-function viewReport(index){
-
-    selectedReport =
-        reports[index];
-
-
-    if(!selectedReport){
-
-        return;
-
-    }
-
-
-    const name =
-        getField(
-            selectedReport,
-            "Name"
-        );
-
-
-    const username =
-        getField(
-            selectedReport,
-            "Username"
-        );
-
-
-    const year =
-        getField(
-            selectedReport,
-            "Year"
-        );
-
-
-    const day =
-        getField(
-            selectedReport,
-            "Day"
-        );
-
-
-    const topic =
-        getField(
-            selectedReport,
-            "Topic"
-        );
-
-
-    const objective =
-        getObjectiveScore(
-            selectedReport
-        );
-
-
-    const coding =
-        getCodingScore(
-            selectedReport
-        );
-
-
-    const total =
-        getTotalScore(
-            selectedReport,
-            objective,
-            coding
-        );
-
-
-    const percentage =
-        getPercentage(
-            selectedReport,
-            total
-        );
-
-
-    const status =
-        getField(
-            selectedReport,
-            "Status"
-        ) ||
-        "Completed";
 
 
     const date =
-        getField(
-            selectedReport,
-            "Submission Date"
+        new Date(
+            value
         );
 
 
-    const codingEvaluation =
-        getField(
-            selectedReport,
-            "Coding Evaluation"
-        );
-
-
-    let html = "";
-
-
-    /* =================================================
-       STUDENT DETAILS
-    ================================================= */
-
-    html +=
-
-        "<div class='report-box'>" +
-
-        "<h3>Student Details</h3>" +
-
-        "<p><b>Name:</b> " +
-        escapeHTML(name) +
-        "</p>" +
-
-        "<p><b>Username:</b> " +
-        escapeHTML(username) +
-        "</p>" +
-
-        "<p><b>Year:</b> " +
-        escapeHTML(year) +
-        "</p>" +
-
-        "<p><b>Day:</b> " +
-        escapeHTML(day) +
-        "</p>" +
-
-        "<p><b>Topic:</b> " +
-        escapeHTML(topic) +
-        "</p>" +
-
-        "</div>";
-
-
-    /* =================================================
-       SCORE
-    ================================================= */
-
-    html +=
-
-        "<div class='report-box'>" +
-
-        "<h3>Assessment Score</h3>" +
-
-        "<p><b>MCQ + Error Correction:</b> " +
-        objective +
-        " / 12</p>" +
-
-        "<p><b>Coding:</b> " +
-        coding +
-        " / 3</p>" +
-
-        "<p><b>TOTAL:</b> " +
-        total +
-        " / 15</p>" +
-
-        "<p><b>Percentage:</b> " +
-        percentage +
-        "%</p>" +
-
-        "<p><b>Status:</b> " +
-        escapeHTML(status) +
-        "</p>" +
-
-        "<p><b>Submission Date:</b> " +
-        escapeHTML(date) +
-        "</p>" +
-
-        "</div>";
-
-
-    /* =================================================
-       CODING EVALUATION
-    ================================================= */
-
-    if(codingEvaluation){
-
-        html +=
-
-            "<div class='report-box'>" +
-
-            "<h3>Coding Evaluation</h3>" +
-
-            "<div class='answer-box'>" +
-
-            escapeHTML(
-                codingEvaluation
-            ) +
-
-            "</div>" +
-
-            "</div>";
-
-    }
-
-
-    /* =================================================
-       ANSWERS
-    ================================================= */
-
-    const answers =
-        getField(
-            selectedReport,
-            "Answers"
-        );
-
-
-    html +=
-
-        "<div class='report-box'>" +
-
-        "<h3>Answer Sheet</h3>";
-
-
-    if(!answers){
-
-        html +=
-            "<p>No answers available.</p>";
-
-    }
-
-    else{
-
-        html +=
-
-            "<div class='answer-box'>" +
-
-            escapeHTML(
-                answers
-            ) +
-
-            "</div>";
-
-    }
-
-
-    html +=
-
-        "</div>";
-
-
-    document.getElementById(
-        "modalTitle"
-    ).innerText =
-
-        name +
-        " - Day " +
-        day;
-
-
-    document.getElementById(
-        "reportDetails"
-    ).innerHTML = html;
-
-
-    document.getElementById(
-        "reportModal"
-    ).style.display = "block";
-
-}
-
-
-/* =====================================================
-   CLOSE REPORT
-===================================================== */
-
-function closeReport(){
-
-    document.getElementById(
-        "reportModal"
-    ).style.display = "none";
-
-}
-
-
-/* =====================================================
-   PDF
-===================================================== */
-
-function downloadPDF(){
-
-    if(!selectedReport){
-
-        alert(
-            "Please open a report first."
-        );
-
-        return;
-
-    }
-
-
-    const { jsPDF } =
-        window.jspdf;
-
-
-    const doc =
-        new jsPDF();
-
-
-    let y = 15;
-
-
-    /* =================================================
-       ADD TEXT WITH PAGE BREAK
-    ================================================= */
-
-    function addText(
-        text,
-        fontSize = 11
+    if(
+        isNaN(
+            date.getTime()
+        )
     ){
 
-        doc.setFontSize(
-            fontSize
-        );
-
-
-        const lines =
-            doc.splitTextToSize(
-                String(text || ""),
-                175
-            );
-
-
-        if(
-            y +
-            lines.length * 6 >
-            280
-        ){
-
-            doc.addPage();
-
-            y = 15;
-
-        }
-
-
-        doc.text(
-            lines,
-            15,
-            y
-        );
-
-
-        y +=
-            lines.length * 6 +
-            4;
-
-    }
-
-
-    const name =
-        getField(
-            selectedReport,
-            "Name"
-        );
-
-
-    const username =
-        getField(
-            selectedReport,
-            "Username"
-        );
-
-
-    const year =
-        getField(
-            selectedReport,
-            "Year"
-        );
-
-
-    const day =
-        getField(
-            selectedReport,
-            "Day"
-        );
-
-
-    const topic =
-        getField(
-            selectedReport,
-            "Topic"
-        );
-
-
-    const objective =
-        getObjectiveScore(
-            selectedReport
-        );
-
-
-    const coding =
-        getCodingScore(
-            selectedReport
-        );
-
-
-    const total =
-        getTotalScore(
-            selectedReport,
-            objective,
-            coding
-        );
-
-
-    const percentage =
-        getPercentage(
-            selectedReport,
-            total
-        );
-
-
-    const status =
-        getField(
-            selectedReport,
-            "Status"
-        ) ||
-        "Completed";
-
-
-    const date =
-        getField(
-            selectedReport,
-            "Submission Date"
-        );
-
-
-    const codingEvaluation =
-        getField(
-            selectedReport,
-            "Coding Evaluation"
-        );
-
-
-    const answers =
-        getField(
-            selectedReport,
-            "Answers"
-        );
-
-
-    /* =================================================
-       PDF TITLE
-    ================================================= */
-
-    addText(
-        "Student Placement Assessment Report",
-        18
-    );
-
-
-    addText(
-        "----------------------------------------"
-    );
-
-
-    /* =================================================
-       STUDENT DETAILS
-    ================================================= */
-
-    addText(
-        "STUDENT DETAILS",
-        14
-    );
-
-
-    addText(
-        "Name: " +
-        name
-    );
-
-
-    addText(
-        "Username: " +
-        username
-    );
-
-
-    addText(
-        "Year: " +
-        year
-    );
-
-
-    addText(
-        "Day: " +
-        day
-    );
-
-
-    addText(
-        "Topic: " +
-        topic
-    );
-
-
-    addText(
-        "Submission Date: " +
-        date
-    );
-
-
-    /* =================================================
-       RESULT SUMMARY
-    ================================================= */
-
-    y += 3;
-
-
-    addText(
-        "RESULT SUMMARY",
-        14
-    );
-
-
-    addText(
-        "MCQ + Error Correction: " +
-        objective +
-        "/12"
-    );
-
-
-    addText(
-        "Coding: " +
-        coding +
-        "/3"
-    );
-
-
-    addText(
-        "TOTAL: " +
-        total +
-        "/15"
-    );
-
-
-    addText(
-        "Percentage: " +
-        percentage +
-        "%"
-    );
-
-
-    addText(
-        "Status: " +
-        status
-    );
-
-
-    /* =================================================
-       CODING EVALUATION
-    ================================================= */
-
-    if(codingEvaluation){
-
-        y += 3;
-
-
-        addText(
-            "CODING EVALUATION",
-            14
-        );
-
-
-        addText(
-            codingEvaluation
+        return String(
+            value
         );
 
     }
 
 
-    /* =================================================
-       ANSWERS AT END
-    ================================================= */
-
-    doc.addPage();
-
-    y = 15;
-
-
-    addText(
-        "ANSWER SHEET",
-        16
-    );
-
-
-    addText(
-        "Student Answers",
-        12
-    );
-
-
-    if(answers){
-
-        addText(
-            answers
-        );
-
-    }
-    else{
-
-        addText(
-            "No answers available."
-        );
-
-    }
-
-
-    /* =================================================
-       SAVE PDF
-    ================================================= */
-
-    const safeName =
-        String(name || "Student")
-            .replace(
-                /[^a-z0-9]/gi,
-                "_"
-            );
-
-
-    doc.save(
-
-        safeName +
-        "_Day_" +
-        day +
-        "_Report.pdf"
-
-    );
+    return date.toLocaleString();
 
 }
 
 
 /* =====================================================
-   BACK TO ADMIN
+   CLOSE MODAL
 ===================================================== */
 
-function backToAdmin(){
+function closeModal(){
+
+    document.getElementById(
+        "reportModal"
+    ).style.display =
+        "none";
+
+}
+
+
+window.onclick =
+function(event){
+
+    const modal =
+        document.getElementById(
+            "reportModal"
+        );
+
+
+    if(
+        event.target === modal
+    ){
+
+        closeModal();
+
+    }
+
+};
+
+
+/* =====================================================
+   BACK
+===================================================== */
+
+function goBack(){
 
     window.location.href =
-        "admin.html";
+        "student.html";
+
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+function showError(
+    message
+){
+
+    document.getElementById(
+        "loading"
+    ).style.display =
+        "none";
+
+
+    const error =
+        document.getElementById(
+            "error"
+        );
+
+
+    error.style.display =
+        "block";
+
+
+    error.textContent =
+        message;
 
 }
 
@@ -1445,34 +1797,38 @@ function backToAdmin(){
    ESCAPE HTML
 ===================================================== */
 
-function escapeHTML(value){
+function escapeHTML(
+    value
+){
 
-    return String(value || "")
+    return String(
+        value
+    )
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+    .replace(
+        /</g,
+        "&lt;"
+    )
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+    .replace(
+        />/g,
+        "&gt;"
+    )
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
 
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
@@ -1481,7 +1837,7 @@ function escapeHTML(value){
    START
 ===================================================== */
 
-loadReportsFromGoogleSheet();
+loadReports();
 
 </script>
 
