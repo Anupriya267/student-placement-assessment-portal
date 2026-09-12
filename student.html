@@ -9,12 +9,9 @@
 
 </head>
 
-
 <body>
 
-
 <div class="dashboard">
-
 
 <h1>
 Student Dashboard
@@ -28,15 +25,14 @@ Welcome Student
 </h2>
 
 <p>
-Name: Student 1
+Name: <span id="studentName"></span>
 </p>
 
 <p>
-Year: Final Year
+Year: <span id="studentYear"></span>
 </p>
 
 </div>
-
 
 
 <div class="card">
@@ -46,12 +42,12 @@ Assigned Assessment
 </h2>
 
 <p>
-Day 1 Java Placement Assessment
+Day <span id="assignedDay"></span> Java Placement Assessment
 </p>
 
 <p>
 Topic:
-Loops, Conditions, Operators
+<span id="topic"></span>
 </p>
 
 <p>
@@ -59,14 +55,11 @@ Duration:
 40 Minutes
 </p>
 
-
-<button onclick="window.location.href='assessment.html'">
+<button onclick="startAssessment()">
 START ASSESSMENT
 </button>
 
-
 </div>
-
 
 
 <div class="card">
@@ -75,16 +68,132 @@ START ASSESSMENT
 Previous Results
 </h2>
 
-<p>
+<div id="previousResults">
 No results available
-</p>
-
+</div>
 
 </div>
 
 
 </div>
 
+
+<script>
+
+
+// ================= STUDENT DETAILS =================
+
+let studentName =
+    localStorage.getItem("studentName")
+    || "Student";
+
+let studentYear =
+    localStorage.getItem("studentYear")
+    || "Final Year";
+
+let assignedDay =
+    parseInt(
+        localStorage.getItem("assignedDay")
+        || "1"
+    );
+
+
+document.getElementById("studentName")
+    .innerText = studentName;
+
+document.getElementById("studentYear")
+    .innerText = studentYear;
+
+document.getElementById("assignedDay")
+    .innerText = assignedDay;
+
+
+// ================= TOPIC =================
+
+let topics = {
+
+    1: "Loops, Conditions, Operators",
+
+    2: "Loops and Conditional Logic",
+
+    3: "Operators, Conditions and Loops",
+
+    4: "Loop Problem Solving",
+
+    5: "Array Basics and Loop Traversal"
+
+};
+
+
+document.getElementById("topic")
+    .innerText =
+    topics[assignedDay]
+    || "Java Placement Practice";
+
+
+// ================= START =================
+
+function startAssessment(){
+
+    window.location.href =
+        "assessment.html";
+
+}
+
+
+// ================= PREVIOUS RESULTS =================
+
+let reports =
+    JSON.parse(
+        localStorage.getItem("studentReports")
+        || "[]"
+    );
+
+let username =
+    localStorage.getItem("studentUsername");
+
+
+let myReports =
+    reports.filter(function(report){
+
+        return String(report.username)
+            ===
+            String(username);
+
+    });
+
+
+if(myReports.length > 0){
+
+    let html = "";
+
+    myReports
+        .slice()
+        .reverse()
+        .forEach(function(report){
+
+            html +=
+                "<p>" +
+                "Day " +
+                report.day +
+                " — " +
+                report.score +
+                "/" +
+                report.total +
+                " — " +
+                report.percentage +
+                "%" +
+                "</p>";
+
+        });
+
+    document.getElementById(
+        "previousResults"
+    ).innerHTML = html;
+
+}
+
+</script>
 
 </body>
 
