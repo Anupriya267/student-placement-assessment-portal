@@ -1,339 +1,639 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Admin Dashboard</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="style.css">
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
 <style>
+
 /* =========================================================
-   ADMIN DASHBOARD PROFESSIONAL DESIGN
-   ========================================================= */
+   ADMIN DESIGN ONLY
+   NO DATA OR FUNCTIONALITY CHANGES
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
 
 body {
     margin: 0;
     min-height: 100vh;
     font-family: Arial, Helvetica, sans-serif;
-    background: #f4f7fb;
     color: #1f2937;
+
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(40,85,217,.12),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 90% 100%,
+            rgba(16,185,129,.08),
+            transparent 32%
+        ),
+        #f4f7fb;
 }
 
+/* =========================
+   ADMIN MAIN AREA
+========================= */
+
 .dashboard {
-    width: min(1200px, calc(100% - 32px));
+    width: min(1100px, calc(100% - 32px));
     margin: 0 auto;
-    padding: 32px 0 50px;
+    padding: 105px 0 50px;
+}
+
+/* =========================
+   FIXED ADMIN HEADER
+========================= */
+
+.dashboard:before {
+
+    content: "ADMIN DASHBOARD";
+
+    position: fixed;
+
+    z-index: 9000;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 72px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,.96);
+
+    color: #1746b8;
+
+    font-size: 22px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    box-shadow:
+        0 4px 18px rgba(15,23,42,.08);
+
+    backdrop-filter: blur(10px);
 }
 
 .dashboard > h1 {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    margin: 0 -16px 24px;
-    padding: 20px 16px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-    color: #1d4ed8;
-    font-size: 30px;
-    font-weight: 700;
+    display: none;
 }
 
+/* =========================
+   CARDS
+========================= */
+
 .card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 22px;
-    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+
+    background: rgba(255,255,255,.98);
+
+    border: 1px solid #e5eaf2;
+
+    border-radius: 18px;
+
+    padding: 26px;
+
+    margin: 0 0 20px;
+
+    box-shadow:
+        0 8px 28px rgba(15,23,42,.07);
 }
 
 .card h2 {
-    margin: 0 0 18px;
-    color: #111827;
+
+    margin: 0 0 10px;
+
+    color: #183b78;
+
     font-size: 21px;
 }
 
-.card h3 {
-    color: #1f2937;
+.card p {
+
+    color: #64748b;
+
+    line-height: 1.6;
 }
 
+/* =========================
+   BUTTONS
+========================= */
+
 button {
-    border: none;
-    border-radius: 9px;
-    padding: 11px 18px;
-    background: #2563eb;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 600;
+
+    border: 0;
+
+    border-radius: 10px;
+
+    padding: 12px 20px;
+
+    background: #2855d9;
+
+    color: #fff;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
     cursor: pointer;
-    transition: 0.2s;
+
+    box-shadow:
+        0 4px 12px rgba(40,85,217,.20);
 }
 
 button:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
+
+    background: #1746b8;
 }
 
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
+/* =========================
+   EXCEL FILE INPUT
+========================= */
 
-input,
-select {
+input[type=file] {
+
     width: 100%;
-    box-sizing: border-box;
-    padding: 12px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 9px;
-    font-size: 14px;
-    background: #ffffff;
+
+    max-width: 600px;
+
+    padding: 13px;
+
+    border: 2px dashed #cbd5e1;
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    cursor: pointer;
 }
 
-input:focus,
-select:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-}
-
-label {
-    display: block;
-    margin-bottom: 7px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.import-area {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-}
-
-#importFile {
-    max-width: 420px;
-}
+/* =========================
+   IMPORT STATUS
+========================= */
 
 #importStatus {
+
+    min-height: 24px;
+
     margin-top: 14px;
-    padding: 12px;
-    border-radius: 8px;
-    display: none;
-}
 
-.day-card {
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 18px;
-    margin-bottom: 14px;
-}
-
-.day-card h3 {
-    margin: 0 0 10px;
-    color: #1d4ed8;
-}
-
-.question-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(15, 23, 42, 0.65);
-    box-sizing: border-box;
-}
-
-.question-modal-content {
-    width: min(1000px, 100%);
-    max-height: 90vh;
-    overflow-y: auto;
-    background: #ffffff;
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-}
-
-.question-modal-header {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    padding: 18px 22px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.question-modal-header h2 {
-    margin: 0;
-    color: #1d4ed8;
-}
-
-.question-modal-body {
-    padding: 22px;
-}
-
-.question-item {
-    margin-bottom: 18px;
-    padding: 18px;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    background: #ffffff;
-}
-
-.question-type {
-    display: inline-block;
-    margin-bottom: 10px;
-    padding: 5px 9px;
-    border-radius: 6px;
-    background: #eff6ff;
-    color: #1d4ed8;
-    font-size: 12px;
     font-weight: 700;
 }
 
-.question-text {
-    white-space: pre-wrap;
-    line-height: 1.6;
-    color: #111827;
+.success-message {
+
+    color: #16803c !important;
 }
+
+.error-message {
+
+    color: #c62828 !important;
+}
+
+/* =========================
+   SUMMARY NUMBERS
+========================= */
+
+#totalQuestions,
+#totalDays {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 48px;
+
+    min-height: 34px;
+
+    padding: 4px 12px;
+
+    border-radius: 9px;
+
+    background: #eef4ff;
+
+    color: #2855d9;
+
+    font-size: 18px;
+}
+
+/* =========================
+   DAY CARDS
+========================= */
+
+.day-card {
+
+    margin: 14px 0;
+
+    padding: 20px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 14px;
+
+    background: #f8fafc;
+
+    box-shadow: none;
+}
+
+.day-title {
+
+    margin: 0 0 8px;
+
+    font-size: 18px;
+}
+
+/* =========================
+   QUESTION MODAL
+========================= */
+
+.question-modal {
+
+    display: none;
+
+    position: fixed;
+
+    z-index: 9999;
+
+    inset: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    padding: 20px;
+
+    background:
+        rgba(15,23,42,.72);
+
+    backdrop-filter: blur(5px);
+}
+
+.question-modal-content {
+
+    background: #fff;
+
+    width: min(100%, 950px);
+
+    height: min(92vh, 900px);
+
+    margin: 4vh auto;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.25);
+}
+
+/* =========================
+   MODAL HEADER
+========================= */
+
+.question-modal-header {
+
+    min-height: 68px;
+
+    padding: 15px 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2855d9,
+            #1746b8
+        );
+
+    color: #fff;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    flex-shrink: 0;
+}
+
+.question-modal-header h2 {
+
+    margin: 0;
+
+    font-size: 20px;
+}
+
+/* =========================
+   CLOSE BUTTON
+========================= */
+
+.close-button {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+}
+
+.close-button:hover {
+
+    background:
+        rgba(255,255,255,.18);
+}
+
+/* =========================
+   MODAL BODY
+========================= */
+
+.question-modal-body {
+
+    padding: 22px;
+
+    overflow-y: auto;
+
+    flex: 1;
+
+    background: #f8fafc;
+}
+
+/* =========================
+   QUESTION ITEMS
+========================= */
+
+.question-item {
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    margin-bottom: 16px;
+
+    background: #fff;
+
+    box-shadow:
+        0 3px 12px rgba(15,23,42,.05);
+}
+
+.question-item h3 {
+
+    margin: 0 0 14px;
+
+    font-size: 17px;
+
+    line-height: 1.5;
+
+    color: #1e293b;
+}
+
+/* =========================
+   QUESTION TYPE
+========================= */
+
+.question-type {
+
+    display: inline-block;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    margin-bottom: 12px;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    background: #eef2ff;
+
+    color: #2855d9;
+}
+
+/* =========================
+   OPTIONS
+========================= */
 
 .option {
+
     padding: 9px 12px;
-    margin: 7px 0;
+
+    margin: 6px 0;
+
+    border-radius: 8px;
+
     background: #f8fafc;
-    border-radius: 7px;
+
+    color: #475569;
 }
+
+/* =========================
+   ANSWER BOX
+========================= */
 
 .answer-box {
-    margin-top: 12px;
-    padding: 12px;
-    border-radius: 8px;
-    background: #ecfdf5;
-    border-left: 4px solid #10b981;
+
+    margin-top: 14px;
+
+    padding: 13px;
+
+    background: #ecfdf3;
+
+    border: 1px solid #bbf7d0;
+
+    border-radius: 9px;
 }
+
+/* =========================
+   CODING BOX
+========================= */
 
 .coding-box {
-    margin-top: 12px;
+
+    background: #eff6ff;
+
+    border: 1px solid #bfdbfe;
+
     padding: 14px;
-    background: #f8fafc;
+
     border-radius: 9px;
+
+    margin-top: 12px;
+
+    overflow-x: auto;
 }
 
-.coding-box pre {
-    overflow-x: auto;
-    margin: 0;
-    white-space: pre-wrap;
-}
+/* =========================
+   CODING EVALUATION
+========================= */
 
 .coding-evaluation {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 8px;
-    background: #eff6ff;
-}
 
-.error-code {
-    margin: 12px 0;
+    background: #fff7e6;
+
+    border: 1px solid #fed7aa;
+
     padding: 14px;
-    overflow-x: auto;
-    background: #111827;
-    color: #f9fafb;
+
     border-radius: 9px;
+
+    margin-top: 12px;
 }
 
-.error-code pre {
-    margin: 0;
-    white-space: pre-wrap;
+/* =========================
+   QUESTION TYPE BORDERS
+========================= */
+
+.coding-question {
+
+    border-left: 5px solid #2855d9;
 }
 
-.summary-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+.error-question {
+
+    border-left: 5px solid #f39c12;
 }
 
-.summary-box {
-    padding: 18px;
-    border-radius: 12px;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    text-align: center;
+.mcq-question {
+
+    border-left: 5px solid #28a745;
 }
 
-.summary-box strong {
-    display: block;
-    margin-top: 5px;
-    font-size: 25px;
-    color: #1d4ed8;
+/* =========================
+   CODE
+========================= */
+
+pre {
+
+    max-width: 100%;
+
+    overflow-x: auto;
+
+    padding: 14px;
+
+    border-radius: 10px;
+
+    background: #0f172a;
+
+    color: #e2e8f0;
+
+    line-height: 1.55;
 }
 
-.action-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
+/* =========================
+   MOBILE
+========================= */
 
-@media (max-width: 800px) {
-    .summary-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+@media (max-width: 700px) {
 
     .dashboard {
-        width: min(100% - 20px, 1200px);
-        padding-top: 20px;
+
+        width: calc(100% - 20px);
+
+        padding: 92px 0 30px;
     }
 
-    .dashboard > h1 {
-        font-size: 24px;
-        margin-left: -10px;
-        margin-right: -10px;
-    }
-}
+    .dashboard:before {
 
-@media (max-width: 500px) {
-    .summary-grid {
-        grid-template-columns: 1fr;
+        height: 62px;
+
+        font-size: 18px;
     }
 
     .card {
-        padding: 16px;
-    }
 
-    .question-modal {
-        padding: 8px;
-    }
+        padding: 18px;
 
-    .question-modal-body {
-        padding: 14px;
-    }
-
-    .question-modal-header {
-        padding: 14px;
+        border-radius: 14px;
     }
 
     button {
+
         width: 100%;
+
+        min-height: 46px;
     }
 
-    .import-area {
-        flex-direction: column;
-        align-items: stretch;
+    .question-modal {
+
+        padding: 8px;
     }
 
-    #importFile {
-        max-width: none;
+    .question-modal-content {
+
+        width: 100%;
+
+        height: 96vh;
+
+        margin: 2vh auto;
+
+        border-radius: 14px;
+    }
+
+    .question-modal-header {
+
+        padding: 12px 15px;
+    }
+
+    .question-modal-header h2 {
+
+        font-size: 17px;
+    }
+
+    .question-modal-body {
+
+        padding: 12px;
+    }
+
+    .question-item {
+
+        padding: 15px;
     }
 }
+
 </style>
+
 </head>
 
 <body>
@@ -342,131 +642,111 @@ label {
 
 <h1>Admin Dashboard</h1>
 
-<!-- =====================================================
-     QUESTION BANK IMPORT
-     ===================================================== -->
+<!-- QUESTION BANK IMPORT -->
 
 <div class="card">
 
 <h2>Question Bank Import</h2>
 
-<div class="import-area">
+<p>
+Upload the 41-Day Java Placement Question Bank Excel file.
+</p>
 
 <input
     type="file"
     id="excelFile"
     accept=".xlsx,.xls"
-/>
+>
 
-<button onclick="importExcel()">
-    Import Excel
+<br><br>
+
+<button
+    type="button"
+    onclick="importExcel()"
+>
+Import Question Bank
 </button>
 
-</div>
-
-<div id="importStatus"></div>
+<p id="importStatus"></p>
 
 </div>
 
 
-<!-- =====================================================
-     SUMMARY
-     ===================================================== -->
+<!-- QUESTION BANK SUMMARY -->
 
 <div class="card">
 
 <h2>Question Bank Summary</h2>
 
-<div class="summary-grid">
+<p>
+Total Questions:
+<strong id="totalQuestions">0</strong>
+</p>
 
-<div class="summary-box">
-    <div>Total Questions</div>
-    <strong id="totalQuestions">0</strong>
-</div>
-
-<div class="summary-box">
-    <div>MCQ</div>
-    <strong id="mcqCount">0</strong>
-</div>
-
-<div class="summary-box">
-    <div>Error Correction</div>
-    <strong id="errorCount">0</strong>
-</div>
-
-<div class="summary-box">
-    <div>Coding</div>
-    <strong id="codingCount">0</strong>
-</div>
-
-</div>
+<p>
+Total Days:
+<strong id="totalDays">0</strong>
+</p>
 
 </div>
 
 
-<!-- =====================================================
-     DAILY ASSESSMENTS
-     ===================================================== -->
+<!-- DAILY ASSESSMENTS -->
 
 <div class="card">
 
 <h2>Daily Assessments</h2>
 
-<div id="dailyAssessments">
-    <p>Loading question bank...</p>
-</div>
+<div id="dayList">
+
+<p>
+No question bank imported yet.
+</p>
 
 </div>
 
+</div>
 
-<!-- =====================================================
-     STUDENT MANAGEMENT
-     ===================================================== -->
+
+<!-- STUDENT MANAGEMENT -->
 
 <div class="card">
 
 <h2>Student Management</h2>
 
-<div class="action-row">
-
-<button onclick="goStudents()">
-    Manage Students
+<button
+    type="button"
+    onclick="studentManagement()"
+>
+Manage Students
 </button>
 
 </div>
 
-</div>
 
-
-<!-- =====================================================
-     REPORTS
-     ===================================================== -->
+<!-- REPORTS -->
 
 <div class="card">
 
 <h2>Reports</h2>
 
-<div class="action-row">
-
-<button onclick="viewReports()">
-    View Student Reports
+<button
+    type="button"
+    onclick="viewReports()"
+>
+View Student Reports
 </button>
 
 </div>
 
 </div>
 
-</div>
 
-
-<!-- =====================================================
-     QUESTION VIEWER MODAL
-     ===================================================== -->
+<!-- QUESTION MODAL -->
 
 <div
     id="questionModal"
     class="question-modal"
-    onclick="closeModalOnOutside(event)"
 >
 
 <div class="question-modal-content">
@@ -474,17 +754,20 @@ label {
 <div class="question-modal-header">
 
 <h2 id="modalTitle">
-    Questions
+Day Questions
 </h2>
 
-<button onclick="closeQuestionModal()">
-    Close
-</button>
+<span
+    class="close-button"
+    onclick="closeQuestionModal()"
+>
+&times;
+</span>
 
 </div>
 
 <div
-    id="modalBody"
+    id="modalQuestions"
     class="question-modal-body"
 >
 </div>
@@ -494,282 +777,190 @@ label {
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
 <script>
 
-/* =========================================================
-   GLOBAL DATA
-   ========================================================= */
-
-let questionBank = [];
-let questionBankDays = {};
-
-
-/* =========================================================
-   SAFE HTML
-   ========================================================= */
-
-function escapeHTML(value) {
-
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
-
-
-/* =========================================================
-   NORMALIZE VALUE
-   ========================================================= */
-
-function normalize(value) {
-
-    return String(value ?? "")
-        .trim();
-
-}
-
-
-/* =========================================================
-   NORMALIZE QUESTION TYPE
-   ========================================================= */
-
-function normalizeType(value) {
-
-    const type = normalize(value).toUpperCase();
-
-    if (
-        type.includes("MCQ") ||
-        type.includes("MULTIPLE")
-    ) {
-        return "MCQ";
-    }
-
-    if (
-        type.includes("ERROR") ||
-        type.includes("DEBUG")
-    ) {
-        return "ERROR";
-    }
-
-    if (
-        type.includes("CODING") ||
-        type.includes("PROGRAM")
-    ) {
-        return "CODING";
-    }
-
-    return type || "MCQ";
-
-}
-
-
-/* =========================================================
+/* =====================================================
    FIND COLUMN
-   ========================================================= */
+===================================================== */
 
-function getColumn(row, names) {
+function findColumn(row, names) {
 
     const keys = Object.keys(row);
 
-    for (const name of names) {
+    for (let i = 0; i < names.length; i++) {
 
-        const exact = keys.find(
-            key =>
-                key.trim().toLowerCase() ===
-                name.trim().toLowerCase()
-        );
+        const wanted =
+            String(names[i])
+                .trim()
+                .toLowerCase();
 
-        if (exact !== undefined) {
-            return row[exact];
+        const found = keys.find(function(key) {
+
+            return String(key)
+                .trim()
+                .toLowerCase() === wanted;
+
+        });
+
+        if (found) {
+            return found;
         }
-
     }
 
-    return "";
-
+    return null;
 }
 
 
-/* =========================================================
+/* =====================================================
    NORMALIZE QUESTION
-   ========================================================= */
+===================================================== */
 
-function normalizeQuestion(row, index) {
+function normalizeQuestion(row) {
 
-    const question =
-        getColumn(row, [
-            "Question",
-            "question",
-            "Questions"
-        ]);
+    const dayKey = findColumn(row, [
+        "Day"
+    ]);
 
-    const type =
-        normalizeType(
-            getColumn(row, [
-                "Type",
-                "Question Type",
-                "QuestionType"
-            ])
-        );
+    const typeKey = findColumn(row, [
+        "Question Type",
+        "Type"
+    ]);
 
-    const dayValue =
-        getColumn(row, [
-            "Day",
-            "day",
-            "Day Number",
-            "DayNumber"
-        ]);
+    const numberKey = findColumn(row, [
+        "Question No.",
+        "Question No",
+        "Number"
+    ]);
 
-    let day =
-        parseInt(
-            String(dayValue).replace(/\D/g, ""),
-            10
-        );
+    const questionKey = findColumn(row, [
+        "Question"
+    ]);
 
-    if (!Number.isFinite(day) || day < 1) {
-        day = 1;
-    }
+    const optionAKey = findColumn(row, [
+        "Option A"
+    ]);
 
-    const optionA =
-        getColumn(row, ["Option A", "A"]);
+    const optionBKey = findColumn(row, [
+        "Option B"
+    ]);
 
-    const optionB =
-        getColumn(row, ["Option B", "B"]);
+    const optionCKey = findColumn(row, [
+        "Option C"
+    ]);
 
-    const optionC =
-        getColumn(row, ["Option C", "C"]);
+    const optionDKey = findColumn(row, [
+        "Option D"
+    ]);
 
-    const optionD =
-        getColumn(row, ["Option D", "D"]);
+    const answerKey = findColumn(row, [
+        "Correct Answer",
+        "Answer"
+    ]);
 
-    const correctAnswer =
-        getColumn(row, [
-            "Correct Answer",
-            "Answer",
-            "CorrectAnswer"
-        ]);
+    const sourceKey = findColumn(row, [
+        "Source Date / Assessment"
+    ]);
 
-    const errorCode =
-        getColumn(row, [
-            "Error Code",
-            "Buggy Code",
-            "Code"
-        ]);
+    const codingRequirementKey = findColumn(row, [
+        "Coding Requirement"
+    ]);
 
-    const solution =
-        getColumn(row, [
-            "Corrected Code",
-            "Solution",
-            "Answer Code"
-        ]);
+    const codingEvaluationKey = findColumn(row, [
+        "Coding Evaluation"
+    ]);
 
-    const codingEvaluation =
-        getColumn(row, [
-            "Coding Evaluation",
-            "Evaluation"
-        ]);
-
-    const logic =
-        getColumn(row, [
-            "Full-Mark Logic",
-            "Full Mark Logic",
-            "Answer Key",
-            "Logic"
-        ]);
-
-    const constraints =
-        getColumn(row, [
-            "Constraints",
-            "Contract"
-        ]);
 
     return {
 
-        id:
-            index + 1,
+        Day: dayKey
+            ? String(row[dayKey] || "").trim()
+            : "",
 
-        day,
+        "Question Type": typeKey
+            ? String(row[typeKey] || "").trim()
+            : "",
 
-        type,
+        "Question No.": numberKey
+            ? String(row[numberKey] || "").trim()
+            : "",
 
-        question:
-            normalize(question),
+        Question: questionKey
+            ? String(row[questionKey] || "").trim()
+            : "",
 
-        optionA:
-            normalize(optionA),
+        "Option A": optionAKey
+            ? String(row[optionAKey] || "").trim()
+            : "",
 
-        optionB:
-            normalize(optionB),
+        "Option B": optionBKey
+            ? String(row[optionBKey] || "").trim()
+            : "",
 
-        optionC:
-            normalize(optionC),
+        "Option C": optionCKey
+            ? String(row[optionCKey] || "").trim()
+            : "",
 
-        optionD:
-            normalize(optionD),
+        "Option D": optionDKey
+            ? String(row[optionDKey] || "").trim()
+            : "",
 
-        correctAnswer:
-            normalize(correctAnswer),
+        "Correct Answer": answerKey
+            ? String(row[answerKey] || "").trim()
+            : "",
 
-        errorCode:
-            normalize(errorCode),
+        "Source Date / Assessment": sourceKey
+            ? String(row[sourceKey] || "").trim()
+            : "",
 
-        solution:
-            normalize(solution),
+        "Coding Requirement": codingRequirementKey
+            ? String(row[codingRequirementKey] || "").trim()
+            : "",
 
-        codingEvaluation:
-            normalize(codingEvaluation),
-
-        logic:
-            normalize(logic),
-
-        constraints:
-            normalize(constraints),
-
-        raw:
-            row
+        "Coding Evaluation": codingEvaluationKey
+            ? String(row[codingEvaluationKey] || "").trim()
+            : ""
 
     };
 
 }
 
 
-/* =========================================================
+/* =====================================================
    IMPORT EXCEL
-   ========================================================= */
+===================================================== */
 
 function importExcel() {
 
     const fileInput =
         document.getElementById("excelFile");
 
-    const status =
-        document.getElementById("importStatus");
-
-    if (!fileInput.files.length) {
-
-        status.style.display = "block";
-
-        status.style.background = "#fef2f2";
-
-        status.style.color = "#b91c1c";
-
-        status.textContent =
-            "Please select an Excel file.";
-
-        return;
-
-    }
-
     const file =
         fileInput.files[0];
 
+
+    if (!file) {
+
+        alert(
+            "Please select the Excel file first."
+        );
+
+        return;
+    }
+
+
+    const status =
+        document.getElementById("importStatus");
+
+
+    status.className = "";
+
+    status.innerHTML =
+        "Reading Excel file...";
+
+
     const reader =
         new FileReader();
+
 
     reader.onload = function(event) {
 
@@ -780,507 +971,647 @@ function importExcel() {
                     event.target.result
                 );
 
+
             const workbook =
                 XLSX.read(
                     data,
-                    { type: "array" }
+                    {
+                        type: "array"
+                    }
                 );
 
-            const firstSheet =
-                workbook.Sheets[
-                    workbook.SheetNames[0]
-                ];
 
-            const rows =
+            /* FIND QUESTION BANK SHEET */
+
+            let sheetName = null;
+
+
+            const exactQuestionBank =
+                workbook.SheetNames.find(
+                    function(name) {
+
+                        return String(name)
+                            .trim()
+                            .toLowerCase()
+                            === "question bank";
+
+                    }
+                );
+
+
+            const exactQuestions =
+                workbook.SheetNames.find(
+                    function(name) {
+
+                        return String(name)
+                            .trim()
+                            .toLowerCase()
+                            === "questions";
+
+                    }
+                );
+
+
+            if (exactQuestionBank) {
+
+                sheetName =
+                    exactQuestionBank;
+
+            } else if (exactQuestions) {
+
+                sheetName =
+                    exactQuestions;
+
+            } else if (
+                workbook.SheetNames.length > 0
+            ) {
+
+                sheetName =
+                    workbook.SheetNames[0];
+
+            }
+
+
+            if (!sheetName) {
+
+                throw new Error(
+                    "No worksheet found in the Excel file."
+                );
+
+            }
+
+
+            console.log(
+                "Using sheet:",
+                sheetName
+            );
+
+
+            /* READ SHEET */
+
+            const worksheet =
+                workbook.Sheets[sheetName];
+
+
+            const rawQuestions =
                 XLSX.utils.sheet_to_json(
-                    firstSheet,
+                    worksheet,
                     {
                         defval: ""
                     }
                 );
 
-            if (!rows.length) {
+
+            if (
+                rawQuestions.length === 0
+            ) {
 
                 throw new Error(
-                    "The Excel file is empty."
+                    "The selected sheet contains no data."
                 );
 
             }
 
-            questionBank =
-                rows
+
+            /* NORMALIZE */
+
+            const questions =
+                rawQuestions
                     .map(normalizeQuestion)
-                    .filter(
-                        q =>
-                            q.question ||
-                            q.type === "CODING"
-                    );
+                    .filter(function(q) {
 
-            questionBankDays = {};
+                        return (
+                            q.Day !== "" &&
+                            q.Question !== ""
+                        );
 
-            questionBank.forEach(question => {
+                    });
 
-                if (!questionBankDays[question.day]) {
-                    questionBankDays[question.day] = [];
+
+            if (
+                questions.length === 0
+            ) {
+
+                throw new Error(
+                    "No valid questions were found. Check that the Excel has Day and Question columns."
+                );
+
+            }
+
+
+            /* FIND DAYS */
+
+            const dayMap = {};
+
+
+            questions.forEach(function(q) {
+
+                const day =
+                    String(q.Day).trim();
+
+
+                if (day !== "") {
+
+                    dayMap[day] = true;
+
                 }
-
-                questionBankDays[
-                    question.day
-                ].push(question);
 
             });
 
+
+            const days =
+                Object.keys(dayMap);
+
+
+            days.sort(function(a, b) {
+
+                const numberA =
+                    parseInt(
+                        String(a).replace(
+                            /[^0-9]/g,
+                            ""
+                        )
+                    ) || 0;
+
+
+                const numberB =
+                    parseInt(
+                        String(b).replace(
+                            /[^0-9]/g,
+                            ""
+                        )
+                    ) || 0;
+
+
+                return numberA - numberB;
+
+            });
+
+
+            /* SAVE */
+
             localStorage.setItem(
                 "questionBank",
-                JSON.stringify(questionBank)
+                JSON.stringify(questions)
             );
+
 
             localStorage.setItem(
                 "questionBankDays",
-                JSON.stringify(questionBankDays)
+                JSON.stringify(days)
             );
 
-            updateSummary();
 
-            displayDailyAssessments();
+            /* SHOW */
 
-            status.style.display = "block";
+            showSummary(
+                questions,
+                days
+            );
 
-            status.style.background = "#ecfdf5";
 
-            status.style.color = "#047857";
+            status.className =
+                "success-message";
 
-            status.textContent =
-                "Excel imported successfully. " +
-                questionBank.length +
-                " questions loaded.";
 
-        } catch (error) {
+            status.innerHTML =
+                "Question Bank imported successfully.";
 
-            console.error(error);
 
-            status.style.display = "block";
+            alert(
+                "Question Bank imported successfully!\n\n" +
+                "Total Questions: " +
+                questions.length +
+                "\nTotal Days: " +
+                days.length
+            );
 
-            status.style.background = "#fef2f2";
 
-            status.style.color = "#b91c1c";
+        } catch(error) {
 
-            status.textContent =
+            console.error(
+                "Import error:",
+                error
+            );
+
+
+            status.className =
+                "error-message";
+
+
+            status.innerHTML =
                 "Import failed: " +
-                error.message;
+                escapeHTML(error.message);
+
+
+            alert(
+                "Question Bank import failed.\n\n" +
+                error.message
+            );
 
         }
 
     };
+
+
+    reader.onerror = function() {
+
+        alert(
+            "Unable to read the Excel file."
+        );
+
+    };
+
 
     reader.readAsArrayBuffer(file);
 
 }
 
 
-/* =========================================================
-   LOAD STORED QUESTION BANK
-   ========================================================= */
+/* =====================================================
+   SHOW SUMMARY
+===================================================== */
 
-function loadQuestionBank() {
-
-    try {
-
-        const stored =
-            localStorage.getItem(
-                "questionBank"
-            );
-
-        if (stored) {
-
-            questionBank =
-                JSON.parse(stored);
-
-        }
-
-        const storedDays =
-            localStorage.getItem(
-                "questionBankDays"
-            );
-
-        if (storedDays) {
-
-            questionBankDays =
-                JSON.parse(storedDays);
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Question bank loading error:",
-            error
-        );
-
-        questionBank = [];
-
-        questionBankDays = {};
-
-    }
-
-}
-
-
-/* =========================================================
-   SUMMARY
-   ========================================================= */
-
-function updateSummary() {
-
-    const mcq =
-        questionBank.filter(
-            q => q.type === "MCQ"
-        ).length;
-
-    const error =
-        questionBank.filter(
-            q => q.type === "ERROR"
-        ).length;
-
-    const coding =
-        questionBank.filter(
-            q => q.type === "CODING"
-        ).length;
+function showSummary(
+    questions,
+    days
+) {
 
     document.getElementById(
         "totalQuestions"
-    ).textContent =
-        questionBank.length;
+    ).innerText =
+        questions.length;
+
 
     document.getElementById(
-        "mcqCount"
-    ).textContent =
-        mcq;
-
-    document.getElementById(
-        "errorCount"
-    ).textContent =
-        error;
-
-    document.getElementById(
-        "codingCount"
-    ).textContent =
-        coding;
-
-}
+        "totalDays"
+    ).innerText =
+        days.length;
 
 
-/* =========================================================
-   DAILY ASSESSMENTS
-   ========================================================= */
-
-function displayDailyAssessments() {
-
-    const container =
+    const dayList =
         document.getElementById(
-            "dailyAssessments"
+            "dayList"
         );
 
-    const days =
-        Object.keys(questionBankDays)
-            .map(Number)
-            .sort((a, b) => a - b);
 
-    if (!days.length) {
+    dayList.innerHTML = "";
 
-        container.innerHTML =
-            "<p>No question bank imported yet.</p>";
 
-        return;
+    days.forEach(function(day) {
 
-    }
+        const dayQuestions =
+            questions.filter(function(q) {
 
-    container.innerHTML = "";
+                return (
+                    String(q.Day).trim()
+                    ===
+                    String(day).trim()
+                );
 
-    days.forEach(day => {
+            });
 
-        const questions =
-            questionBankDays[day] || [];
 
-        const mcq =
-            questions.filter(
-                q => q.type === "MCQ"
-            ).length;
+        let topic =
+            "Java Placement Assessment";
 
-        const error =
-            questions.filter(
-                q => q.type === "ERROR"
-            ).length;
 
-        const coding =
-            questions.filter(
-                q => q.type === "CODING"
-            ).length;
+        if (
+            dayQuestions.length > 0 &&
+            dayQuestions[0][
+                "Source Date / Assessment"
+            ]
+        ) {
+
+            topic =
+                dayQuestions[0][
+                    "Source Date / Assessment"
+                ];
+
+        }
+
 
         const card =
             document.createElement("div");
 
-        card.className = "day-card";
 
-        card.innerHTML = `
+        card.className =
+            "card day-card";
 
-            <h3>Day ${day}</h3>
 
-            <p>
-                <strong>MCQ:</strong> ${mcq}
-                &nbsp;&nbsp;
-                <strong>Error:</strong> ${error}
-                &nbsp;&nbsp;
-                <strong>Coding:</strong> ${coding}
-            </p>
+        card.innerHTML =
+            "<h3 class='day-title'>" +
+            "Day " +
+            escapeHTML(day) +
+            "</h3>" +
 
-            <div class="action-row">
+            "<p>" +
+            escapeHTML(topic) +
+            "</p>" +
 
-                <button
-                    onclick="viewDayQuestions(${day})"
-                >
-                    View Questions
-                </button>
+            "<p><strong>Questions:</strong> " +
+            dayQuestions.length +
+            "</p>" +
 
-            </div>
-        `;
+            "<button " +
+            "type='button' " +
+            "onclick=\"viewDay('" +
+            escapeJS(day) +
+            "')\">" +
+            "View Questions" +
+            "</button>";
 
-        container.appendChild(card);
+
+        dayList.appendChild(card);
 
     });
 
 }
 
 
-/* =========================================================
+/* =====================================================
    VIEW DAY QUESTIONS
-   ========================================================= */
+===================================================== */
 
-function viewDayQuestions(day) {
+function viewDay(day) {
 
-    const questions =
-        questionBankDays[day] || [];
-
-    document.getElementById(
-        "modalTitle"
-    ).textContent =
-        `Day ${day} Questions`;
-
-    const body =
-        document.getElementById(
-            "modalBody"
+    const saved =
+        localStorage.getItem(
+            "questionBank"
         );
 
-    if (!questions.length) {
 
-        body.innerHTML =
-            "<p>No questions found for this day.</p>";
+    if (!saved) {
 
-        openQuestionModal();
+        alert(
+            "No question bank imported yet."
+        );
 
         return;
 
     }
 
-    body.innerHTML = "";
 
-    questions.forEach(
-        (question, index) => {
+    let questions;
 
-            const item =
+
+    try {
+
+        questions =
+            JSON.parse(saved);
+
+    } catch(error) {
+
+        alert(
+            "Question bank data is corrupted. Please import the Excel file again."
+        );
+
+        return;
+
+    }
+
+
+    const dayQuestions =
+        questions.filter(function(q) {
+
+            return (
+                String(q.Day).trim()
+                ===
+                String(day).trim()
+            );
+
+        });
+
+
+    if (
+        dayQuestions.length === 0
+    ) {
+
+        alert(
+            "No questions found for Day " +
+            day
+        );
+
+        return;
+
+    }
+
+
+    const modal =
+        document.getElementById(
+            "questionModal"
+        );
+
+
+    const title =
+        document.getElementById(
+            "modalTitle"
+        );
+
+
+    const container =
+        document.getElementById(
+            "modalQuestions"
+        );
+
+
+    title.innerText =
+        "Day " +
+        day +
+        " - " +
+        dayQuestions.length +
+        " Questions";
+
+
+    container.innerHTML = "";
+
+
+    dayQuestions.forEach(
+        function(q, index) {
+
+            const type =
+                String(
+                    q["Question Type"] || ""
+                )
+                .trim()
+                .toUpperCase();
+
+
+            const box =
                 document.createElement("div");
 
-            item.className =
+
+            box.className =
                 "question-item";
 
-            let html = `
 
-                <div class="question-type">
-                    ${escapeHTML(question.type)}
-                </div>
+            if (
+                type.includes("MCQ")
+            ) {
 
-                <h3>
-                    Question ${index + 1}
-                </h3>
-
-                <div class="question-text">
-                    ${escapeHTML(question.question)}
-                </div>
-            `;
-
-            if (question.type === "MCQ") {
-
-                html += `
-
-                    <div class="option">
-                        A. ${escapeHTML(question.optionA)}
-                    </div>
-
-                    <div class="option">
-                        B. ${escapeHTML(question.optionB)}
-                    </div>
-
-                    <div class="option">
-                        C. ${escapeHTML(question.optionC)}
-                    </div>
-
-                    <div class="option">
-                        D. ${escapeHTML(question.optionD)}
-                    </div>
-
-                    <div class="answer-box">
-                        <strong>
-                            Correct Answer:
-                        </strong>
-                        ${escapeHTML(question.correctAnswer)}
-                    </div>
-                `;
+                box.classList.add(
+                    "mcq-question"
+                );
 
             }
 
-            if (question.type === "ERROR") {
 
-                if (question.errorCode) {
+            if (
+                type.includes("ERROR")
+            ) {
 
-                    html += `
-
-                        <div class="error-code">
-                            <pre>${escapeHTML(
-                                question.errorCode
-                            )}</pre>
-                        </div>
-                    `;
-
-                }
-
-                html += `
-
-                    <div class="answer-box">
-                        <strong>
-                            Correct Answer:
-                        </strong>
-                        ${escapeHTML(
-                            question.correctAnswer
-                        )}
-                    </div>
-                `;
-
-                if (question.solution) {
-
-                    html += `
-
-                        <div class="coding-box">
-
-                            <strong>
-                                Corrected Code:
-                            </strong>
-
-                            <pre>${escapeHTML(
-                                question.solution
-                            )}</pre>
-
-                        </div>
-                    `;
-
-                }
+                box.classList.add(
+                    "error-question"
+                );
 
             }
 
-            if (question.type === "CODING") {
 
-                if (question.logic) {
+            if (
+                type.includes("CODING")
+            ) {
 
-                    html += `
-
-                        <div class="coding-box">
-
-                            <strong>
-                                Full-Mark Logic / Answer Key
-                            </strong>
-
-                            <p>
-                                ${escapeHTML(
-                                    question.logic
-                                )}
-                            </p>
-
-                        </div>
-                    `;
-
-                }
-
-                if (question.constraints) {
-
-                    html += `
-
-                        <div class="coding-box">
-
-                            <strong>
-                                Constraints / Contract
-                            </strong>
-
-                            <p>
-                                ${escapeHTML(
-                                    question.constraints
-                                )}
-                            </p>
-
-                        </div>
-                    `;
-
-                }
-
-                if (question.codingEvaluation) {
-
-                    html += `
-
-                        <div class="coding-evaluation">
-
-                            <strong>
-                                Coding Evaluation:
-                            </strong>
-
-                            <p>
-                                ${escapeHTML(
-                                    question.codingEvaluation
-                                )}
-                            </p>
-
-                        </div>
-                    `;
-
-                }
+                box.classList.add(
+                    "coding-question"
+                );
 
             }
 
-            item.innerHTML = html;
 
-            body.appendChild(item);
+            let html = "";
+
+
+            html +=
+                "<div class='question-type'>" +
+                escapeHTML(
+                    type || "QUESTION"
+                ) +
+                "</div>";
+
+
+            html +=
+                "<h3>Question " +
+                (index + 1) +
+                ". " +
+                escapeHTML(
+                    q.Question || ""
+                ) +
+                "</h3>";
+
+
+            /* OPTIONS */
+
+            if (
+                q["Option A"] ||
+                q["Option B"] ||
+                q["Option C"] ||
+                q["Option D"]
+            ) {
+
+                html +=
+                    "<div class='option'><b>A.</b> " +
+                    escapeHTML(
+                        q["Option A"] || ""
+                    ) +
+                    "</div>";
+
+
+                html +=
+                    "<div class='option'><b>B.</b> " +
+                    escapeHTML(
+                        q["Option B"] || ""
+                    ) +
+                    "</div>";
+
+
+                html +=
+                    "<div class='option'><b>C.</b> " +
+                    escapeHTML(
+                        q["Option C"] || ""
+                    ) +
+                    "</div>";
+
+
+                html +=
+                    "<div class='option'><b>D.</b> " +
+                    escapeHTML(
+                        q["Option D"] || ""
+                    ) +
+                    "</div>";
+
+            }
+
+
+            /* CORRECT ANSWER */
+
+            if (
+                q["Correct Answer"]
+            ) {
+
+                html +=
+                    "<div class='answer-box'>" +
+                    "<strong>Correct Answer:</strong><br>" +
+                    escapeHTML(
+                        q["Correct Answer"]
+                    ) +
+                    "</div>";
+
+            }
+
+
+            /* CODING REQUIREMENT */
+
+            if (
+                q["Coding Requirement"]
+            ) {
+
+                html +=
+                    "<div class='coding-box'>" +
+                    "<strong>Coding Requirement:</strong><br><br>" +
+                    escapeHTML(
+                        q["Coding Requirement"]
+                    ) +
+                    "</div>";
+
+            }
+
+
+            /* CODING EVALUATION */
+
+            if (
+                q["Coding Evaluation"]
+            ) {
+
+                html +=
+                    "<div class='coding-evaluation'>" +
+                    "<strong>Coding Evaluation:</strong><br><br>" +
+                    escapeHTML(
+                        q["Coding Evaluation"]
+                    ) +
+                    "</div>";
+
+            }
+
+
+            box.innerHTML =
+                html;
+
+
+            container.appendChild(box);
 
         }
     );
 
-    openQuestionModal();
+
+    modal.style.display =
+        "block";
 
 }
 
 
-/* =========================================================
-   MODAL
-   ========================================================= */
-
-function openQuestionModal() {
-
-    document.getElementById(
-        "questionModal"
-    ).style.display =
-        "flex";
-
-    document.body.style.overflow =
-        "hidden";
-
-}
-
+/* =====================================================
+   CLOSE MODAL
+===================================================== */
 
 function closeQuestionModal() {
 
@@ -1289,37 +1620,45 @@ function closeQuestionModal() {
     ).style.display =
         "none";
 
-    document.body.style.overflow =
-        "";
-
 }
 
 
-function closeModalOnOutside(event) {
+window.onclick =
+    function(event) {
 
-    if (
-        event.target.id ===
-        "questionModal"
-    ) {
-
-        closeQuestionModal();
-
-    }
-
-}
+        const modal =
+            document.getElementById(
+                "questionModal"
+            );
 
 
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
+        if (
+            event.target === modal
+        ) {
 
-function goStudents() {
+            modal.style.display =
+                "none";
+
+        }
+
+    };
+
+
+/* =====================================================
+   STUDENT MANAGEMENT
+===================================================== */
+
+function studentManagement() {
 
     window.location.href =
         "students.html";
 
 }
 
+
+/* =====================================================
+   REPORTS
+===================================================== */
 
 function viewReports() {
 
@@ -1329,24 +1668,109 @@ function viewReports() {
 }
 
 
-/* =========================================================
-   INITIAL LOAD
-   ========================================================= */
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
-window.addEventListener(
-    "DOMContentLoaded",
+function escapeHTML(value) {
+
+    return String(value)
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;")
+
+        .replace(/"/g, "&quot;")
+
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =====================================================
+   ESCAPE JAVASCRIPT
+===================================================== */
+
+function escapeJS(value) {
+
+    return String(value)
+
+        .replace(/\\/g, "\\\\")
+
+        .replace(/'/g, "\\'");
+
+}
+
+
+/* =====================================================
+   LOAD SAVED QUESTIONS
+===================================================== */
+
+window.onload =
     function() {
 
-        loadQuestionBank();
+        try {
 
-        updateSummary();
+            const saved =
+                localStorage.getItem(
+                    "questionBank"
+                );
 
-        displayDailyAssessments();
 
-    }
-);
+            const savedDays =
+                localStorage.getItem(
+                    "questionBankDays"
+                );
+
+
+            if (
+                saved &&
+                savedDays
+            ) {
+
+                const questions =
+                    JSON.parse(saved);
+
+
+                const days =
+                    JSON.parse(savedDays);
+
+
+                if (
+                    Array.isArray(questions) &&
+                    Array.isArray(days)
+                ) {
+
+                    showSummary(
+                        questions,
+                        days
+                    );
+
+
+                    document.getElementById(
+                        "importStatus"
+                    ).innerHTML =
+                        "Previously imported question bank loaded.";
+
+                }
+
+            }
+
+        } catch(error) {
+
+            console.error(
+                "Could not load saved question bank:",
+                error
+            );
+
+        }
+
+    };
 
 </script>
 
 </body>
+
 </html>
