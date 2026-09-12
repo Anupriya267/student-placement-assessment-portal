@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment Result</title>
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>Assessment Results</title>
+<link rel="stylesheet" href="style.css">
 
 <style>
+*{
+    box-sizing:border-box;
+}
 
 body{
-    font-family:Arial,sans-serif;
-    background:#f4f6f9;
     margin:0;
     padding:20px;
+    font-family:Arial,sans-serif;
+    background:#f4f6fb;
+    color:#222;
 }
 
 .container{
@@ -24,660 +25,1207 @@ body{
     margin:auto;
 }
 
-.header{
-    background:#1f4e78;
-    color:white;
+.card{
+    background:white;
     padding:25px;
-    border-radius:10px;
     margin-bottom:20px;
+    border-radius:14px;
+    box-shadow:0 4px 15px rgba(0,0,0,.1);
 }
 
-.header h1{
-    margin:0 0 15px 0;
-}
-
-.info{
-    display:flex;
-    gap:30px;
-    flex-wrap:wrap;
-}
-
-.summary{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    margin-bottom:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.summary-grid{
-    display:grid;
-    grid-template-columns:
-        repeat(auto-fit,minmax(160px,1fr));
-    gap:15px;
-}
-
-.box{
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:18px;
-    text-align:center;
-}
-
-.box h3{
-    margin:0 0 10px 0;
-}
-
-.number{
-    font-size:25px;
-    font-weight:bold;
-}
-
-.questions{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-.question{
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:18px;
-    margin-bottom:15px;
-}
-
-.question h3{
+h1{
     margin-top:0;
 }
 
+.student-info{
+    line-height:1.8;
+    margin-bottom:20px;
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin:20px 0;
+}
+
+.summary-box{
+    background:#eef3ff;
+    padding:18px 10px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.summary-title{
+    font-size:14px;
+}
+
+.summary-value{
+    font-size:25px;
+    font-weight:bold;
+    margin-top:7px;
+}
+
 .answer{
-    background:#f5f5f5;
-    padding:12px;
-    border-radius:6px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:18px;
+    margin:15px 0;
+    background:#fff;
+}
+
+.answer h3{
+    margin-top:0;
+    line-height:1.5;
+}
+
+.answer-code{
+    background:#1e1e1e;
+    color:white;
+    padding:15px;
+    border-radius:8px;
     white-space:pre-wrap;
-    overflow:auto;
+    overflow-x:auto;
     font-family:Consolas,monospace;
 }
 
-.complete{
-    color:#198754;
-    font-weight:bold;
-}
-
-.partial{
-    color:#d39e00;
+.correct{
+    color:green;
     font-weight:bold;
 }
 
 .wrong{
-    color:#dc3545;
+    color:red;
     font-weight:bold;
 }
 
-.correct{
-    color:#198754;
+.partial{
+    color:#b36b00;
     font-weight:bold;
 }
 
-.pending{
-    color:#d39e00;
-    font-weight:bold;
+.buttons{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:25px;
 }
 
 button{
-    background:#1f4e78;
+    border:0;
+    padding:13px 20px;
+    border-radius:8px;
     color:white;
-    border:none;
-    padding:13px 25px;
-    border-radius:7px;
-    cursor:pointer;
+    background:#2864d7;
     font-size:16px;
-    margin-top:10px;
+    cursor:pointer;
 }
 
 button:hover{
-    background:#163a5c;
+    opacity:.9;
 }
 
+.secondary{
+    background:#555;
+}
+
+.success{
+    background:#edf9ef;
+    border:1px solid #b7dfbc;
+    color:#17621d;
+    padding:15px;
+    border-radius:8px;
+}
+
+@media(max-width:700px){
+
+    body{
+        padding:10px;
+    }
+
+    .card{
+        padding:18px;
+    }
+
+    .summary{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
 </style>
-
 </head>
-
 
 <body>
 
 <div class="container">
 
+<div class="card">
 
-<!-- HEADER -->
+<h1>Assessment Result</h1>
 
-<div class="header">
+<div class="student-info">
 
-    <h1>Assessment Results</h1>
+<div>
+<b>Name:</b>
+<span id="studentName">Student</span>
+</div>
 
-    <div class="info">
+<div>
+<b>Username:</b>
+<span id="studentUsername">-</span>
+</div>
 
-        <div>
-            <strong>Student:</strong>
-            <span id="studentName"></span>
-        </div>
+<div>
+<b>Year:</b>
+<span id="studentYear">Final Year</span>
+</div>
 
-        <div>
-            <strong>Year:</strong>
-            <span id="studentYear"></span>
-        </div>
+<div>
+<b>Assessment:</b>
+Day <span id="assessmentDay">-</span>
+</div>
 
-        <div>
-            <strong>Day:</strong>
-            <span id="day"></span>
-        </div>
+</div>
 
-        <div>
-            <strong>Topic:</strong>
-            <span id="topic"></span>
-        </div>
-
-    </div>
+<div class="success">
+Assessment submitted successfully.
+</div>
 
 </div>
 
 
-<!-- SUMMARY -->
+<div class="card">
+
+<h2>Score Summary</h2>
 
 <div class="summary">
 
-    <h2>Result Summary</h2>
+<div class="summary-box">
 
-    <div class="summary-grid">
+<div class="summary-title">
+MCQ + Error
+</div>
 
-
-        <div class="box">
-
-            <h3>MCQ</h3>
-
-            <div class="number"
-                 id="mcqScore">
-                0/10
-            </div>
-
-        </div>
-
-
-        <div class="box">
-
-            <h3>Error Correction</h3>
-
-            <div class="number"
-                 id="errorScore">
-                0/2
-            </div>
-
-        </div>
-
-
-        <div class="box">
-
-            <h3>Coding</h3>
-
-            <div class="number"
-                 id="codingScore">
-                0/3
-            </div>
-
-        </div>
-
-
-        <div class="box">
-
-            <h3>Total</h3>
-
-            <div class="number"
-                 id="totalScore">
-                0/15
-            </div>
-
-        </div>
-
-
-        <div class="box">
-
-            <h3>Percentage</h3>
-
-            <div class="number"
-                 id="percentage">
-                0%
-            </div>
-
-        </div>
-
-
-        <div class="box">
-
-            <h3>Status</h3>
-
-            <div class="number"
-                 id="status">
-                Completed
-            </div>
-
-        </div>
-
-    </div>
+<div
+id="objectiveScore"
+class="summary-value">
+0/12
+</div>
 
 </div>
 
 
-<!-- QUESTIONS -->
+<div class="summary-box">
 
-<div class="questions">
+<div class="summary-title">
+Coding
+</div>
 
-    <h2>Answer Details</h2>
-
-    <div id="questionContainer"></div>
+<div
+id="codingScore"
+class="summary-value">
+0/3
+</div>
 
 </div>
 
 
-<br>
+<div class="summary-box">
 
-<button onclick="window.location.href='student.html'">
-    Back to Dashboard
+<div class="summary-title">
+Total
+</div>
+
+<div
+id="totalScore"
+class="summary-value">
+0/15
+</div>
+
+</div>
+
+
+<div class="summary-box">
+
+<div class="summary-title">
+Percentage
+</div>
+
+<div
+id="percentage"
+class="summary-value">
+0%
+</div>
+
+</div>
+
+</div>
+
+<div>
+<b>Status:</b>
+<span id="status">Completed</span>
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>Answer Sheet</h2>
+
+<div id="answers">
+Loading answers...
+</div>
+
+<div class="buttons">
+
+<button onclick="goDashboard()">
+Back to Dashboard
 </button>
 
+<button
+class="secondary"
+onclick="goReports()">
+View Reports
+</button>
+
+</div>
+
+</div>
 
 </div>
 
 
 <script>
 
+/*
+=====================================================
+GET STORED RESULT
+=====================================================
+*/
 
-/* =====================================================
-   GET RESULT
-===================================================== */
+function getStoredResult(){
 
-let result = null;
+    const possibleKeys = [
+
+        "latestAssessmentResult",
+
+        "lastAssessmentResult",
+
+        "assessmentResult",
+
+        "result"
+
+    ];
+
+
+    for(
+        const key of possibleKeys
+    ){
+
+        try{
+
+            const value =
+                localStorage.getItem(
+                    key
+                );
+
+
+            if(!value){
+
+                continue;
+
+            }
+
+
+            const result =
+                JSON.parse(
+                    value
+                );
+
+
+            if(result){
+
+                return result;
+
+            }
+
+        }catch(error){
+
+            console.error(
+                "Result read error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+const result =
+    getStoredResult();
+
+
+/*
+=====================================================
+STUDENT DETAILS
+=====================================================
+*/
+
+let student = null;
 
 
 try{
 
-    result =
+    student =
         JSON.parse(
             localStorage.getItem(
-                "latestAssessmentResult"
-            )
+                "loggedInStudent"
+            ) || "null"
         );
 
 }catch(error){
 
-    result = null;
+    student=null;
 
 }
 
 
-/* =====================================================
-   IF NO RESULT
-===================================================== */
-
-if(!result){
-
-    document.getElementById(
-        "questionContainer"
-    ).innerHTML =
-
-        "<p>No assessment result found.</p>";
-
-}
-
-
-/* =====================================================
-   DISPLAY STUDENT DETAILS
-===================================================== */
-
-if(result){
-
-    document.getElementById(
+const studentName =
+    result?.name ||
+    result?.studentName ||
+    student?.name ||
+    student?.Name ||
+    localStorage.getItem(
         "studentName"
-    ).textContent =
-        result.studentName || "Student";
+    ) ||
+    "Student";
 
 
-    document.getElementById(
+const studentUsername =
+    result?.username ||
+    result?.studentUsername ||
+    student?.username ||
+    student?.Username ||
+    localStorage.getItem(
+        "studentUsername"
+    ) ||
+    "-";
+
+
+const studentYear =
+    result?.year ||
+    result?.studentYear ||
+    student?.year ||
+    student?.Year ||
+    localStorage.getItem(
         "studentYear"
-    ).textContent =
-        result.studentYear || "Final Year";
+    ) ||
+    "Final Year";
 
 
-    document.getElementById(
-        "day"
-    ).textContent =
-        result.day || "";
-
-
-    document.getElementById(
-        "topic"
-    ).textContent =
-        result.topic || "Java";
-
-
-    document.getElementById(
-        "mcqScore"
-    ).textContent =
-        (result.mcqScore || 0) + "/10";
-
-
-    document.getElementById(
-        "errorScore"
-    ).textContent =
-        (result.errorScore || 0) + "/2";
-
-
-    document.getElementById(
-        "codingScore"
-    ).textContent =
-        (result.codingScore || 0) + "/3";
-
-
-    document.getElementById(
-        "totalScore"
-    ).textContent =
-        (result.totalScore || 0) + "/15";
-
-
-    document.getElementById(
-        "percentage"
-    ).textContent =
-        (result.percentage || 0) + "%";
-
-
-    document.getElementById(
-        "status"
-    ).textContent =
-        result.status || "Completed";
-
-
-    displayAnswers(
-        result.answers || []
+const day =
+    parseDay(
+        result?.day ||
+        result?.Day ||
+        localStorage.getItem(
+            "assessmentDay"
+        )
     );
 
+
+document.getElementById(
+    "studentName"
+).textContent =
+    studentName;
+
+
+document.getElementById(
+    "studentUsername"
+).textContent =
+    studentUsername;
+
+
+document.getElementById(
+    "studentYear"
+).textContent =
+    studentYear;
+
+
+document.getElementById(
+    "assessmentDay"
+).textContent =
+    day;
+
+
+/*
+=====================================================
+PARSE DAY
+=====================================================
+*/
+
+function parseDay(value){
+
+    const match =
+        String(
+            value || ""
+        ).match(
+            /\d+/
+        );
+
+
+    return match
+        ? parseInt(
+            match[0],
+            10
+        )
+        : 0;
+
 }
 
 
-/* =====================================================
-   DISPLAY ANSWERS
-===================================================== */
+/*
+=====================================================
+PARSE NUMBER
+=====================================================
+*/
 
-function displayAnswers(answers){
+function parseNumber(value){
+
+    if(
+        value === null ||
+        value === undefined ||
+        value === ""
+    ){
+
+        return 0;
+
+    }
+
+
+    const match =
+        String(
+            value
+        ).match(
+            /-?\d+(?:\.\d+)?/
+        );
+
+
+    return match
+        ? Number(
+            match[0]
+        )
+        : 0;
+
+}
+
+
+/*
+=====================================================
+GET ANSWERS
+=====================================================
+*/
+
+let answers = [];
+
+
+if(
+    result &&
+    Array.isArray(
+        result.answers
+    )
+){
+
+    answers =
+        result.answers;
+
+}
+else if(
+    result &&
+    Array.isArray(
+        result.Answers
+    )
+){
+
+    answers =
+        result.Answers;
+
+}
+else if(
+    result &&
+    typeof result.Answers ===
+    "string"
+){
+
+    try{
+
+        answers =
+            JSON.parse(
+                result.Answers
+            );
+
+    }catch(error){
+
+        answers=[];
+
+    }
+
+}
+
+
+/*
+=====================================================
+IMPORTANT BUG FIX
+
+NOT ANSWERED CODING QUESTION
+MUST ALWAYS BE:
+
+Wrong
+0/1
+
+It can NEVER be:
+
+Correct
+1/1
+=====================================================
+*/
+
+answers =
+    answers.map(
+        function(answer){
+
+            const item =
+                {
+                    ...answer
+                };
+
+
+            const type =
+                String(
+                    item.type ||
+                    item.Type ||
+                    ""
+                )
+                .trim()
+                .toUpperCase();
+
+
+            const rawCode =
+                item.studentAnswer ||
+                item.code ||
+                item.answer ||
+                "";
+
+
+            const isNotAnswered =
+                rawCode === null ||
+                rawCode === undefined ||
+                String(
+                    rawCode
+                ).trim() === "" ||
+                String(
+                    rawCode
+                )
+                .trim()
+                .toLowerCase() ===
+                "not answered";
+
+
+            /*
+            HARD FIX
+            */
+
+            if(
+                type === "CODING" &&
+                isNotAnswered
+            ){
+
+                item.studentAnswer =
+                    "Not Answered";
+
+                item.status =
+                    "Wrong";
+
+                item.score =
+                    0;
+
+                item.evaluation =
+                    "No code submitted.";
+
+            }
+
+
+            return item;
+
+        }
+    );
+
+
+/*
+=====================================================
+CALCULATE SCORES FROM ANSWERS
+=====================================================
+*/
+
+let mcqScore = 0;
+let errorScore = 0;
+let codingScore = 0;
+
+
+answers.forEach(
+    function(answer){
+
+        const type =
+            String(
+                answer.type ||
+                answer.Type ||
+                ""
+            )
+            .trim()
+            .toUpperCase();
+
+
+        const rawAnswer =
+            answer.studentAnswer ||
+            answer.answer ||
+            answer.code ||
+            "";
+
+
+        const unanswered =
+            rawAnswer === null ||
+            rawAnswer === undefined ||
+            String(
+                rawAnswer
+            ).trim() === "" ||
+            String(
+                rawAnswer
+            )
+            .trim()
+            .toLowerCase() ===
+            "not answered";
+
+
+        if(
+            type === "CODING"
+        ){
+
+            /*
+            NEVER give marks
+            to an unanswered coding question.
+            */
+
+            if(unanswered){
+
+                answer.status =
+                    "Wrong";
+
+                answer.score =
+                    0;
+
+                return;
+
+            }
+
+
+            codingScore +=
+                parseNumber(
+                    answer.score
+                );
+
+            return;
+
+        }
+
+
+        const score =
+            parseNumber(
+                answer.score
+            );
+
+
+        if(
+            type === "MCQ"
+        ){
+
+            mcqScore +=
+                score;
+
+        }
+        else if(
+            type === "ERROR"
+        ){
+
+            errorScore +=
+                score;
+
+        }
+
+    }
+);
+
+
+/*
+=====================================================
+FALLBACK FOR OLD RESULTS
+=====================================================
+*/
+
+if(
+    answers.length === 0 &&
+    result
+){
+
+    mcqScore =
+        parseNumber(
+            result.mcqScore
+        );
+
+
+    errorScore =
+        parseNumber(
+            result.errorScore
+        );
+
+
+    codingScore =
+        parseNumber(
+            result.codingScore
+        );
+
+}
+
+
+/*
+=====================================================
+FINAL SCORE
+=====================================================
+*/
+
+const objectiveScore =
+    mcqScore +
+    errorScore;
+
+
+const totalScore =
+    objectiveScore +
+    codingScore;
+
+
+const percentage =
+    (
+        totalScore /
+        15 *
+        100
+    );
+
+
+document.getElementById(
+    "objectiveScore"
+).textContent =
+    objectiveScore +
+    "/12";
+
+
+document.getElementById(
+    "codingScore"
+).textContent =
+    codingScore +
+    "/3";
+
+
+document.getElementById(
+    "totalScore"
+).textContent =
+    totalScore +
+    "/15";
+
+
+document.getElementById(
+    "percentage"
+).textContent =
+    percentage.toFixed(2) +
+    "%";
+
+
+document.getElementById(
+    "status"
+).textContent =
+    result?.status ||
+    "Completed";
+
+
+/*
+=====================================================
+DISPLAY ANSWERS
+=====================================================
+*/
+
+function displayAnswers(){
 
     const container =
         document.getElementById(
-            "questionContainer"
+            "answers"
         );
 
 
     container.innerHTML = "";
 
 
-    if(answers.length === 0){
+    if(
+        !answers.length
+    ){
 
         container.innerHTML =
-            "<p>No answers available.</p>";
+            "<p>No answer details available.</p>";
 
         return;
 
     }
 
 
-    answers.forEach((answer,index)=>{
+    answers.forEach(
+        function(answer,index){
+
+            const type =
+                String(
+                    answer.type ||
+                    answer.Type ||
+                    ""
+                )
+                .trim()
+                .toUpperCase();
 
 
-        const div =
-            document.createElement("div");
-
-        div.className =
-            "question";
-
-
-        /* ============================================
-           MCQ
-        ============================================ */
-
-        if(answer.type === "MCQ"){
-
-            const isCorrect =
-                String(answer.answer)
-                    .trim()
-                    .toUpperCase()
-                ===
-                String(answer.correctAnswer)
-                    .trim()
-                    .toUpperCase();
+            const question =
+                answer.question ||
+                answer.Question ||
+                "Question " +
+                (index + 1);
 
 
-            div.innerHTML = `
-
-                <h3>
-                    ${index+1}. ${escapeHTML(
-                        answer.question
-                    )}
-                </h3>
-
-                <p>
-                    <strong>Your Answer:</strong>
-                </p>
-
-                <div class="answer">
-                    ${
-                        answer.answer
-                        ?
-                        escapeHTML(answer.answer)
-                        :
-                        "Not Answered"
-                    }
-                </div>
-
-                <p class="${
-                    isCorrect
-                    ? "correct"
-                    : "wrong"
-                }">
-
-                    ${
-                        isCorrect
-                        ? "✓ Correct"
-                        : "✗ Wrong"
-                    }
-
-                </p>
-
-            `;
-
-        }
+            let rawAnswer =
+                answer.studentAnswer ||
+                answer.answer ||
+                answer.code ||
+                "";
 
 
-        /* ============================================
-           ERROR
-        ============================================ */
-
-        else if(answer.type === "ERROR"){
-
-            const hasAnswer =
-                answer.answer &&
-                answer.answer.trim() !== "";
-
-
-            div.innerHTML = `
-
-                <h3>
-                    ${index+1}. ${escapeHTML(
-                        answer.question
-                    )}
-                </h3>
-
-                <p>
-                    <strong>Your Answer:</strong>
-                </p>
-
-                <div class="answer">
-                    ${
-                        hasAnswer
-                        ?
-                        escapeHTML(answer.answer)
-                        :
-                        "Not Answered"
-                    }
-                </div>
-
-                <p>
-                    <strong>Status:</strong>
-
-                    ${
-                        hasAnswer
-                        ?
-                        '<span class="correct">Answered</span>'
-                        :
-                        '<span class="wrong">Not Answered</span>'
-                    }
-
-                </p>
-
-            `;
-
-        }
+            const unanswered =
+                rawAnswer === null ||
+                rawAnswer === undefined ||
+                String(
+                    rawAnswer
+                ).trim() === "" ||
+                String(
+                    rawAnswer
+                )
+                .trim()
+                .toLowerCase() ===
+                "not answered";
 
 
-        /* ============================================
-           CODING
-        ============================================ */
-
-        else if(answer.type === "CODING"){
+            /*
+            FINAL SAFETY CHECK
+            */
 
             let status =
                 answer.status ||
-                "Wrong";
+                "";
 
 
             let score =
-                Number(answer.score || 0);
+                parseNumber(
+                    answer.score
+                );
+
+
+            if(
+                type === "CODING" &&
+                unanswered
+            ){
+
+                rawAnswer =
+                    "Not Answered";
+
+                status =
+                    "Wrong";
+
+                score =
+                    0;
+
+            }
+
+
+            if(!status){
+
+                if(
+                    score >= 1
+                ){
+
+                    status =
+                        "Correct";
+
+                }
+                else if(
+                    score > 0
+                ){
+
+                    status =
+                        "Partial";
+
+                }
+                else{
+
+                    status =
+                        "Wrong";
+
+                }
+
+            }
 
 
             let statusClass =
                 "wrong";
 
 
-            let icon =
-                "✗";
+            const lower =
+                status
+                .toLowerCase();
 
 
-            if(status === "Complete"){
-
-                statusClass =
-                    "complete";
-
-                icon =
-                    "✓";
-
-            }
-
-            else if(
-                status === "Partially Correct"
+            if(
+                lower.includes(
+                    "partial"
+                )
             ){
 
                 statusClass =
                     "partial";
 
-                icon =
-                    "🟡";
+            }
+            else if(
+                lower.includes(
+                    "correct"
+                ) &&
+                !lower.includes(
+                    "incorrect"
+                )
+            ){
+
+                statusClass =
+                    "correct";
 
             }
 
 
-            div.innerHTML = `
-
-                <h3>
-                    ${index+1}. ${escapeHTML(
-                        answer.question
-                    )}
-                </h3>
-
-                <p>
-                    <strong>Your Answer:</strong>
-                </p>
-
-                <div class="answer">
-
-                    ${
-                        answer.code &&
-                        answer.code.trim()
-                        ?
-                        escapeHTML(answer.code)
-                        :
-                        "Not Answered"
-                    }
-
-                </div>
+            const box =
+                document.createElement(
+                    "div"
+                );
 
 
-                <p>
-
-                    <strong>
-                        Coding Evaluation:
-                    </strong>
-
-                    <span class="${statusClass}">
-
-                        ${icon}
-                        ${escapeHTML(status)}
-
-                    </span>
-
-                </p>
+            box.className =
+                "answer";
 
 
-                <p>
+            let html =
 
-                    <strong>
-                        Coding Mark:
-                    </strong>
+                "<h3>Q" +
+                (index + 1) +
+                ". " +
+                escapeHTML(
+                    question
+                ) +
+                "</h3>" +
 
-                    ${score}/1
+                "<p><b>Type:</b> " +
+                escapeHTML(
+                    type
+                ) +
+                "</p>";
 
-                </p>
 
-            `;
+            if(
+                type === "CODING"
+            ){
+
+                html +=
+
+                    "<p><b>Your Answer:</b></p>" +
+
+                    "<pre class='answer-code'>" +
+
+                    escapeHTML(
+                        unanswered
+                        ? "Not Answered"
+                        : rawAnswer
+                    ) +
+
+                    "</pre>" +
+
+                    "<p class='" +
+                    statusClass +
+                    "'>" +
+
+                    "Coding Evaluation: " +
+
+                    (
+                        status === "Correct"
+                        ? "✓ "
+                        : status === "Partial"
+                        ? "⚠ "
+                        : "✕ "
+                    ) +
+
+                    escapeHTML(
+                        status
+                    ) +
+
+                    "</p>" +
+
+                    "<p><b>Coding Mark:</b> " +
+
+                    score +
+
+                    "/1</p>";
+
+            }
+            else{
+
+                html +=
+
+                    "<p><b>Your Answer:</b> " +
+
+                    escapeHTML(
+                        unanswered
+                        ? "Not Answered"
+                        : rawAnswer
+                    ) +
+
+                    "</p>";
+
+
+                if(
+                    answer.correctAnswer !==
+                    undefined &&
+                    answer.correctAnswer !== ""
+                ){
+
+                    html +=
+
+                        "<p><b>Correct Answer:</b> " +
+
+                        escapeHTML(
+                            answer.correctAnswer
+                        ) +
+
+                        "</p>";
+
+                }
+
+
+                html +=
+
+                    "<p class='" +
+                    statusClass +
+                    "'>" +
+
+                    "Status: " +
+
+                    escapeHTML(
+                        status
+                    ) +
+
+                    "</p>";
+
+            }
+
+
+            box.innerHTML =
+                html;
+
+
+            container.appendChild(
+                box
+            );
 
         }
-
-
-        container.appendChild(div);
-
-    });
+    );
 
 }
 
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
+/*
+=====================================================
+ESCAPE HTML
+=====================================================
+*/
 
 function escapeHTML(value){
 
-    return String(value)
-
-        .replace(/&/g,"&amp;")
-
-        .replace(/</g,"&lt;")
-
-        .replace(/>/g,"&gt;")
-
-        .replace(/"/g,"&quot;")
-
-        .replace(/'/g,"&#039;");
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
+
+
+/*
+=====================================================
+NAVIGATION
+=====================================================
+*/
+
+function goDashboard(){
+
+    window.location.href =
+        "student.html";
+
+}
+
+
+function goReports(){
+
+    window.location.href =
+        "reports.html";
+
+}
+
+
+/*
+=====================================================
+SHOW ANSWERS
+=====================================================
+*/
+
+displayAnswers();
 
 </script>
 
 </body>
-
 </html>
