@@ -235,7 +235,7 @@ const GOOGLE_SCRIPT_URL =
 
 const EXCEL_FILES = [
 
-    "./Java_Placement_41_Day_MASTER_WITH_CODING_EVALUATION.xlsx",
+    "./Java_Placement_41_Day_MASTER_WITH_CODING_EVALUATION (2).xlsx",
 
     "./Java_Placement_41_Day_FINAL_CORRECTED.xlsx"
 
@@ -251,9 +251,7 @@ function getLoggedStudent(){
     try{
 
         return JSON.parse(
-            localStorage.getItem(
-                "loggedInStudent"
-            )
+            localStorage.getItem("loggedInStudent")
             ||
             "null"
         );
@@ -309,17 +307,11 @@ localStorage.getItem("studentYear")
 
 let assignedDay =
 parseInt(
-    localStorage.getItem(
-        "assessmentDay"
-    )
+    localStorage.getItem("assessmentDay")
     ||
-    localStorage.getItem(
-        "assignedDay"
-    )
+    localStorage.getItem("assignedDay")
     ||
-    localStorage.getItem(
-        "currentDay"
-    )
+    localStorage.getItem("currentDay")
     ||
     "1"
 );
@@ -530,6 +522,7 @@ function getExcelField(
 
     }
 
+
     return "";
 
 }
@@ -546,7 +539,12 @@ function getQuestion(row){
         [
             "Question",
             "question",
-            "Question Text"
+            "Question Text",
+            "QuestionText",
+            "questionText",
+            "Question Text/Problem",
+            "Problem",
+            "problem"
         ]
     );
 
@@ -564,7 +562,11 @@ function getDay(row){
             row,
             [
                 "Day",
-                "day"
+                "day",
+                "Day Number",
+                "day number",
+                "DayNumber",
+                "dayNumber"
             ]
         ),
         10
@@ -574,19 +576,103 @@ function getDay(row){
 
 
 /* =====================================================
-   GET SECTION
+   GET SECTION / QUESTION TYPE
 ===================================================== */
 
 function getSection(row){
 
-    return getExcelField(
-        row,
-        [
-            "Section",
-            "section",
-            "Type"
-        ]
-    ).toUpperCase();
+    const value =
+        getExcelField(
+            row,
+            [
+                "Section",
+                "section",
+                "Type",
+                "type",
+                "Question Type",
+                "question type",
+                "QuestionType",
+                "questionType",
+                "Question_Type",
+                "QUESTION TYPE",
+                "Category",
+                "category"
+            ]
+        );
+
+
+    return String(
+        value || ""
+    )
+    .trim()
+    .toUpperCase()
+    .replace(/[_-]+/g," ")
+    .replace(/\s+/g," ");
+
+}
+
+
+/* =====================================================
+   SECTION CHECK
+===================================================== */
+
+function sectionIs(
+    row,
+    type
+){
+
+    const section =
+        getSection(row);
+
+
+    const wanted =
+        String(type || "")
+        .trim()
+        .toUpperCase();
+
+
+    if(wanted === "MCQ"){
+
+        return (
+            section === "MCQ"
+            ||
+            section.includes("MCQ")
+            ||
+            section.includes("MULTIPLE CHOICE")
+        );
+
+    }
+
+
+    if(wanted === "ERROR"){
+
+        return (
+            section.includes("ERROR")
+            ||
+            section.includes("ERROR FINDING")
+            ||
+            section.includes("ERROR CORRECTION")
+            ||
+            section.includes("DEBUG")
+        );
+
+    }
+
+
+    if(wanted === "CODING"){
+
+        return (
+            section.includes("CODING")
+            ||
+            section.includes("PROGRAM")
+            ||
+            section.includes("PROGRAMMING")
+        );
+
+    }
+
+
+    return false;
 
 }
 
@@ -604,7 +690,9 @@ function getOption(
         row,
         [
             "Option " + letter,
+            "option " + letter,
             "option" + letter,
+            "Option" + letter,
             letter
         ]
     );
@@ -623,6 +711,7 @@ function getCorrectAnswer(row){
         [
             "Correct Answer",
             "correctAnswer",
+            "CorrectAnswer",
             "Answer",
             "answer"
         ]
@@ -656,8 +745,10 @@ function prepareQuestions(){
     ){
 
         throw new Error(
-            "No questions found for Day " +
-            assignedDay +
+            "No questions found for Day "
+            +
+            assignedDay
+            +
             "."
         );
 
@@ -668,8 +759,10 @@ function prepareQuestions(){
         dayQuestions.filter(
             function(row){
 
-                return getSection(row)
-                    .includes("MCQ");
+                return sectionIs(
+                    row,
+                    "MCQ"
+                );
 
             }
         );
@@ -679,13 +772,9 @@ function prepareQuestions(){
         dayQuestions.filter(
             function(row){
 
-                const section =
-                    getSection(row);
-
-                return (
-                    section.includes("ERROR")
-                    ||
-                    section.includes("ERROR CORRECTION")
+                return sectionIs(
+                    row,
+                    "ERROR"
                 );
 
             }
@@ -696,16 +785,40 @@ function prepareQuestions(){
         dayQuestions.filter(
             function(row){
 
-                return getSection(row)
-                    .includes("CODING");
+                return sectionIs(
+                    row,
+                    "CODING"
+                );
 
             }
         );
 
 
-    /* =================================================
-       SHUFFLE
-    ================================================= */
+    console.log(
+        "Day:",
+        assignedDay
+    );
+
+    console.log(
+        "Total questions:",
+        dayQuestions.length
+    );
+
+    console.log(
+        "MCQ:",
+        mcq.length
+    );
+
+    console.log(
+        "Error:",
+        errorQuestions.length
+    );
+
+    console.log(
+        "Coding:",
+        coding.length
+    );
+
 
     shuffle(mcq);
 
@@ -713,10 +826,6 @@ function prepareQuestions(){
 
     shuffle(coding);
 
-
-    /* =================================================
-       SELECT QUESTIONS
-    ================================================= */
 
     const selectedMCQ =
         mcq.slice(0,10);
@@ -735,9 +844,15 @@ function prepareQuestions(){
     ){
 
         throw new Error(
-            "Day " +
-            assignedDay +
-            " does not have enough MCQ questions."
+            "Day "
+            +
+            assignedDay
+            +
+            " has only "
+            +
+            selectedMCQ.length
+            +
+            " MCQ questions. Need 10."
         );
 
     }
@@ -748,9 +863,15 @@ function prepareQuestions(){
     ){
 
         throw new Error(
-            "Day " +
-            assignedDay +
-            " does not have enough Error Correction questions."
+            "Day "
+            +
+            assignedDay
+            +
+            " has only "
+            +
+            selectedError.length
+            +
+            " Error questions. Need 2."
         );
 
     }
@@ -761,9 +882,15 @@ function prepareQuestions(){
     ){
 
         throw new Error(
-            "Day " +
-            assignedDay +
-            " does not have enough Coding questions."
+            "Day "
+            +
+            assignedDay
+            +
+            " has only "
+            +
+            selectedCoding.length
+            +
+            " Coding questions. Need 3."
         );
 
     }
@@ -801,7 +928,8 @@ function shuffle(array){
 
         const j =
             Math.floor(
-                Math.random() *
+                Math.random()
+                *
                 (i + 1)
             );
 
@@ -838,13 +966,7 @@ function renderQuestions(){
     selectedQuestions.forEach(
         function(row,index){
 
-            const section =
-                getSection(row);
-
-
-            if(
-                index === 0
-            ){
+            if(index === 0){
 
                 container.innerHTML +=
                     "<div class='section-title'>" +
@@ -854,9 +976,7 @@ function renderQuestions(){
             }
 
 
-            if(
-                index === 10
-            ){
+            if(index === 10){
 
                 container.innerHTML +=
                     "<div class='section-title'>" +
@@ -866,9 +986,7 @@ function renderQuestions(){
             }
 
 
-            if(
-                index === 12
-            ){
+            if(index === 12){
 
                 container.innerHTML +=
                     "<div class='section-title'>" +
@@ -907,22 +1025,23 @@ function renderQuestions(){
                 "</div>";
 
 
-            if(
-                index < 12
-            ){
+            if(index < 12){
 
-                html += renderObjective(
-                    row,
-                    index
-                );
+                html +=
+                    renderObjective(
+                        row,
+                        index
+                    );
 
             }
+
             else{
 
-                html += renderCoding(
-                    row,
-                    index
-                );
+                html +=
+                    renderCoding(
+                        row,
+                        index
+                    );
 
             }
 
@@ -971,7 +1090,8 @@ function renderObjective(
         ];
 
 
-    let html = "";
+    let html =
+        "";
 
 
     letters.forEach(
@@ -1126,12 +1246,16 @@ function updateTimer(){
     ).textContent =
 
         String(minutes)
-            .padStart(2,"0")
+        .padStart(2,"0")
+
         +
+
         ":"
+
         +
+
         String(seconds)
-            .padStart(2,"0");
+        .padStart(2,"0");
 
 }
 
@@ -1187,7 +1311,7 @@ async function finishAssessment(
 
 
     /* =================================================
-       COLLECT ALL ANSWERS
+       COLLECT ANSWERS
     ================================================= */
 
     selectedQuestions.forEach(
@@ -1240,11 +1364,13 @@ async function finishAssessment(
                     status =
                         "Correct";
 
+
                     if(index < 10){
 
                         mcqScore++;
 
                     }
+
                     else{
 
                         errorScore++;
@@ -1435,6 +1561,26 @@ async function finishAssessment(
 
 
     /* =================================================
+       SAVE RESULT FOR RESULTS PAGE
+    ================================================= */
+
+    localStorage.setItem(
+        "latestAssessmentResult",
+        JSON.stringify(
+            report
+        )
+    );
+
+
+    localStorage.setItem(
+        "lastAssessmentResult",
+        JSON.stringify(
+            report
+        )
+    );
+
+
+    /* =================================================
        SEND TO GOOGLE SHEET
     ================================================= */
 
@@ -1457,7 +1603,7 @@ async function finishAssessment(
 
 
     /* =================================================
-       SAVE NEXT DAY
+       NEXT DAY
     ================================================= */
 
     let nextDay =
@@ -1486,18 +1632,6 @@ async function finishAssessment(
     localStorage.setItem(
         "currentDay",
         String(nextDay)
-    );
-
-
-    /* =================================================
-       SAVE LAST RESULT
-    ================================================= */
-
-    localStorage.setItem(
-        "lastAssessmentResult",
-        JSON.stringify(
-            report
-        )
     );
 
 
@@ -1540,6 +1674,28 @@ function saveLocalReport(
         reports = [];
 
     }
+
+
+    /*
+       Avoid duplicate records if submit is triggered twice.
+    */
+
+    reports =
+        reports.filter(
+            function(item){
+
+                return !(
+                    String(item.username)
+                    ===
+                    String(report.username)
+                    &&
+                    Number(item.day)
+                    ===
+                    Number(report.day)
+                );
+
+            }
+        );
 
 
     reports.push(
@@ -1586,7 +1742,8 @@ async function sendToGoogleSheet(
             (
                 report.mcqScore +
                 report.errorScore
-            ) +
+            )
+            +
             "/12",
 
         Coding:
@@ -1689,9 +1846,7 @@ function evaluateCoding(
     let required = 0;
 
 
-    /* =================================================
-       JAVA STRUCTURE
-    ================================================= */
+    /* JAVA STRUCTURE */
 
     required++;
 
@@ -1709,9 +1864,7 @@ function evaluateCoding(
     }
 
 
-    /* =================================================
-       LOOP
-    ================================================= */
+    /* LOOP */
 
     const hasLoop =
 
@@ -1761,9 +1914,7 @@ function evaluateCoding(
     }
 
 
-    /* =================================================
-       ARRAY
-    ================================================= */
+    /* ARRAY */
 
     const needsArray =
 
@@ -1792,9 +1943,7 @@ function evaluateCoding(
     }
 
 
-    /* =================================================
-       STRING
-    ================================================= */
+    /* STRING */
 
     const needsString =
 
@@ -1831,9 +1980,7 @@ function evaluateCoding(
     }
 
 
-    /* =================================================
-       MODULO
-    ================================================= */
+    /* MODULO */
 
     const needsModulo =
 
@@ -1866,9 +2013,7 @@ function evaluateCoding(
     }
 
 
-    /* =================================================
-       ARITHMETIC
-    ================================================= */
+    /* ARITHMETIC */
 
     const needsArithmetic =
 
@@ -1907,9 +2052,7 @@ function evaluateCoding(
     }
 
 
-    /* =================================================
-       OUTPUT
-    ================================================= */
+    /* OUTPUT */
 
     const needsOutput =
 
@@ -1938,9 +2081,7 @@ function evaluateCoding(
     }
 
 
-    /* =================================================
-       METHODS
-    ================================================= */
+    /* METHODS */
 
     const needsMethod =
 
@@ -1967,9 +2108,7 @@ function evaluateCoding(
     }
 
 
-    /* =================================================
-       OOP
-    ================================================= */
+    /* OOP */
 
     const needsOOP =
 
@@ -2012,9 +2151,7 @@ function evaluateCoding(
     }
 
 
-    /* =================================================
-       COLLECTIONS
-    ================================================= */
+    /* COLLECTIONS */
 
     const needsCollection =
 
@@ -2055,9 +2192,7 @@ function evaluateCoding(
     }
 
 
-    /* =================================================
-       RESULT
-    ================================================= */
+    /* RESULT */
 
     const ratio =
         required > 0
@@ -2255,6 +2390,7 @@ loadExcel()
 
     }
 );
+
 
 </script>
 
