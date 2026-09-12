@@ -9,104 +9,87 @@
 
 </head>
 
+
 <body>
 
 <div class="dashboard">
 
 <h1>Java Placement Assessment</h1>
 
+<h2 id="assessmentTitle">
+Loading Assessment...
+</h2>
+
 <div class="card">
 
-<h2 id="assessmentTitle">
-Java Placement Assessment
-</h2>
+<h3>Time Remaining</h3>
 
-<p>
-<strong>Time:</strong> 40 Minutes
-</p>
-
-<h2>
-Time Remaining
-</h2>
-
-<h1 id="timer">40:00</h1>
+<h2 id="timer">40:00</h2>
 
 </div>
 
+
+<form id="assessmentForm">
 
 <div id="questionContainer">
 
-<p>Loading assessment...</p>
+<p>Loading questions...</p>
 
 </div>
 
 
-<button onclick="submitAssessment()">
+<br>
+
+<button
+    type="button"
+    onclick="submitAssessment()"
+>
+
 Submit Assessment
+
 </button>
 
+</form>
+
 </div>
+
+
+<script src="script.js"></script>
 
 
 <script>
 
-/* ===============================
-   GET IMPORTED QUESTION BANK
-================================ */
-
-let questionBank =
-    JSON.parse(
-        localStorage.getItem("questionBank") || "[]"
-    );
-
-
-/*
-   Student's assigned day.
-
-   For now Day 1 is used.
-   Later we will connect this
-   automatically to student.html.
-*/
-
-let assignedDay =
-    localStorage.getItem("assignedDay") || "1";
-
-
-let dayQuestions =
-    questionBank.filter(function(q){
-
-        return String(q.Day) === String(assignedDay);
-
-    });
-
-
-/* ===============================
-   DISPLAY QUESTIONS
-================================ */
+// ================= LOAD ASSESSMENT =================
 
 function loadAssessment(){
 
-    let container =
-        document.getElementById(
-            "questionContainer"
+    let questionBank =
+        JSON.parse(
+            localStorage.getItem("questionBank") || "[]"
         );
+
+
+    let assignedDay =
+        localStorage.getItem("assignedDay") || "1";
+
+
+    let dayQuestions =
+        questionBank.filter(function(q){
+
+            return String(q.Day) ===
+                   String(assignedDay);
+
+        });
 
 
     if(dayQuestions.length === 0){
 
-        container.innerHTML =
-
-            "<div class='card'>" +
-
-            "<h2>No Assessment Found</h2>" +
-
-            "<p>" +
-            "No questions are available for Day " +
+        document.getElementById(
+            "questionContainer"
+        ).innerHTML =
+            "<p>No questions available for Day " +
             assignedDay +
-            "." +
-            "</p>" +
-
-            "</div>";
+            ".</p>";
 
         return;
 
@@ -116,106 +99,99 @@ function loadAssessment(){
     document.getElementById(
         "assessmentTitle"
     ).innerText =
-        "Day " + assignedDay +
-        " Java Placement Assessment";
+        "Day " + assignedDay + " Java Placement Assessment";
+
+
+    let container =
+        document.getElementById(
+            "questionContainer"
+        );
 
 
     container.innerHTML = "";
 
 
-    let mcqNumber = 1;
-    let errorNumber = 1;
-    let codingNumber = 1;
+    let mcqNumber = 0;
+
+    let errorNumber = 0;
+
+    let codingNumber = 0;
 
 
     dayQuestions.forEach(function(q){
 
         let type =
-            String(q["Question Type"])
-            .toUpperCase();
+            String(q.Type || "").toUpperCase();
 
 
-        /* ================= MCQ ================= */
+        // ================= MCQ =================
 
         if(type === "MCQ"){
 
-            let card =
+            mcqNumber++;
+
+
+            let div =
                 document.createElement("div");
 
-            card.className = "card";
+            div.className = "card";
 
 
-            let html =
+            div.innerHTML =
 
-                "<h3>MCQ " +
+                "<h3>" +
                 mcqNumber +
+                ". " +
+                escapeHTML(q.Question) +
                 "</h3>" +
 
-                "<p>" +
-                escapeHTML(q.Question) +
-                "</p>" +
+                createOption(
+                    "mcq_" + mcqNumber,
+                    "A",
+                    q["Option A"]
+                ) +
 
-                "<label>" +
-                "<input type='radio' " +
-                "name='mcq_" +
-                mcqNumber +
-                "' " +
-                "value='A'>" +
-                " A. " +
-                escapeHTML(q["Option A"]) +
-                "</label><br>" +
+                createOption(
+                    "mcq_" + mcqNumber,
+                    "B",
+                    q["Option B"]
+                ) +
 
-                "<label>" +
-                "<input type='radio' " +
-                "name='mcq_" +
-                mcqNumber +
-                "' " +
-                "value='B'>" +
-                " B. " +
-                escapeHTML(q["Option B"]) +
-                "</label><br>" +
+                createOption(
+                    "mcq_" + mcqNumber,
+                    "C",
+                    q["Option C"]
+                ) +
 
-                "<label>" +
-                "<input type='radio' " +
-                "name='mcq_" +
-                mcqNumber +
-                "' " +
-                "value='C'>" +
-                " C. " +
-                escapeHTML(q["Option C"]) +
-                "</label><br>" +
-
-                "<label>" +
-                "<input type='radio' " +
-                "name='mcq_" +
-                mcqNumber +
-                "' " +
-                "value='D'>" +
-                " D. " +
-                escapeHTML(q["Option D"]) +
-                "</label>";
+                createOption(
+                    "mcq_" + mcqNumber,
+                    "D",
+                    q["Option D"]
+                );
 
 
-            card.innerHTML = html;
-
-            container.appendChild(card);
-
-            mcqNumber++;
+            container.appendChild(div);
 
         }
 
 
-        /* ================= ERROR ================= */
+        // ================= ERROR =================
 
-        else if(type === "ERROR"){
+        else if(
+            type === "ERROR" ||
+            type === "ERROR CORRECTION"
+        ){
 
-            let card =
+            errorNumber++;
+
+
+            let div =
                 document.createElement("div");
 
-            card.className = "card";
+            div.className = "card";
 
 
-            let html =
+            div.innerHTML =
 
                 "<h3>Error Correction " +
                 errorNumber +
@@ -225,67 +201,50 @@ function loadAssessment(){
                 escapeHTML(q.Question) +
                 "</p>" +
 
-                "<label>" +
-                "<input type='radio' " +
-                "name='error_" +
-                errorNumber +
-                "' " +
-                "value='A'>" +
-                " A. " +
-                escapeHTML(q["Option A"]) +
-                "</label><br>" +
+                createOption(
+                    "error_" + errorNumber,
+                    "A",
+                    q["Option A"]
+                ) +
 
-                "<label>" +
-                "<input type='radio' " +
-                "name='error_" +
-                errorNumber +
-                "' " +
-                "value='B'>" +
-                " B. " +
-                escapeHTML(q["Option B"]) +
-                "</label><br>" +
+                createOption(
+                    "error_" + errorNumber,
+                    "B",
+                    q["Option B"]
+                ) +
 
-                "<label>" +
-                "<input type='radio' " +
-                "name='error_" +
-                errorNumber +
-                "' " +
-                "value='C'>" +
-                " C. " +
-                escapeHTML(q["Option C"]) +
-                "</label><br>" +
+                createOption(
+                    "error_" + errorNumber,
+                    "C",
+                    q["Option C"]
+                ) +
 
-                "<label>" +
-                "<input type='radio' " +
-                "name='error_" +
-                errorNumber +
-                "' " +
-                "value='D'>" +
-                " D. " +
-                escapeHTML(q["Option D"]) +
-                "</label>";
+                createOption(
+                    "error_" + errorNumber,
+                    "D",
+                    q["Option D"]
+                );
 
 
-            card.innerHTML = html;
-
-            container.appendChild(card);
-
-            errorNumber++;
+            container.appendChild(div);
 
         }
 
 
-        /* ================= CODING ================= */
+        // ================= CODING =================
 
         else if(type === "CODING"){
 
-            let card =
+            codingNumber++;
+
+
+            let div =
                 document.createElement("div");
 
-            card.className = "card";
+            div.className = "card";
 
 
-            let html =
+            div.innerHTML =
 
                 "<h3>Coding Question " +
                 codingNumber +
@@ -299,17 +258,12 @@ function loadAssessment(){
                 "id='coding_" +
                 codingNumber +
                 "' " +
-                "rows='12' " +
-                "style='width:100%;' " +
-                "placeholder='Write your Java code here'>" +
+                "rows='10' " +
+                "placeholder='Write your Java code here...'>" +
                 "</textarea>";
 
 
-            card.innerHTML = html;
-
-            container.appendChild(card);
-
-            codingNumber++;
+            container.appendChild(div);
 
         }
 
@@ -318,9 +272,40 @@ function loadAssessment(){
 }
 
 
-/* ===============================
-   SAFE HTML
-================================ */
+// ================= OPTIONS =================
+
+function createOption(
+    name,
+    value,
+    text
+){
+
+    return (
+
+        "<label>" +
+
+        "<input " +
+        "type='radio' " +
+        "name='" +
+        name +
+        "' " +
+        "value='" +
+        value +
+        "'>" +
+
+        " " +
+        value +
+        ". " +
+        escapeHTML(text) +
+
+        "</label><br>"
+
+    );
+
+}
+
+
+// ================= SECURITY =================
 
 function escapeHTML(value){
 
@@ -331,125 +316,71 @@ function escapeHTML(value){
 
     }
 
-
     return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;")
+
+        .replace(/"/g, "&quot;")
+
+        .replace(/'/g, "&#039;");
 
 }
 
 
-/* ===============================
-   SUBMIT
-================================ */
+// ================= SUBMIT =================
 
 function submitAssessment(){
 
-    /*
-       For this step we only save the
-       student's answers.
+    if(
+        !confirm(
+            "Are you sure you want to submit the assessment?"
+        )
+    ){
 
-       Automatic scoring will be connected
-       in the next step.
-    */
+        return;
 
-    let responses = [];
-
-
-    dayQuestions.forEach(function(q,index){
-
-        let type =
-            String(q["Question Type"])
-            .toUpperCase();
+    }
 
 
-        let number =
-            Number(q["Question No."]);
+    // Save current responses
+
+    let responses = {
+
+        submittedAt:
+            new Date().toISOString(),
+
+        day:
+            localStorage.getItem(
+                "assignedDay"
+            ) || "1"
+
+    };
 
 
-        if(type === "MCQ"){
+    document
+        .querySelectorAll(
+            'input[type="radio"]:checked'
+        )
+        .forEach(function(input){
 
-            let selected =
-                document.querySelector(
-                    'input[name="mcq_' +
-                    number +
-                    '"]:checked'
-                );
+            responses[input.name] =
+                input.value;
 
-
-            responses.push({
-
-                questionType: "MCQ",
-
-                question:
-                    q.Question,
-
-                answer:
-                    selected
-                    ? selected.value
-                    : "Not Answered"
-
-            });
-
-        }
+        });
 
 
-        else if(type === "ERROR"){
+    document
+        .querySelectorAll("textarea")
+        .forEach(function(textarea){
 
-            let selected =
-                document.querySelector(
-                    'input[name="error_' +
-                    number +
-                    '"]:checked'
-                );
+            responses[textarea.id] =
+                textarea.value;
 
-
-            responses.push({
-
-                questionType: "ERROR",
-
-                question:
-                    q.Question,
-
-                answer:
-                    selected
-                    ? selected.value
-                    : "Not Answered"
-
-            });
-
-        }
-
-
-        else if(type === "CODING"){
-
-            let box =
-                document.getElementById(
-                    "coding_" +
-                    number
-                );
-
-
-            responses.push({
-
-                questionType: "CODING",
-
-                question:
-                    q.Question,
-
-                answer:
-                    box
-                    ? box.value
-                    : ""
-
-            });
-
-        }
-
-    });
+        });
 
 
     localStorage.setItem(
@@ -458,74 +389,82 @@ function submitAssessment(){
     );
 
 
-    localStorage.setItem(
-        "submittedDay",
-        assignedDay
-    );
+    // Calculate score
 
-
-    alert(
-        "Assessment submitted successfully."
-    );
-
-
-    /*
-       Next step will connect this
-       to automatic scoring and results.
-    */
-
-    window.location.href =
-        "results.html";
+    calculateAndSaveResult();
 
 }
 
 
-/* ===============================
-   START
-================================ */
+// ================= 40 MINUTE TIMER =================
 
-loadAssessment();
+let remainingTime = 40 * 60;
 
 
-/* ===============================
-   TIMER
-================================ */
-
-let time = 40 * 60;
-
-
-let timer =
+let assessmentTimer =
     setInterval(function(){
 
+        let timerBox =
+            document.getElementById("timer");
+
+
+        if(!timerBox){
+
+            clearInterval(assessmentTimer);
+
+            return;
+
+        }
+
+
         let minutes =
-            Math.floor(time / 60);
+            Math.floor(
+                remainingTime / 60
+            );
+
 
         let seconds =
-            time % 60;
+            remainingTime % 60;
 
 
-        document.getElementById(
-            "timer"
-        ).innerText =
-
+        timerBox.innerText =
             minutes +
             ":" +
             (seconds < 10 ? "0" : "") +
             seconds;
 
 
-        time--;
+        remainingTime--;
 
 
-        if(time < 0){
+        if(remainingTime < 0){
 
-            clearInterval(timer);
+            clearInterval(
+                assessmentTimer
+            );
 
-            submitAssessment();
+
+            alert(
+                "Time is over. Your assessment will be submitted."
+            );
+
+
+            // Automatic submission
+
+            calculateAndSaveResult();
 
         }
 
-    },1000);
+    }, 1000);
+
+
+// ================= START =================
+
+window.onload = function(){
+
+    loadAssessment();
+
+};
 
 </script>
 
