@@ -141,7 +141,14 @@ if(assignedDay > 41){
     assignedDay = 41;
 
 }
+    
+document.getElementById("dayNumber").innerText = assignedDay;
 
+document.getElementById("assessmentTitle").innerText =
+    "Day " + assignedDay + " Java Placement Assessment";
+
+document.getElementById("topic").innerText =
+    topics[assignedDay] || "Java Placement Practice";
 
 
 // ==================================================
