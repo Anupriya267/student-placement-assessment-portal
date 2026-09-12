@@ -16,110 +16,128 @@
 <style>
 
 .question-modal {
-    display:none;
-    position:fixed;
-    z-index:9999;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.65);
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.65);
 }
 
 .question-modal-content {
-    background:white;
-    width:92%;
-    max-width:850px;
-    height:90vh;
-    margin:5vh auto;
-    border-radius:12px;
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
+    background: white;
+    width: 92%;
+    max-width: 900px;
+    height: 90vh;
+    margin: 5vh auto;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .question-modal-header {
-    padding:15px 20px;
-    background:#2864dc;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    padding: 15px 20px;
+    background: #2864dc;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .question-modal-header h2 {
-    margin:0;
-    font-size:20px;
+    margin: 0;
+    font-size: 20px;
 }
 
 .close-button {
-    font-size:30px;
-    cursor:pointer;
-    font-weight:bold;
+    font-size: 30px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .question-modal-body {
-    padding:15px;
-    overflow-y:auto;
-    flex:1;
+    padding: 15px;
+    overflow-y: auto;
+    flex: 1;
 }
 
 .question-item {
-    border:1px solid #ddd;
-    border-radius:10px;
-    padding:15px;
-    margin-bottom:15px;
-    background:#fafafa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fafafa;
 }
 
 .question-item h3 {
-    margin-top:0;
-    font-size:17px;
+    margin-top: 0;
+    font-size: 17px;
 }
 
 .question-type {
-    font-size:13px;
-    font-weight:bold;
-    margin-bottom:8px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
 }
 
 .option {
-    padding:6px 0;
+    padding: 6px 0;
 }
 
-.coding-question {
-    border-left:5px solid #2864dc;
-}
-
-.error-question {
-    border-left:5px solid #f39c12;
-}
-
-.mcq-question {
-    border-left:5px solid #28a745;
+.answer-box {
+    margin-top: 12px;
+    padding: 10px;
+    background: #eaf7ed;
+    border-radius: 6px;
 }
 
 .coding-box {
-    background:#f1f5ff;
-    padding:12px;
-    border-radius:6px;
-    margin-top:10px;
+    background: #f1f5ff;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.coding-evaluation {
+    background: #fff7e6;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.coding-question {
+    border-left: 5px solid #2864dc;
+}
+
+.error-question {
+    border-left: 5px solid #f39c12;
+}
+
+.mcq-question {
+    border-left: 5px solid #28a745;
 }
 
 #importStatus {
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .success-message {
-    color:#16803c;
+    color: #16803c;
 }
 
 .error-message {
-    color:#c62828;
+    color: #c62828;
 }
 
 .day-card {
-    margin-bottom:15px;
+    margin-bottom: 15px;
+}
+
+.day-title {
+    margin-bottom: 5px;
 }
 
 </style>
@@ -134,9 +152,7 @@
 <h1>Admin Dashboard</h1>
 
 
-<!-- =====================================================
-     QUESTION BANK IMPORT
-===================================================== -->
+<!-- QUESTION BANK IMPORT -->
 
 <div class="card">
 
@@ -166,9 +182,7 @@ Import Question Bank
 </div>
 
 
-<!-- =====================================================
-     QUESTION BANK SUMMARY
-===================================================== -->
+<!-- QUESTION BANK SUMMARY -->
 
 <div class="card">
 
@@ -187,9 +201,7 @@ Total Days:
 </div>
 
 
-<!-- =====================================================
-     DAILY ASSESSMENTS
-===================================================== -->
+<!-- DAILY ASSESSMENTS -->
 
 <div class="card">
 
@@ -206,9 +218,7 @@ No question bank imported yet.
 </div>
 
 
-<!-- =====================================================
-     STUDENT MANAGEMENT
-===================================================== -->
+<!-- STUDENT MANAGEMENT -->
 
 <div class="card">
 
@@ -224,9 +234,7 @@ Manage Students
 </div>
 
 
-<!-- =====================================================
-     REPORTS
-===================================================== -->
+<!-- REPORTS -->
 
 <div class="card">
 
@@ -241,13 +249,10 @@ View Student Reports
 
 </div>
 
-
 </div>
 
 
-<!-- =====================================================
-     QUESTION VIEWER
-===================================================== -->
+<!-- QUESTION MODAL -->
 
 <div
     id="questionModal"
@@ -271,7 +276,6 @@ Day Questions
 
 </div>
 
-
 <div
     id="modalQuestions"
     class="question-modal-body"
@@ -285,8 +289,9 @@ Day Questions
 
 <script>
 
+
 /* =====================================================
-   HELPER: FIND COLUMN
+   FIND COLUMN
 ===================================================== */
 
 function findColumn(row, names) {
@@ -297,8 +302,8 @@ function findColumn(row, names) {
 
         const wanted =
             String(names[i])
-            .trim()
-            .toLowerCase();
+                .trim()
+                .toLowerCase();
 
         const found = keys.find(function(key) {
 
@@ -319,158 +324,112 @@ function findColumn(row, names) {
 
 
 /* =====================================================
-   HELPER: NORMALIZE QUESTION
+   NORMALIZE QUESTION
 ===================================================== */
 
 function normalizeQuestion(row) {
 
-    const dayKey = findColumn(
-        row,
-        [
-            "Day",
-            "day",
-            "DAY"
-        ]
-    );
+    const dayKey = findColumn(row, [
+        "Day"
+    ]);
 
-    const typeKey = findColumn(
-        row,
-        [
-            "Question Type",
-            "question type",
-            "Type",
-            "type"
-        ]
-    );
+    const typeKey = findColumn(row, [
+        "Question Type",
+        "Type"
+    ]);
 
-    const questionKey = findColumn(
-        row,
-        [
-            "Question",
-            "question"
-        ]
-    );
+    const numberKey = findColumn(row, [
+        "Question No.",
+        "Question No",
+        "Number"
+    ]);
 
-    const optionAKey = findColumn(
-        row,
-        [
-            "Option A",
-            "option a",
-            "A"
-        ]
-    );
+    const questionKey = findColumn(row, [
+        "Question"
+    ]);
 
-    const optionBKey = findColumn(
-        row,
-        [
-            "Option B",
-            "option b",
-            "B"
-        ]
-    );
+    const optionAKey = findColumn(row, [
+        "Option A"
+    ]);
 
-    const optionCKey = findColumn(
-        row,
-        [
-            "Option C",
-            "option c",
-            "C"
-        ]
-    );
+    const optionBKey = findColumn(row, [
+        "Option B"
+    ]);
 
-    const optionDKey = findColumn(
-        row,
-        [
-            "Option D",
-            "option d",
-            "D"
-        ]
-    );
+    const optionCKey = findColumn(row, [
+        "Option C"
+    ]);
 
-    const sourceKey = findColumn(
-        row,
-        [
-            "Source Date / Assessment",
-            "Source",
-            "Topic",
-            "topic"
-        ]
-    );
+    const optionDKey = findColumn(row, [
+        "Option D"
+    ]);
 
-    const codingKey = findColumn(
-        row,
-        [
-            "Coding Requirement",
-            "coding requirement"
-        ]
-    );
+    const answerKey = findColumn(row, [
+        "Correct Answer",
+        "Answer"
+    ]);
 
-    const answerKey = findColumn(
-        row,
-        [
-            "Correct Answer",
-            "correct answer",
-            "Answer",
-            "answer"
-        ]
-    );
+    const sourceKey = findColumn(row, [
+        "Source Date / Assessment"
+    ]);
 
+    const codingRequirementKey = findColumn(row, [
+        "Coding Requirement"
+    ]);
 
-    const dayValue =
-        dayKey
-        ? row[dayKey]
-        : "";
+    const codingEvaluationKey = findColumn(row, [
+        "Coding Evaluation"
+    ]);
 
 
     return {
 
-        Day:
-            String(dayValue)
-            .trim(),
+        Day: dayKey
+            ? String(row[dayKey] || "").trim()
+            : "",
 
-        "Question Type":
-            typeKey
+        "Question Type": typeKey
             ? String(row[typeKey] || "").trim()
             : "",
 
-        Question:
-            questionKey
+        "Question No.": numberKey
+            ? String(row[numberKey] || "").trim()
+            : "",
+
+        Question: questionKey
             ? String(row[questionKey] || "").trim()
             : "",
 
-        "Option A":
-            optionAKey
+        "Option A": optionAKey
             ? String(row[optionAKey] || "").trim()
             : "",
 
-        "Option B":
-            optionBKey
+        "Option B": optionBKey
             ? String(row[optionBKey] || "").trim()
             : "",
 
-        "Option C":
-            optionCKey
+        "Option C": optionCKey
             ? String(row[optionCKey] || "").trim()
             : "",
 
-        "Option D":
-            optionDKey
+        "Option D": optionDKey
             ? String(row[optionDKey] || "").trim()
             : "",
 
-        "Correct Answer":
-            answerKey
+        "Correct Answer": answerKey
             ? String(row[answerKey] || "").trim()
             : "",
 
-        "Source Date / Assessment":
-            sourceKey
+        "Source Date / Assessment": sourceKey
             ? String(row[sourceKey] || "").trim()
             : "",
 
-        "Coding Requirement":
-            codingKey
-            ? String(row[codingKey] || "").trim()
+        "Coding Requirement": codingRequirementKey
+            ? String(row[codingRequirementKey] || "").trim()
+            : "",
+
+        "Coding Evaluation": codingEvaluationKey
+            ? String(row[codingEvaluationKey] || "").trim()
             : ""
 
     };
@@ -502,309 +461,278 @@ function importExcel() {
 
 
     const status =
-        document.getElementById(
-            "importStatus"
-        );
+        document.getElementById("importStatus");
 
 
-    status.className =
-        "";
+    status.className = "";
 
     status.innerHTML =
-        "⏳ Reading Excel file...";
+        "Reading Excel file...";
 
 
     const reader =
         new FileReader();
 
 
-    reader.onload =
-        function(event) {
+    reader.onload = function(event) {
 
-            try {
+        try {
 
-                const data =
-                    new Uint8Array(
-                        event.target.result
-                    );
-
-
-                const workbook =
-                    XLSX.read(
-                        data,
-                        {
-                            type:"array"
-                        }
-                    );
-
-
-                /* -------------------------------------
-                   FIND THE CORRECT SHEET
-                ------------------------------------- */
-
-                let sheetName = null;
-
-
-                if (
-                    workbook.SheetNames
-                    .includes("Question Bank")
-                ) {
-
-                    sheetName =
-                        "Question Bank";
-
-                }
-
-                else if (
-                    workbook.SheetNames
-                    .includes("Questions")
-                ) {
-
-                    sheetName =
-                        "Questions";
-
-                }
-
-                else if (
-                    workbook.SheetNames.length > 0
-                ) {
-
-                    sheetName =
-                        workbook.SheetNames[0];
-
-                }
-
-
-                if (!sheetName) {
-
-                    throw new Error(
-                        "No worksheet found in the Excel file."
-                    );
-
-                }
-
-
-                console.log(
-                    "Using Excel sheet:",
-                    sheetName
+            const data =
+                new Uint8Array(
+                    event.target.result
                 );
 
 
-                /* -------------------------------------
-                   READ SHEET
-                ------------------------------------- */
-
-                const worksheet =
-                    workbook.Sheets[
-                        sheetName
-                    ];
-
-
-                const rawQuestions =
-                    XLSX.utils.sheet_to_json(
-                        worksheet,
-                        {
-                            defval:""
-                        }
-                    );
+            const workbook =
+                XLSX.read(
+                    data,
+                    {
+                        type: "array"
+                    }
+                );
 
 
-                if (
-                    !rawQuestions.length
-                ) {
+            /* FIND QUESTION BANK SHEET */
 
-                    throw new Error(
-                        "The selected Excel sheet contains no questions."
-                    );
-
-                }
+            let sheetName = null;
 
 
-                /* -------------------------------------
-                   NORMALIZE QUESTIONS
-                ------------------------------------- */
+            const exactQuestionBank =
+                workbook.SheetNames.find(
+                    function(name) {
 
-                const questions =
-                    rawQuestions
-                    .map(
-                        normalizeQuestion
-                    )
-                    .filter(
-                        function(q) {
-
-                            return (
-                                q.Day !== ""
-                                &&
-                                q.Question !== ""
-                            );
-
-                        }
-                    );
-
-
-                if (
-                    questions.length === 0
-                ) {
-
-                    throw new Error(
-                        "Questions were found, but the Day or Question columns could not be read."
-                    );
-
-                }
-
-
-                /* -------------------------------------
-                   GET DAYS
-                ------------------------------------- */
-
-                const dayMap = {};
-
-
-                questions.forEach(
-                    function(q) {
-
-                        const day =
-                            String(q.Day)
-                            .trim();
-
-
-                        if (day !== "") {
-
-                            dayMap[day] = true;
-
-                        }
+                        return String(name)
+                            .trim()
+                            .toLowerCase()
+                            === "question bank";
 
                     }
                 );
 
 
-                const days =
-                    Object.keys(dayMap);
+            const exactQuestions =
+                workbook.SheetNames.find(
+                    function(name) {
 
-
-                days.sort(
-                    function(a,b) {
-
-                        const numA =
-                            parseInt(
-                                String(a)
-                                .replace(
-                                    /[^0-9]/g,
-                                    ""
-                                )
-                            ) || 0;
-
-
-                        const numB =
-                            parseInt(
-                                String(b)
-                                .replace(
-                                    /[^0-9]/g,
-                                    ""
-                                )
-                            ) || 0;
-
-
-                        return numA - numB;
+                        return String(name)
+                            .trim()
+                            .toLowerCase()
+                            === "questions";
 
                     }
                 );
 
 
-                /* -------------------------------------
-                   SAVE TO BROWSER
-                ------------------------------------- */
+            if (exactQuestionBank) {
 
-                localStorage.setItem(
-                    "questionBank",
-                    JSON.stringify(
-                        questions
-                    )
-                );
+                sheetName =
+                    exactQuestionBank;
 
+            } else if (exactQuestions) {
 
-                localStorage.setItem(
-                    "questionBankDays",
-                    JSON.stringify(
-                        days
-                    )
-                );
+                sheetName =
+                    exactQuestions;
 
+            } else if (
+                workbook.SheetNames.length > 0
+            ) {
 
-                /* -------------------------------------
-                   SHOW RESULT
-                ------------------------------------- */
-
-                showSummary(
-                    questions,
-                    days
-                );
-
-
-                status.className =
-                    "success-message";
-
-
-                status.innerHTML =
-                    "✅ Question Bank imported successfully.";
-
-
-                alert(
-                    "Question Bank imported successfully!\n\n" +
-                    "Questions: " +
-                    questions.length +
-                    "\nDays: " +
-                    days.length
-                );
-
+                sheetName =
+                    workbook.SheetNames[0];
 
             }
 
-            catch(error) {
 
-                console.error(
-                    "Excel import error:",
-                    error
-                );
+            if (!sheetName) {
 
-
-                status.className =
-                    "error-message";
-
-
-                status.innerHTML =
-                    "❌ Import failed: " +
-                    escapeHTML(
-                        error.message
-                    );
-
-
-                alert(
-                    "Question Bank import failed.\n\n" +
-                    error.message
+                throw new Error(
+                    "No worksheet found in the Excel file."
                 );
 
             }
 
-        };
+
+            console.log(
+                "Using sheet:",
+                sheetName
+            );
 
 
-    reader.onerror =
-        function() {
+            /* READ SHEET */
+
+            const worksheet =
+                workbook.Sheets[sheetName];
+
+
+            const rawQuestions =
+                XLSX.utils.sheet_to_json(
+                    worksheet,
+                    {
+                        defval: ""
+                    }
+                );
+
+
+            if (
+                rawQuestions.length === 0
+            ) {
+
+                throw new Error(
+                    "The selected sheet contains no data."
+                );
+
+            }
+
+
+            /* NORMALIZE */
+
+            const questions =
+                rawQuestions
+                    .map(normalizeQuestion)
+                    .filter(function(q) {
+
+                        return (
+                            q.Day !== "" &&
+                            q.Question !== ""
+                        );
+
+                    });
+
+
+            if (
+                questions.length === 0
+            ) {
+
+                throw new Error(
+                    "No valid questions were found. Check that the Excel has Day and Question columns."
+                );
+
+            }
+
+
+            /* FIND DAYS */
+
+            const dayMap = {};
+
+
+            questions.forEach(function(q) {
+
+                const day =
+                    String(q.Day).trim();
+
+
+                if (day !== "") {
+
+                    dayMap[day] = true;
+
+                }
+
+            });
+
+
+            const days =
+                Object.keys(dayMap);
+
+
+            days.sort(function(a, b) {
+
+                const numberA =
+                    parseInt(
+                        String(a).replace(
+                            /[^0-9]/g,
+                            ""
+                        )
+                    ) || 0;
+
+
+                const numberB =
+                    parseInt(
+                        String(b).replace(
+                            /[^0-9]/g,
+                            ""
+                        )
+                    ) || 0;
+
+
+                return numberA - numberB;
+
+            });
+
+
+            /* SAVE */
+
+            localStorage.setItem(
+                "questionBank",
+                JSON.stringify(questions)
+            );
+
+
+            localStorage.setItem(
+                "questionBankDays",
+                JSON.stringify(days)
+            );
+
+
+            /* SHOW */
+
+            showSummary(
+                questions,
+                days
+            );
+
+
+            status.className =
+                "success-message";
+
+
+            status.innerHTML =
+                "Question Bank imported successfully.";
+
+
+            alert(
+                "Question Bank imported successfully!\n\n" +
+                "Total Questions: " +
+                questions.length +
+                "\nTotal Days: " +
+                days.length
+            );
+
+
+        } catch(error) {
+
+            console.error(
+                "Import error:",
+                error
+            );
+
 
             status.className =
                 "error-message";
 
 
             status.innerHTML =
-                "❌ Could not read the Excel file.";
+                "Import failed: " +
+                escapeHTML(error.message);
 
 
             alert(
-                "Could not read the selected Excel file."
+                "Question Bank import failed.\n\n" +
+                error.message
             );
 
-        };
+        }
+
+    };
+
+
+    reader.onerror = function() {
+
+        alert(
+            "Unable to read the Excel file."
+        );
+
+    };
 
 
     reader.readAsArrayBuffer(file);
@@ -839,85 +767,77 @@ function showSummary(
         );
 
 
-    dayList.innerHTML =
-        "";
+    dayList.innerHTML = "";
 
 
-    days.forEach(
-        function(day) {
+    days.forEach(function(day) {
 
+        const dayQuestions =
+            questions.filter(function(q) {
 
-            const dayQuestions =
-                questions.filter(
-                    function(q) {
-
-                        return (
-                            String(q.Day)
-                            .trim()
-                            ===
-                            String(day)
-                            .trim()
-                        );
-
-                    }
+                return (
+                    String(q.Day).trim()
+                    ===
+                    String(day).trim()
                 );
 
-
-            let topic = "";
-
-
-            if (
-                dayQuestions.length > 0
-            ) {
-
-                topic =
-                    dayQuestions[0][
-                        "Source Date / Assessment"
-                    ]
-                    ||
-                    "Java Placement Assessment";
-
-            }
+            });
 
 
-            const div =
-                document.createElement(
-                    "div"
-                );
+        let topic =
+            "Java Placement Assessment";
 
 
-            div.className =
-                "card day-card";
+        if (
+            dayQuestions.length > 0 &&
+            dayQuestions[0][
+                "Source Date / Assessment"
+            ]
+        ) {
 
-
-            div.innerHTML =
-
-                "<h3>Day " +
-                escapeHTML(day) +
-                "</h3>" +
-
-                "<p>" +
-                escapeHTML(topic) +
-                "</p>" +
-
-                "<p><b>Questions:</b> " +
-                dayQuestions.length +
-                "</p>" +
-
-                "<button type='button' " +
-                "onclick=\"viewDay('" +
-                escapeJS(day) +
-                "')\">" +
-                "View Questions" +
-                "</button>";
-
-
-            dayList.appendChild(
-                div
-            );
+            topic =
+                dayQuestions[0][
+                    "Source Date / Assessment"
+                ];
 
         }
-    );
+
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "card day-card";
+
+
+        card.innerHTML =
+
+            "<h3 class='day-title'>" +
+            "Day " +
+            escapeHTML(day) +
+            "</h3>" +
+
+            "<p>" +
+            escapeHTML(topic) +
+            "</p>" +
+
+            "<p><strong>Questions:</strong> " +
+            dayQuestions.length +
+            "</p>" +
+
+            "<button " +
+            "type='button' " +
+            "onclick=\"viewDay('" +
+            escapeJS(day) +
+            "')\">" +
+            "View Questions" +
+            "</button>";
+
+
+        dayList.appendChild(card);
+
+    });
 
 }
 
@@ -937,7 +857,7 @@ function viewDay(day) {
     if (!saved) {
 
         alert(
-            "No question bank imported."
+            "No question bank imported yet."
         );
 
         return;
@@ -945,7 +865,7 @@ function viewDay(day) {
     }
 
 
-    let questions = [];
+    let questions;
 
 
     try {
@@ -953,12 +873,10 @@ function viewDay(day) {
         questions =
             JSON.parse(saved);
 
-    }
-
-    catch(error) {
+    } catch(error) {
 
         alert(
-            "Saved question bank is corrupted. Please import the Excel file again."
+            "Question bank data is corrupted. Please import the Excel file again."
         );
 
         return;
@@ -967,19 +885,15 @@ function viewDay(day) {
 
 
     const dayQuestions =
-        questions.filter(
-            function(q) {
+        questions.filter(function(q) {
 
-                return (
-                    String(q.Day)
-                    .trim()
-                    ===
-                    String(day)
-                    .trim()
-                );
+            return (
+                String(q.Day).trim()
+                ===
+                String(day).trim()
+            );
 
-            }
-        );
+        });
 
 
     if (
@@ -1002,19 +916,19 @@ function viewDay(day) {
         );
 
 
-    const modalTitle =
+    const title =
         document.getElementById(
             "modalTitle"
         );
 
 
-    const modalQuestions =
+    const container =
         document.getElementById(
             "modalQuestions"
         );
 
 
-    modalTitle.innerText =
+    title.innerText =
         "Day " +
         day +
         " - " +
@@ -1022,181 +936,178 @@ function viewDay(day) {
         " Questions";
 
 
-    modalQuestions.innerHTML =
-        "";
+    container.innerHTML = "";
 
 
     dayQuestions.forEach(
-        function(q,index) {
-
+        function(q, index) {
 
             const type =
                 String(
-                    q["Question Type"]
-                    ||
-                    ""
+                    q["Question Type"] || ""
                 )
                 .trim()
                 .toUpperCase();
 
 
-            const questionBox =
-                document.createElement(
-                    "div"
-                );
+            const box =
+                document.createElement("div");
 
 
-            questionBox.className =
+            box.className =
                 "question-item";
 
 
             if (
-                type === "MCQ"
+                type.includes("MCQ")
             ) {
 
-                questionBox.classList.add(
+                box.classList.add(
                     "mcq-question"
                 );
 
             }
 
-            else if (
-                type === "ERROR"
-                ||
-                type === "ERROR FINDING"
+
+            if (
+                type.includes("ERROR")
             ) {
 
-                questionBox.classList.add(
+                box.classList.add(
                     "error-question"
                 );
 
             }
 
-            else if (
-                type === "CODING"
+
+            if (
+                type.includes("CODING")
             ) {
 
-                questionBox.classList.add(
+                box.classList.add(
                     "coding-question"
                 );
 
             }
 
 
-            let html =
+            let html = "";
 
+
+            html +=
                 "<div class='question-type'>" +
-
                 escapeHTML(
                     type || "QUESTION"
                 ) +
+                "</div>";
 
-                "</div>" +
 
-                "<h3>" +
-
-                "Question " +
-
+            html +=
+                "<h3>Question " +
                 (index + 1) +
-
                 ". " +
-
                 escapeHTML(
                     q.Question || ""
                 ) +
-
                 "</h3>";
 
 
+            /* OPTIONS */
+
             if (
-                type === "MCQ"
-                ||
-                type === "ERROR"
-                ||
-                type === "ERROR FINDING"
+                q["Option A"] ||
+                q["Option B"] ||
+                q["Option C"] ||
+                q["Option D"]
             ) {
 
-
                 html +=
-
-                    "<div class='option'>" +
-
-                    "<b>A.</b> " +
-
+                    "<div class='option'><b>A.</b> " +
                     escapeHTML(
                         q["Option A"] || ""
                     ) +
+                    "</div>";
 
-                    "</div>" +
-
-
-                    "<div class='option'>" +
-
-                    "<b>B.</b> " +
-
+                html +=
+                    "<div class='option'><b>B.</b> " +
                     escapeHTML(
                         q["Option B"] || ""
                     ) +
+                    "</div>";
 
-                    "</div>" +
-
-
-                    "<div class='option'>" +
-
-                    "<b>C.</b> " +
-
+                html +=
+                    "<div class='option'><b>C.</b> " +
                     escapeHTML(
                         q["Option C"] || ""
                     ) +
+                    "</div>";
 
-                    "</div>" +
-
-
-                    "<div class='option'>" +
-
-                    "<b>D.</b> " +
-
+                html +=
+                    "<div class='option'><b>D.</b> " +
                     escapeHTML(
                         q["Option D"] || ""
                     ) +
-
                     "</div>";
 
             }
 
 
+            /* CORRECT ANSWER */
+
             if (
-                type === "CODING"
+                q["Correct Answer"]
             ) {
 
                 html +=
-
-                    "<div class='coding-box'>" +
-
-                    "<b>Coding Requirement:</b>" +
-
-                    "<br><br>" +
-
+                    "<div class='answer-box'>" +
+                    "<strong>Correct Answer:</strong><br>" +
                     escapeHTML(
-                        q["Coding Requirement"]
-                        ||
-                        q.Question
-                        ||
-                        ""
+                        q["Correct Answer"]
                     ) +
-
                     "</div>";
 
             }
 
 
-            questionBox.innerHTML =
+            /* CODING REQUIREMENT */
+
+            if (
+                q["Coding Requirement"]
+            ) {
+
+                html +=
+                    "<div class='coding-box'>" +
+                    "<strong>Coding Requirement:</strong><br><br>" +
+                    escapeHTML(
+                        q["Coding Requirement"]
+                    ) +
+                    "</div>";
+
+            }
+
+
+            /* CODING EVALUATION */
+
+            if (
+                q["Coding Evaluation"]
+            ) {
+
+                html +=
+                    "<div class='coding-evaluation'>" +
+                    "<strong>Coding Evaluation:</strong><br><br>" +
+                    escapeHTML(
+                        q["Coding Evaluation"]
+                    ) +
+                    "</div>";
+
+            }
+
+
+            box.innerHTML =
                 html;
 
 
-            modalQuestions.appendChild(
-                questionBox
-            );
+            container.appendChild(box);
 
         }
     );
@@ -1209,7 +1120,7 @@ function viewDay(day) {
 
 
 /* =====================================================
-   CLOSE QUESTION MODAL
+   CLOSE MODAL
 ===================================================== */
 
 function closeQuestionModal() {
@@ -1275,30 +1186,15 @@ function escapeHTML(value) {
 
     return String(value)
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+        .replace(/&/g, "&amp;")
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+        .replace(/</g, "&lt;")
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+        .replace(/>/g, "&gt;")
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
+        .replace(/"/g, "&quot;")
 
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/'/g, "&#039;");
 
 }
 
@@ -1311,21 +1207,15 @@ function escapeJS(value) {
 
     return String(value)
 
-        .replace(
-            /\\/g,
-            "\\\\"
-        )
+        .replace(/\\/g, "\\\\")
 
-        .replace(
-            /'/g,
-            "\\'"
-        );
+        .replace(/'/g, "\\'");
 
 }
 
 
 /* =====================================================
-   LOAD SAVED QUESTION BANK
+   LOAD SAVED QUESTIONS
 ===================================================== */
 
 window.onload =
@@ -1346,26 +1236,20 @@ window.onload =
 
 
             if (
-                saved
-                &&
+                saved &&
                 savedDays
             ) {
 
                 const questions =
-                    JSON.parse(
-                        saved
-                    );
+                    JSON.parse(saved);
 
 
                 const days =
-                    JSON.parse(
-                        savedDays
-                    );
+                    JSON.parse(savedDays);
 
 
                 if (
-                    Array.isArray(questions)
-                    &&
+                    Array.isArray(questions) &&
                     Array.isArray(days)
                 ) {
 
@@ -1378,27 +1262,17 @@ window.onload =
                     document.getElementById(
                         "importStatus"
                     ).innerHTML =
-                        "✅ Previously imported question bank loaded.";
+                        "Previously imported question bank loaded.";
 
                 }
 
             }
 
-        }
-
-        catch(error) {
+        } catch(error) {
 
             console.error(
                 "Could not load saved question bank:",
                 error
-            );
-
-            localStorage.removeItem(
-                "questionBank"
-            );
-
-            localStorage.removeItem(
-                "questionBankDays"
             );
 
         }
@@ -1406,7 +1280,6 @@ window.onload =
     };
 
 </script>
-
 
 </body>
 
