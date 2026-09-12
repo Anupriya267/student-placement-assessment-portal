@@ -1,54 +1,353 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-<title>Student Management</title>
+<meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Management</title>
 
 <link rel="stylesheet" href="style.css">
 
 <style>
 
-.student-form {
-    display: grid;
-    gap: 12px;
+/* =====================================================
+   PROFESSIONAL STUDENT MANAGEMENT PAGE
+===================================================== */
+
+*{
+    box-sizing:border-box;
 }
 
-.student-form input,
-.student-form select {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
+html,
+body{
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:linear-gradient(135deg,#eef4ff,#f8fbff);
+    color:#1e293b;
+    min-height:100%;
 }
 
-.student-table {
-    width: 100%;
-    overflow-x: auto;
+/* Fixed header */
+
+.top-header{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    height:72px;
+    background:#ffffff;
+    border-bottom:1px solid #e2e8f0;
+    box-shadow:0 3px 15px rgba(0,0,0,.08);
+    z-index:1000;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 700px;
+.header-inner{
+    max-width:1150px;
+    height:100%;
+    margin:auto;
+    padding:0 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 }
 
-th,
-td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
+.brand{
+    font-size:21px;
+    font-weight:700;
+    color:#2855d9;
 }
 
-th {
-    background: #2864dc;
-    color: white;
+.brand-subtitle{
+    margin-top:3px;
+    font-size:12px;
+    color:#64748b;
 }
 
-.delete-button {
-    background: #dc3545;
+.back-btn{
+    border:none;
+    background:#475569;
+    color:#fff;
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.back-btn:hover{
+    background:#334155;
+}
+
+/* Main */
+
+.container{
+    width:100%;
+    max-width:1150px;
+    margin:auto;
+    padding:105px 22px 40px;
+}
+
+/* Page heading */
+
+.page-heading{
+    margin-bottom:25px;
+}
+
+.page-heading h1{
+    margin:0;
+    font-size:31px;
+    color:#172554;
+}
+
+.page-heading p{
+    margin:8px 0 0;
+    color:#64748b;
+    font-size:15px;
+}
+
+/* Cards */
+
+.card{
+    background:#ffffff;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    padding:26px;
+    margin-bottom:22px;
+    box-shadow:0 8px 25px rgba(15,23,42,.07);
+}
+
+.card h2{
+    margin:0 0 20px;
+    font-size:21px;
+    color:#172554;
+}
+
+/* Form */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group label{
+    font-size:14px;
+    font-weight:700;
+    color:#475569;
+    margin-bottom:7px;
+}
+
+.form-group input,
+.form-group select{
+    width:100%;
+    height:46px;
+    padding:10px 13px;
+    border:1px solid #cbd5e1;
+    border-radius:9px;
+    background:#fff;
+    color:#1e293b;
+    font-size:15px;
+    outline:none;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+    border-color:#2855d9;
+    box-shadow:0 0 0 3px rgba(40,85,217,.10);
+}
+
+.full-width{
+    grid-column:1 / -1;
+}
+
+/* Add button */
+
+.add-btn{
+    width:100%;
+    height:48px;
+    margin-top:20px;
+    border:none;
+    border-radius:9px;
+    background:#2855d9;
+    color:#ffffff;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.add-btn:hover{
+    background:#1d4ed8;
+    box-shadow:0 5px 15px rgba(40,85,217,.20);
+}
+
+/* Message */
+
+#message{
+    min-height:20px;
+    margin-top:14px;
+    text-align:center;
+    font-weight:700;
+}
+
+/* Student table */
+
+.table-wrapper{
+    width:100%;
+    overflow-x:auto;
+    border:1px solid #e2e8f0;
+    border-radius:12px;
+}
+
+table{
+    width:100%;
+    min-width:850px;
+    border-collapse:collapse;
+    background:#ffffff;
+}
+
+thead{
+    background:#eef4ff;
+}
+
+th{
+    padding:14px 12px;
+    text-align:left;
+    font-size:13px;
+    color:#334155;
+    font-weight:700;
+    border-bottom:1px solid #dbe4f0;
+    white-space:nowrap;
+}
+
+td{
+    padding:13px 12px;
+    border-bottom:1px solid #edf2f7;
+    font-size:14px;
+    color:#475569;
+    vertical-align:middle;
+}
+
+tbody tr:hover{
+    background:#f8fbff;
+}
+
+tbody tr:last-child td{
+    border-bottom:none;
+}
+
+/* Delete */
+
+.delete-btn{
+    border:none;
+    background:#ef4444;
+    color:#ffffff;
+    padding:8px 13px;
+    border-radius:7px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.delete-btn:hover{
+    background:#dc2626;
+}
+
+/* Empty state */
+
+.empty-message{
+    text-align:center;
+    padding:30px;
+    color:#64748b;
+}
+
+/* Student count */
+
+.student-count{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:34px;
+    height:30px;
+    padding:0 10px;
+    border-radius:20px;
+    background:#eef4ff;
+    color:#2855d9;
+    font-weight:700;
+    font-size:14px;
+}
+
+/* Footer */
+
+.footer{
+    text-align:center;
+    color:#94a3b8;
+    font-size:13px;
+    padding:5px 0 20px;
+}
+
+/* Mobile */
+
+@media(max-width:750px){
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .full-width{
+        grid-column:auto;
+    }
+
+    .container{
+        padding-left:15px;
+        padding-right:15px;
+    }
+
+    .card{
+        padding:20px;
+    }
+
+    .page-heading h1{
+        font-size:25px;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .top-header{
+        height:64px;
+    }
+
+    .header-inner{
+        padding:0 14px;
+    }
+
+    .brand{
+        font-size:17px;
+    }
+
+    .brand-subtitle{
+        font-size:10px;
+    }
+
+    .back-btn{
+        padding:8px 12px;
+        font-size:12px;
+    }
+
+    .container{
+        padding-top:85px;
+    }
+
 }
 
 </style>
@@ -59,553 +358,849 @@ th {
 <body>
 
 
-<div class="dashboard">
+<!-- =====================================================
+     FIXED HEADER
+===================================================== -->
+
+<header class="top-header">
+
+    <div class="header-inner">
+
+        <div>
+
+            <div class="brand">
+                Java Placement Portal
+            </div>
+
+            <div class="brand-subtitle">
+                Student Management
+            </div>
+
+        </div>
 
 
-<h1>Student Management</h1>
+        <button
+            class="back-btn"
+            onclick="goBack()">
+
+            ← Back to Admin
+
+        </button>
+
+    </div>
+
+</header>
 
 
-<!-- ========================================= -->
-<!-- ADD STUDENT -->
-<!-- ========================================= -->
+<!-- =====================================================
+     MAIN
+===================================================== -->
 
-<div class="card">
-
-<h2>Add Student</h2>
+<main class="container">
 
 
-<div class="student-form">
+    <div class="page-heading">
+
+        <h1>
+            Student Management
+        </h1>
+
+        <p>
+            Add, manage and assign assessment days to students.
+        </p>
+
+    </div>
 
 
-<input
-    type="text"
-    id="studentName"
-    placeholder="Student Name"
->
+    <!-- =================================================
+         ADD STUDENT
+    ================================================== -->
+
+    <section class="card">
+
+        <h2>
+            Add New Student
+        </h2>
 
 
-<input
-    type="text"
-    id="studentUsername"
-    placeholder="Username"
->
+        <form
+            id="studentForm"
+            onsubmit="addStudent(event)">
 
 
-<input
-    type="password"
-    id="studentPassword"
-    placeholder="Password"
->
+            <div class="form-grid">
 
 
-<input
-    type="text"
-    id="studentYear"
-    placeholder="Year (Example: Final Year)"
->
+                <!-- Name -->
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Student Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Enter student name"
+                        required>
+
+                </div>
 
 
-<select id="assignedDay">
+                <!-- Username -->
 
-<option value="">
-Select Assigned Day
-</option>
+                <div class="form-group">
 
-</select>
+                    <label for="username">
+                        Username
+                    </label>
 
+                    <input
+                        type="text"
+                        id="username"
+                        placeholder="Enter username"
+                        required>
 
-<button onclick="addStudent()">
-Add Student
-</button>
-
-
-</div>
-
-</div>
+                </div>
 
 
+                <!-- Password -->
 
-<!-- ========================================= -->
-<!-- STUDENT LIST -->
-<!-- ========================================= -->
+                <div class="form-group">
 
-<div class="card">
+                    <label for="password">
+                        Password
+                    </label>
 
-<h2>Student List</h2>
+                    <input
+                        type="text"
+                        id="password"
+                        placeholder="Enter password"
+                        required>
 
-
-<div class="student-table">
-
-<table>
-
-
-<thead>
-
-<tr>
-
-<th>Name</th>
-
-<th>Username</th>
-
-<th>Password</th>
-
-<th>Year</th>
-
-<th>Assigned Day</th>
-
-<th>Action</th>
-
-</tr>
-
-</thead>
+                </div>
 
 
-<tbody id="studentTableBody">
+                <!-- Year -->
 
-</tbody>
+                <div class="form-group">
+
+                    <label for="year">
+                        Year
+                    </label>
+
+                    <select
+                        id="year"
+                        required>
+
+                        <option value="">
+                            Select Year
+                        </option>
+
+                        <option value="Final Year">
+                            Final Year
+                        </option>
+
+                        <option value="Third Year">
+                            Third Year
+                        </option>
+
+                        <option value="Second Year">
+                            Second Year
+                        </option>
+
+                        <option value="First Year">
+                            First Year
+                        </option>
+
+                    </select>
+
+                </div>
 
 
-</table>
+                <!-- Assigned Day -->
 
-</div>
+                <div class="form-group full-width">
 
-</div>
+                    <label for="assignedDay">
+                        Assigned Assessment Day
+                    </label>
+
+                    <select
+                        id="assignedDay"
+                        required>
+
+                        <option value="">
+                            Loading assessment days...
+                        </option>
+
+                    </select>
+
+                </div>
 
 
-
-<!-- ========================================= -->
-<!-- BACK -->
-<!-- ========================================= -->
-
-<div class="card">
-
-<button onclick="goBack()">
-Back to Admin Dashboard
-</button>
-
-</div>
+            </div>
 
 
-</div>
+            <button
+                type="submit"
+                class="add-btn">
 
+                + Add Student
+
+            </button>
+
+
+        </form>
+
+
+        <div id="message"></div>
+
+    </section>
+
+
+    <!-- =================================================
+         STUDENT LIST
+    ================================================== -->
+
+    <section class="card">
+
+        <div style="
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:15px;
+            margin-bottom:20px;
+        ">
+
+            <h2 style="margin:0;">
+                Registered Students
+            </h2>
+
+            <span
+                id="studentCount"
+                class="student-count">
+
+                0
+
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Username
+                        </th>
+
+                        <th>
+                            Password
+                        </th>
+
+                        <th>
+                            Year
+                        </th>
+
+                        <th>
+                            Assigned Day
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="studentTableBody">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <div class="footer">
+
+        Java Placement Assessment Portal
+
+    </div>
+
+
+</main>
 
 
 <script>
 
-
-// ==============================================
-// LOAD DAYS
-// ==============================================
+/* =====================================================
+   LOAD ASSESSMENT DAYS
+===================================================== */
 
 function loadDays(){
 
-    let savedDays =
-        localStorage.getItem(
-            "questionBankDays"
-        );
+    const daySelect =
+        document.getElementById("assignedDay");
 
 
-    let days =
-        savedDays
-        ?
-        JSON.parse(savedDays)
-        :
-        [];
+    daySelect.innerHTML =
+        '<option value="">Select Assessment Day</option>';
 
 
-    let select =
-        document.getElementById(
-            "assignedDay"
-        );
+    let days = [];
 
 
-    select.innerHTML =
+    try{
 
-        '<option value="">Select Assigned Day</option>';
+        const stored =
+            JSON.parse(
+                localStorage.getItem(
+                    "questionBankDays"
+                )
+                || "[]"
+            );
 
 
-    days.forEach(
-        function(day){
+        if(Array.isArray(stored)){
 
-            let option =
-                document.createElement(
-                    "option"
-                );
+            days = stored;
+
+        }
+
+    }
+
+    catch(error){
+
+        days = [];
+
+    }
+
+
+    /*
+       If questionBankDays exists, use it.
+       Otherwise provide all 41 days so the
+       student management page remains usable.
+    */
+
+    if(days.length === 0){
+
+        for(let i = 1; i <= 41; i++){
+
+            days.push(i);
+
+        }
+
+    }
+
+
+    days
+        .map(function(day){
+
+            return parseInt(day,10);
+
+        })
+        .filter(function(day){
+
+            return !isNaN(day)
+                && day >= 1
+                && day <= 41;
+
+        })
+        .sort(function(a,b){
+
+            return a-b;
+
+        })
+        .forEach(function(day){
+
+            const option =
+                document.createElement("option");
 
 
             option.value =
-                day;
+                String(day);
 
 
             option.textContent =
                 "Day " + day;
 
 
-            select.appendChild(
-                option
+            daySelect.appendChild(option);
+
+        });
+
+}
+
+
+/* =====================================================
+   GET STUDENTS
+===================================================== */
+
+function getStudents(){
+
+    try{
+
+        const students =
+            JSON.parse(
+                localStorage.getItem(
+                    "students"
+                )
+                || "[]"
             );
 
-        }
+
+        return Array.isArray(students)
+            ? students
+            : [];
+
+    }
+
+    catch(error){
+
+        return [];
+
+    }
+
+}
+
+
+/* =====================================================
+   SAVE STUDENTS
+===================================================== */
+
+function saveStudents(students){
+
+    localStorage.setItem(
+        "students",
+        JSON.stringify(students)
     );
 
 }
 
 
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
-// ==============================================
-// ADD STUDENT
-// ==============================================
+function escapeHTML(value){
 
-function addStudent(){
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
-    let name =
+}
+
+
+/* =====================================================
+   ADD STUDENT
+===================================================== */
+
+function addStudent(event){
+
+    event.preventDefault();
+
+
+    const name =
         document.getElementById(
-            "studentName"
+            "name"
         ).value.trim();
 
 
-    let username =
+    const username =
         document.getElementById(
-            "studentUsername"
+            "username"
         ).value.trim();
 
 
-    let password =
+    const password =
         document.getElementById(
-            "studentPassword"
+            "password"
         ).value.trim();
 
 
-    let year =
+    const year =
         document.getElementById(
-            "studentYear"
-        ).value.trim();
-
-
-    let assignedDay =
-        document.getElementById(
-            "assignedDay"
+            "year"
         ).value;
 
 
+    const assignedDay =
+        parseInt(
+            document.getElementById(
+                "assignedDay"
+            ).value,
+            10
+        );
+
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.textContent = "";
+
+
+    /* Validation */
+
+    if(!name){
+
+        message.textContent =
+            "Please enter student name.";
+
+        message.style.color =
+            "#dc2626";
+
+        return;
+
+    }
+
+
+    if(!username){
+
+        message.textContent =
+            "Please enter username.";
+
+        message.style.color =
+            "#dc2626";
+
+        return;
+
+    }
+
+
+    if(!password){
+
+        message.textContent =
+            "Please enter password.";
+
+        message.style.color =
+            "#dc2626";
+
+        return;
+
+    }
+
+
+    if(!year){
+
+        message.textContent =
+            "Please select year.";
+
+        message.style.color =
+            "#dc2626";
+
+        return;
+
+    }
+
+
     if(
-        !name ||
-        !username ||
-        !password ||
-        !year ||
-        !assignedDay
+        isNaN(assignedDay)
+        ||
+        assignedDay < 1
+        ||
+        assignedDay > 41
     ){
 
-        alert(
-            "Please fill all student details."
-        );
+        message.textContent =
+            "Please select a valid assessment day.";
+
+        message.style.color =
+            "#dc2626";
 
         return;
 
     }
 
 
-    let students =
-        JSON.parse(
-            localStorage.getItem(
-                "students"
+    const students =
+        getStudents();
+
+
+    /* Duplicate username check */
+
+    const duplicate =
+        students.some(function(student){
+
+            return String(
+                student.username
+                || ""
             )
-            ||
-            "[]"
-        );
+            .trim()
+            .toLowerCase()
+            ===
+            username
+                .trim()
+                .toLowerCase();
+
+        });
 
 
-    // ==========================================
-    // CHECK DUPLICATE USERNAME
-    // ==========================================
+    if(duplicate){
 
-    let exists =
-        students.some(
-            function(student){
+        message.textContent =
+            "Username already exists.";
 
-                return student.username
-                    .toLowerCase()
-                    ===
-                    username.toLowerCase();
-
-            }
-        );
-
-
-    if(exists){
-
-        alert(
-            "Username already exists."
-        );
+        message.style.color =
+            "#dc2626";
 
         return;
 
     }
 
 
-    // ==========================================
-    // CREATE STUDENT
-    // ==========================================
+    /* Create student */
 
-    let student = {
+    const student = {
 
         id:
-            Date.now(),
+            Date.now().toString(),
 
-        name:
-            name,
+        name:name,
 
-        username:
-            username,
+        username:username,
 
-        password:
-            password,
+        password:password,
 
-        year:
-            year,
+        year:year,
 
-        assignedDay:
-            assignedDay
+        assignedDay:assignedDay
 
     };
 
 
-    students.push(
-        student
-    );
+    students.push(student);
 
 
-    localStorage.setItem(
-        "students",
-        JSON.stringify(
-            students
-        )
-    );
+    saveStudents(students);
 
 
-    // ==========================================
-    // CLEAR FORM
-    // ==========================================
+    /* Clear form */
 
     document.getElementById(
-        "studentName"
-    ).value = "";
+        "studentForm"
+    ).reset();
 
 
-    document.getElementById(
-        "studentUsername"
-    ).value = "";
+    message.textContent =
+        "Student added successfully.";
 
-
-    document.getElementById(
-        "studentPassword"
-    ).value = "";
-
-
-    document.getElementById(
-        "studentYear"
-    ).value = "";
-
-
-    document.getElementById(
-        "assignedDay"
-    ).value = "";
+    message.style.color =
+        "#16a34a";
 
 
     displayStudents();
 
-
-    alert(
-        "Student added successfully."
-    );
-
 }
 
 
-
-// ==============================================
-// DISPLAY STUDENTS
-// ==============================================
+/* =====================================================
+   DISPLAY STUDENTS
+===================================================== */
 
 function displayStudents(){
 
-    let students =
-        JSON.parse(
-            localStorage.getItem(
-                "students"
-            )
-            ||
-            "[]"
-        );
+    const students =
+        getStudents();
 
 
-    let tbody =
+    const tableBody =
         document.getElementById(
             "studentTableBody"
         );
 
 
-    tbody.innerHTML = "";
+    const count =
+        document.getElementById(
+            "studentCount"
+        );
 
 
-    if(
-        students.length === 0
-    ){
+    count.textContent =
+        students.length;
 
-        tbody.innerHTML =
 
-            "<tr>" +
+    tableBody.innerHTML = "";
 
-            "<td colspan='6'>" +
 
-            "No students added yet." +
+    if(students.length === 0){
 
-            "</td>" +
+        tableBody.innerHTML = `
 
-            "</tr>";
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="empty-message">
+
+                    No students added yet.
+
+                </td>
+
+            </tr>
+
+        `;
 
         return;
 
     }
 
 
-    students.forEach(
-        function(student){
+    students.forEach(function(student,index){
 
-            let row =
-                document.createElement(
-                    "tr"
-                );
+        const row =
+            document.createElement("tr");
 
 
-            row.innerHTML =
+        row.innerHTML = `
 
-                "<td>"
-                +
-                escapeHTML(student.name)
-                +
-                "</td>"
+            <td>
+                ${index + 1}
+            </td>
 
-                +
+            <td>
+                ${escapeHTML(student.name)}
+            </td>
 
-                "<td>"
-                +
-                escapeHTML(student.username)
-                +
-                "</td>"
+            <td>
+                ${escapeHTML(student.username)}
+            </td>
 
-                +
+            <td>
+                ${escapeHTML(student.password)}
+            </td>
 
-                "<td>"
-                +
-                escapeHTML(student.password)
-                +
-                "</td>"
+            <td>
+                ${escapeHTML(student.year)}
+            </td>
 
-                +
+            <td>
+                Day ${escapeHTML(student.assignedDay)}
+            </td>
 
-                "<td>"
-                +
-                escapeHTML(student.year)
-                +
-                "</td>"
+            <td>
 
-                +
+                <button
+                    class="delete-btn"
+                    onclick="deleteStudent('${escapeHTML(student.id)}')">
 
-                "<td>"
-                +
-                "Day "
-                +
-                escapeHTML(student.assignedDay)
-                +
-                "</td>"
+                    Delete
 
-                +
+                </button>
 
-                "<td>"
+            </td>
 
-                +
-
-                "<button class='delete-button' " +
-
-                "onclick=\"deleteStudent(" +
-                student.id +
-                ")\">" +
-
-                "Delete" +
-
-                "</button>"
-
-                +
-
-                "</td>";
+        `;
 
 
-            tbody.appendChild(
-                row
-            );
+        tableBody.appendChild(row);
 
-        }
-    );
+    });
 
 }
 
 
-
-// ==============================================
-// DELETE STUDENT
-// ==============================================
+/* =====================================================
+   DELETE STUDENT
+===================================================== */
 
 function deleteStudent(id){
 
-    if(
-        !confirm(
-            "Delete this student?"
-        )
-    ){
+    const students =
+        getStudents();
+
+
+    const student =
+        students.find(function(item){
+
+            return String(item.id)
+                ===
+                String(id);
+
+        });
+
+
+    if(!student){
 
         return;
 
     }
 
 
-    let students =
-        JSON.parse(
-            localStorage.getItem(
-                "students"
-            )
-            ||
-            "[]"
+    const confirmed =
+        confirm(
+            "Delete student \"" +
+            student.name +
+            "\"?"
         );
 
 
-    students =
-        students.filter(
-            function(student){
+    if(!confirmed){
 
-                return student.id !== id;
+        return;
 
-            }
-        );
+    }
 
 
-    localStorage.setItem(
-        "students",
-        JSON.stringify(
-            students
-        )
-    );
+    const updatedStudents =
+        students.filter(function(item){
+
+            return String(item.id)
+                !==
+                String(id);
+
+        });
+
+
+    saveStudents(updatedStudents);
 
 
     displayStudents();
 
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.textContent =
+        "Student deleted successfully.";
+
+    message.style.color =
+        "#16a34a";
+
 }
 
 
-
-// ==============================================
-// BACK TO ADMIN
-// ==============================================
+/* =====================================================
+   BACK TO ADMIN
+===================================================== */
 
 function goBack(){
 
@@ -615,57 +1210,20 @@ function goBack(){
 }
 
 
+/* =====================================================
+   INITIALIZE
+===================================================== */
 
-// ==============================================
-// ESCAPE HTML
-// ==============================================
-
-function escapeHTML(value){
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-
-
-// ==============================================
-// START
-// ==============================================
-
-window.onload =
+window.addEventListener(
+    "DOMContentLoaded",
     function(){
 
         loadDays();
 
         displayStudents();
 
-    };
-
+    }
+);
 
 </script>
 
