@@ -3,135 +3,464 @@
 
 <head>
 
-<title>Student Dashboard</title>
+    <title>Student Dashboard</title>
 
-<link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
+
 <body>
+
 
 <div class="dashboard">
 
-<h1>
-Student Dashboard
-</h1>
+
+    <h1>
+        Student Dashboard
+    </h1>
 
 
-<div class="card">
+    <!-- ================= STUDENT DETAILS ================= -->
 
-<h2>
-Welcome Student
-</h2>
+    <div class="card">
 
-<p>
-Name: <span id="studentName"></span>
-</p>
+        <h2>
+            Welcome Student
+        </h2>
 
-<p>
-Year: <span id="studentYear"></span>
-</p>
+        <p>
+            <b>Name:</b>
+            <span id="studentName"></span>
+        </p>
+
+        <p>
+            <b>Year:</b>
+            <span id="studentYear"></span>
+        </p>
+
+    </div>
+
+
+    <!-- ================= ASSIGNED ASSESSMENT ================= -->
+
+    <div class="card">
+
+        <h2>
+            Assigned Assessment
+        </h2>
+
+
+        <p>
+            <b>Day:</b>
+            <span id="assignedDay"></span>
+        </p>
+
+
+        <p>
+            <b>Assessment:</b>
+            Day
+            <span id="assignedDay2"></span>
+            Java Placement Assessment
+        </p>
+
+
+        <p>
+            <b>Topic:</b>
+            <span id="topic"></span>
+        </p>
+
+
+        <p>
+            <b>Duration:</b>
+            40 Minutes
+        </p>
+
+
+        <button onclick="startAssessment()">
+            START ASSESSMENT
+        </button>
+
+    </div>
+
+
+    <!-- ================= PREVIOUS RESULTS ================= -->
+
+    <div class="card">
+
+        <h2>
+            Previous Results
+        </h2>
+
+
+        <div id="previousResults">
+
+            No results available
+
+        </div>
+
+    </div>
+
 
 </div>
 
-
-<div class="card">
-
-<h2>
-Assigned Assessment
-</h2>
-
-<p>
-Day <span id="assignedDay"></span> Java Placement Assessment
-</p>
-
-<p>
-Topic:
-<span id="topic"></span>
-</p>
-
-<p>
-Duration:
-40 Minutes
-</p>
-
-<button onclick="startAssessment()">
-START ASSESSMENT
-</button>
-
-</div>
-
-
-<div class="card">
-
-<h2>
-Previous Results
-</h2>
-
-<div id="previousResults">
-No results available
-</div>
-
-</div>
-
-
-</div>
 
 
 <script>
 
 
-// ================= STUDENT DETAILS =================
+// =====================================================
+// STUDENT INFORMATION
+// =====================================================
+
 
 let studentName =
-    localStorage.getItem("studentName")
-    || "Student";
+    localStorage.getItem(
+        "studentName"
+    )
+    ||
+    "Student";
+
 
 let studentYear =
-    localStorage.getItem("studentYear")
-    || "Final Year";
+    localStorage.getItem(
+        "studentYear"
+    )
+    ||
+    "Final Year";
 
-let assignedDay =
-    parseInt(
-        localStorage.getItem("assignedDay")
-        || "1"
+
+let username =
+    localStorage.getItem(
+        "studentUsername"
+    )
+    ||
+    "student1";
+
+
+
+// =====================================================
+// GET ALL REPORTS
+// =====================================================
+
+
+let reports =
+    JSON.parse(
+        localStorage.getItem(
+            "studentReports"
+        )
+        ||
+        "[]"
     );
 
 
-document.getElementById("studentName")
-    .innerText = studentName;
 
-document.getElementById("studentYear")
-    .innerText = studentYear;
-
-document.getElementById("assignedDay")
-    .innerText = assignedDay;
+// =====================================================
+// GET ONLY THIS STUDENT'S REPORTS
+// =====================================================
 
 
-// ================= TOPIC =================
+let myReports =
+    reports.filter(
+        function(report){
+
+            return String(
+                report.username
+            ).trim()
+            ===
+            String(
+                username
+            ).trim();
+
+        }
+    );
+
+
+
+// =====================================================
+// DETERMINE ASSIGNED DAY
+// =====================================================
+
+
+// Start with the saved assigned day
+
+let assignedDay =
+    parseInt(
+        localStorage.getItem(
+            "assignedDay"
+        )
+        ||
+        "1"
+    );
+
+
+// If this student already has completed reports,
+// find the highest completed day.
+
+if(
+    myReports.length > 0
+){
+
+    let completedDays =
+        myReports.map(
+            function(report){
+
+                return parseInt(
+                    report.day
+                )
+                ||
+                0;
+
+            }
+        );
+
+
+    let highestCompletedDay =
+        Math.max.apply(
+            null,
+            completedDays
+        );
+
+
+    // Next day after highest completed day
+
+    if(
+        highestCompletedDay >= 1
+        &&
+        highestCompletedDay < 41
+    ){
+
+        assignedDay =
+            highestCompletedDay + 1;
+
+    }
+
+
+    // If Day 41 is completed,
+    // keep the student at Day 41.
+
+    if(
+        highestCompletedDay >= 41
+    ){
+
+        assignedDay = 41;
+
+    }
+
+}
+
+
+
+// Make sure day stays between 1 and 41
+
+if(
+    assignedDay < 1
+){
+
+    assignedDay = 1;
+
+}
+
+
+if(
+    assignedDay > 41
+){
+
+    assignedDay = 41;
+
+}
+
+
+
+// Save the current assigned day
+
+localStorage.setItem(
+    "assignedDay",
+    assignedDay
+);
+
+
+
+// =====================================================
+// DISPLAY STUDENT DETAILS
+// =====================================================
+
+
+document.getElementById(
+    "studentName"
+).innerText =
+    studentName;
+
+
+document.getElementById(
+    "studentYear"
+).innerText =
+    studentYear;
+
+
+document.getElementById(
+    "assignedDay"
+).innerText =
+    assignedDay;
+
+
+document.getElementById(
+    "assignedDay2"
+).innerText =
+    assignedDay;
+
+
+
+// =====================================================
+// TOPICS
+// =====================================================
+
 
 let topics = {
 
-    1: "Loops, Conditions, Operators",
+    1:
+        "Loops, Conditions, Operators",
 
-    2: "Loops and Conditional Logic",
+    2:
+        "Loops and Conditional Logic",
 
-    3: "Operators, Conditions and Loops",
+    3:
+        "Operators, Conditions and Loops",
 
-    4: "Loop Problem Solving",
+    4:
+        "Loop Problem Solving and Edge Cases",
 
-    5: "Array Basics and Loop Traversal"
+    5:
+        "Array Basics and Loop Traversal",
+
+    6:
+        "Array Basics",
+
+    7:
+        "Array Operations",
+
+    8:
+        "Array Problem Solving",
+
+    9:
+        "Array Searching and Sorting",
+
+    10:
+        "Array Interview Problems",
+
+    11:
+        "Array and String Basics",
+
+    12:
+        "String Basics",
+
+    13:
+        "String Operations",
+
+    14:
+        "Array and String Problem Solving",
+
+    15:
+        "String Manipulation",
+
+    16:
+        "Array and String Interview Problems",
+
+    17:
+        "Array and String Placement Problems",
+
+    18:
+        "OOP Concepts and String Programs",
+
+    19:
+        "Classes and Objects",
+
+    20:
+        "Inheritance and Polymorphism",
+
+    21:
+        "Encapsulation and Abstraction",
+
+    22:
+        "OOP and String Programs",
+
+    23:
+        "Java Frequently Asked Questions",
+
+    24:
+        "OOP Placement Questions",
+
+    25:
+        "String Placement Problems",
+
+    26:
+        "Advanced String Problems",
+
+    27:
+        "String and OOP Interview Questions",
+
+    28:
+        "String Problem Solving",
+
+    29:
+        "String and OOP Practice",
+
+    30:
+        "Placement Coding Problems",
+
+    31:
+        "Java Framework Basics",
+
+    32:
+        "Collections Framework",
+
+    33:
+        "ArrayList Basics",
+
+    34:
+        "ArrayList Problem Solving",
+
+    35:
+        "ArrayList Interview Questions",
+
+    36:
+        "Collections and Generics",
+
+    37:
+        "Collection Framework Problems",
+
+    38:
+        "Java Placement Practice",
+
+    39:
+        "Java Interview Questions",
+
+    40:
+        "Java Coding and Placement Practice",
+
+    41:
+        "Final Java Placement Assessment"
 
 };
 
 
-document.getElementById("topic")
-    .innerText =
+
+document.getElementById(
+    "topic"
+).innerText =
+
     topics[assignedDay]
-    || "Java Placement Practice";
+    ||
+    "Java Placement Practice";
 
 
-// ================= START =================
+
+// =====================================================
+// START ASSESSMENT
+// =====================================================
+
 
 function startAssessment(){
 
@@ -141,59 +470,89 @@ function startAssessment(){
 }
 
 
-// ================= PREVIOUS RESULTS =================
 
-let reports =
-    JSON.parse(
-        localStorage.getItem("studentReports")
-        || "[]"
-    );
-
-let username =
-    localStorage.getItem("studentUsername");
+// =====================================================
+// DISPLAY PREVIOUS RESULTS
+// =====================================================
 
 
-let myReports =
-    reports.filter(function(report){
-
-        return String(report.username)
-            ===
-            String(username);
-
-    });
-
-
-if(myReports.length > 0){
+if(
+    myReports.length > 0
+){
 
     let html = "";
 
+
     myReports
         .slice()
-        .reverse()
-        .forEach(function(report){
+        .sort(
+            function(a,b){
 
-            html +=
-                "<p>" +
-                "Day " +
-                report.day +
-                " — " +
-                report.score +
-                "/" +
-                report.total +
-                " — " +
-                report.percentage +
-                "%" +
-                "</p>";
+                return (
+                    parseInt(a.day)
+                    -
+                    parseInt(b.day)
+                );
 
-        });
+            }
+        )
+        .forEach(
+            function(report){
+
+                html +=
+
+                    "<div style='" +
+                    "border:1px solid #ddd;" +
+                    "padding:10px;" +
+                    "margin:8px 0;" +
+                    "border-radius:6px;" +
+                    "'>" +
+
+                    "<b>Day " +
+                    report.day +
+                    "</b>" +
+
+                    " — Score: " +
+
+                    report.score +
+                    "/" +
+                    report.total +
+
+                    " — " +
+
+                    report.percentage +
+                    "%" +
+
+                    " — " +
+
+                    report.status +
+
+                    "</div>";
+
+            }
+        );
+
 
     document.getElementById(
         "previousResults"
-    ).innerHTML = html;
+    ).innerHTML =
+        html;
 
 }
 
+
+else{
+
+    document.getElementById(
+        "previousResults"
+    ).innerText =
+        "No results available";
+
+}
+
+
 </script>
+
 
 </body>
 
