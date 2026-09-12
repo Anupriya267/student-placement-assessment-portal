@@ -3,767 +3,676 @@
 
 <head>
 
-<title>Assessment Result</title>
+<meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css">
+<title>Assessment Results</title>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+.header{
+    background:#1f4e78;
+    color:white;
+    padding:25px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.header h1{
+    margin:0 0 15px 0;
+}
+
+.info{
+    display:flex;
+    gap:30px;
+    flex-wrap:wrap;
+}
+
+.summary{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(160px,1fr));
+    gap:15px;
+}
+
+.box{
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:18px;
+    text-align:center;
+}
+
+.box h3{
+    margin:0 0 10px 0;
+}
+
+.number{
+    font-size:25px;
+    font-weight:bold;
+}
+
+.questions{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.question{
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:18px;
+    margin-bottom:15px;
+}
+
+.question h3{
+    margin-top:0;
+}
+
+.answer{
+    background:#f5f5f5;
+    padding:12px;
+    border-radius:6px;
+    white-space:pre-wrap;
+    overflow:auto;
+    font-family:Consolas,monospace;
+}
+
+.complete{
+    color:#198754;
+    font-weight:bold;
+}
+
+.partial{
+    color:#d39e00;
+    font-weight:bold;
+}
+
+.wrong{
+    color:#dc3545;
+    font-weight:bold;
+}
+
+.correct{
+    color:#198754;
+    font-weight:bold;
+}
+
+.pending{
+    color:#d39e00;
+    font-weight:bold;
+}
+
+button{
+    background:#1f4e78;
+    color:white;
+    border:none;
+    padding:13px 25px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:16px;
+    margin-top:10px;
+}
+
+button:hover{
+    background:#163a5c;
+}
+
+</style>
 
 </head>
 
+
 <body>
 
-<div class="dashboard">
+<div class="container">
 
-<h1>Assessment Result</h1>
 
-<div class="card">
+<!-- HEADER -->
 
-<h2>Student Assessment Report</h2>
+<div class="header">
 
-<p>
-<b>Student:</b>
-<span id="studentName">Student</span>
-</p>
+    <h1>Assessment Results</h1>
 
-<p>
-<b>Username:</b>
-<span id="username">student1</span>
-</p>
+    <div class="info">
 
-<p>
-<b>Year:</b>
-<span id="year">Final Year</span>
-</p>
+        <div>
+            <strong>Student:</strong>
+            <span id="studentName"></span>
+        </div>
 
-<p>
-<b>Assessment:</b>
-<span id="assessment">Java Placement Assessment</span>
-</p>
+        <div>
+            <strong>Year:</strong>
+            <span id="studentYear"></span>
+        </div>
 
-<p>
-<b>Day:</b>
-<span id="day">1</span>
-</p>
+        <div>
+            <strong>Day:</strong>
+            <span id="day"></span>
+        </div>
 
-<p>
-<b>Topic:</b>
-<span id="topic">Java</span>
-</p>
+        <div>
+            <strong>Topic:</strong>
+            <span id="topic"></span>
+        </div>
 
-<hr>
+    </div>
 
-<h3>Assessment Score</h3>
+</div>
 
-<p>
-<b>MCQ + Error Correction:</b>
-<span id="objectiveMarks">0 / 12</span>
-</p>
 
-<p>
-<b>Coding:</b>
-<span id="codingMarks">0 / 3 - Pending Evaluation</span>
-</p>
+<!-- SUMMARY -->
 
-<p>
-<b>Total:</b>
-<span id="marks">0 / 15</span>
-</p>
+<div class="summary">
 
-<p>
-<b>Percentage:</b>
-<span id="percentage">0.00</span>%
-</p>
+    <h2>Result Summary</h2>
 
-<p>
-<b>Status:</b>
-<span>Completed</span>
-</p>
+    <div class="summary-grid">
+
+
+        <div class="box">
+
+            <h3>MCQ</h3>
+
+            <div class="number"
+                 id="mcqScore">
+                0/10
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <h3>Error Correction</h3>
+
+            <div class="number"
+                 id="errorScore">
+                0/2
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <h3>Coding</h3>
+
+            <div class="number"
+                 id="codingScore">
+                0/3
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <h3>Total</h3>
+
+            <div class="number"
+                 id="totalScore">
+                0/15
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <h3>Percentage</h3>
+
+            <div class="number"
+                 id="percentage">
+                0%
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <h3>Status</h3>
+
+            <div class="number"
+                 id="status">
+                Completed
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- QUESTIONS -->
+
+<div class="questions">
+
+    <h2>Answer Details</h2>
+
+    <div id="questionContainer"></div>
+
+</div>
+
 
 <br>
 
-<button type="button" onclick="downloadPDF()">
-Download PDF Report
+<button onclick="window.location.href='student.html'">
+    Back to Dashboard
 </button>
 
-</div>
-
-
-<!-- ANSWER SHEET -->
-
-<div class="card">
-
-<h2>Answer Sheet</h2>
-
-<div id="answerSheet">
-
-<p>Loading answers...</p>
-
-</div>
-
-</div>
 
 </div>
 
 
 <script>
 
-"use strict";
 
+/* =====================================================
+   GET RESULT
+===================================================== */
 
-/* =========================================
-   STUDENT INFORMATION
-========================================= */
+let result = null;
 
-const studentName =
-    localStorage.getItem("studentName") || "Student";
 
-const username =
-    localStorage.getItem("studentUsername") || "student1";
+try{
 
-const year =
-    localStorage.getItem("studentYear") || "Final Year";
-
-const day =
-    localStorage.getItem("submittedDay") || "1";
-
-const score =
-    Number(localStorage.getItem("score")) || 0;
-
-
-/*
-   IMPORTANT:
-   Final assessment = 15
-   10 MCQ + 2 Error + 3 Coding
-*/
-
-const TOTAL_MARKS = 15;
-
-const OBJECTIVE_TOTAL = 12;
-
-const CODING_TOTAL = 3;
-
-
-/* =========================================
-   DISPLAY STUDENT DETAILS
-========================================= */
-
-document.getElementById("studentName").textContent =
-    studentName;
-
-document.getElementById("username").textContent =
-    username;
-
-document.getElementById("year").textContent =
-    year;
-
-document.getElementById("day").textContent =
-    day;
-
-
-/* =========================================
-   TOPICS
-========================================= */
-
-const topics = {
-
-    1: "Loops, Conditions, Operators",
-
-    2: "Loops and Conditional Logic",
-
-    3: "Operators, Conditions and Loops",
-
-    4: "Loop Problem Solving and Edge Cases",
-
-    5: "Array Basics and Loop Traversal",
-
-    6: "Array Basics",
-
-    7: "Array Operations",
-
-    8: "Array Problem Solving",
-
-    9: "Array Searching and Sorting",
-
-    10: "Array Interview Problems",
-
-    11: "Array and String Basics",
-
-    12: "String Basics",
-
-    13: "String Operations",
-
-    14: "Array and String Problem Solving",
-
-    15: "String Manipulation",
-
-    16: "Array and String Interview Questions",
-
-    17: "Array and String Placement Problems",
-
-    18: "OOP Concepts and String Programs",
-
-    19: "Classes and Objects",
-
-    20: "Inheritance and Polymorphism",
-
-    21: "Encapsulation and Abstraction",
-
-    22: "OOP and String Programs",
-
-    23: "Java Frequently Asked Questions",
-
-    24: "OOP Placement Questions",
-
-    25: "String Placement Problems",
-
-    26: "Advanced String Problems",
-
-    27: "String and OOP Interview Questions",
-
-    28: "String Problem Solving",
-
-    29: "String and OOP Practice",
-
-    30: "Placement Coding Problems",
-
-    31: "Java Framework Basics",
-
-    32: "Collections Framework",
-
-    33: "ArrayList Basics",
-
-    34: "ArrayList Problem Solving",
-
-    35: "ArrayList Interview Questions",
-
-    36: "Collections and Generics",
-
-    37: "Collection Framework Problems",
-
-    38: "Java Placement Practice",
-
-    39: "Java Interview Questions",
-
-    40: "Java Coding and Placement Practice",
-
-    41: "Final Java Placement Assessment"
-
-};
-
-
-document.getElementById("topic").textContent =
-    topics[day] || "Java Placement Practice";
-
-
-document.getElementById("assessment").textContent =
-    "Day " + day + " Java Placement Assessment";
-
-
-/* =========================================
-   CODING SCORE
-========================================= */
-
-/*
-   At this stage coding evaluation is not
-   connected to Judge0 yet.
-
-   Therefore coding = 0/3 and Pending.
-
-   Later Judge0 will automatically replace
-   this with the actual coding score.
-*/
-
-let codingScore = 0;
-
-let codingPending = true;
-
-
-/* =========================================
-   FINAL SCORE
-========================================= */
-
-const finalScore =
-    score + codingScore;
-
-
-const percentage =
-    (finalScore / TOTAL_MARKS) * 100;
-
-
-/* =========================================
-   DISPLAY SCORE
-========================================= */
-
-document.getElementById("objectiveMarks").textContent =
-    score + " / " + OBJECTIVE_TOTAL;
-
-
-document.getElementById("codingMarks").textContent =
-    codingScore +
-    " / " +
-    CODING_TOTAL +
-    " - Pending Evaluation";
-
-
-document.getElementById("marks").textContent =
-    finalScore +
-    " / " +
-    TOTAL_MARKS;
-
-
-document.getElementById("percentage").textContent =
-    percentage.toFixed(2);
-
-
-/* =========================================
-   ANSWER SHEET
-========================================= */
-
-let answerSheet = [];
-
-try {
-
-    answerSheet =
+    result =
         JSON.parse(
-            localStorage.getItem("answerSheet") || "[]"
+            localStorage.getItem(
+                "latestAssessmentResult"
+            )
         );
 
-}
-catch(error) {
+}catch(error){
 
-    answerSheet = [];
-
-}
-
-
-const answerContainer =
-    document.getElementById("answerSheet");
-
-
-if(answerSheet.length === 0) {
-
-    answerContainer.innerHTML = `
-
-        <p>
-        <b>No answer sheet found.</b>
-        </p>
-
-        <p>
-        Please complete a new assessment.
-        </p>
-
-    `;
+    result = null;
 
 }
-else {
 
-    let answerHTML = "";
 
-    answerSheet.forEach(function(item, index) {
+/* =====================================================
+   IF NO RESULT
+===================================================== */
 
-        let status = item.status || "Pending";
+if(!result){
 
-        let statusText = escapeHTML(status);
+    document.getElementById(
+        "questionContainer"
+    ).innerHTML =
 
-        answerHTML += `
+        "<p>No assessment result found.</p>";
 
-        <div style="
-            border:1px solid #ddd;
-            padding:15px;
-            margin-bottom:15px;
-            border-radius:8px;
-        ">
+}
 
-            <h3>
-                ${index + 1}.
-                ${escapeHTML(item.question)}
-            </h3>
 
-            <p>
-                <b>Your Answer:</b>
-            </p>
+/* =====================================================
+   DISPLAY STUDENT DETAILS
+===================================================== */
 
-            <pre style="
-                white-space:pre-wrap;
-                word-wrap:break-word;
-            ">${escapeHTML(
-                item.studentAnswer || "Not Answered"
-            )}</pre>
+if(result){
 
-            <p>
-                <b>Correct Answer:</b>
-            </p>
+    document.getElementById(
+        "studentName"
+    ).textContent =
+        result.studentName || "Student";
 
-            <pre style="
-                white-space:pre-wrap;
-                word-wrap:break-word;
-            ">${escapeHTML(
-                item.correctAnswer || ""
-            )}</pre>
 
-            <p>
-                <b>Status:</b>
-                ${statusText}
-            </p>
+    document.getElementById(
+        "studentYear"
+    ).textContent =
+        result.studentYear || "Final Year";
 
-        </div>
 
-        `;
+    document.getElementById(
+        "day"
+    ).textContent =
+        result.day || "";
+
+
+    document.getElementById(
+        "topic"
+    ).textContent =
+        result.topic || "Java";
+
+
+    document.getElementById(
+        "mcqScore"
+    ).textContent =
+        (result.mcqScore || 0) + "/10";
+
+
+    document.getElementById(
+        "errorScore"
+    ).textContent =
+        (result.errorScore || 0) + "/2";
+
+
+    document.getElementById(
+        "codingScore"
+    ).textContent =
+        (result.codingScore || 0) + "/3";
+
+
+    document.getElementById(
+        "totalScore"
+    ).textContent =
+        (result.totalScore || 0) + "/15";
+
+
+    document.getElementById(
+        "percentage"
+    ).textContent =
+        (result.percentage || 0) + "%";
+
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        result.status || "Completed";
+
+
+    displayAnswers(
+        result.answers || []
+    );
+
+}
+
+
+/* =====================================================
+   DISPLAY ANSWERS
+===================================================== */
+
+function displayAnswers(answers){
+
+    const container =
+        document.getElementById(
+            "questionContainer"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if(answers.length === 0){
+
+        container.innerHTML =
+            "<p>No answers available.</p>";
+
+        return;
+
+    }
+
+
+    answers.forEach((answer,index)=>{
+
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "question";
+
+
+        /* ============================================
+           MCQ
+        ============================================ */
+
+        if(answer.type === "MCQ"){
+
+            const isCorrect =
+                String(answer.answer)
+                    .trim()
+                    .toUpperCase()
+                ===
+                String(answer.correctAnswer)
+                    .trim()
+                    .toUpperCase();
+
+
+            div.innerHTML = `
+
+                <h3>
+                    ${index+1}. ${escapeHTML(
+                        answer.question
+                    )}
+                </h3>
+
+                <p>
+                    <strong>Your Answer:</strong>
+                </p>
+
+                <div class="answer">
+                    ${
+                        answer.answer
+                        ?
+                        escapeHTML(answer.answer)
+                        :
+                        "Not Answered"
+                    }
+                </div>
+
+                <p class="${
+                    isCorrect
+                    ? "correct"
+                    : "wrong"
+                }">
+
+                    ${
+                        isCorrect
+                        ? "✓ Correct"
+                        : "✗ Wrong"
+                    }
+
+                </p>
+
+            `;
+
+        }
+
+
+        /* ============================================
+           ERROR
+        ============================================ */
+
+        else if(answer.type === "ERROR"){
+
+            const hasAnswer =
+                answer.answer &&
+                answer.answer.trim() !== "";
+
+
+            div.innerHTML = `
+
+                <h3>
+                    ${index+1}. ${escapeHTML(
+                        answer.question
+                    )}
+                </h3>
+
+                <p>
+                    <strong>Your Answer:</strong>
+                </p>
+
+                <div class="answer">
+                    ${
+                        hasAnswer
+                        ?
+                        escapeHTML(answer.answer)
+                        :
+                        "Not Answered"
+                    }
+                </div>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    ${
+                        hasAnswer
+                        ?
+                        '<span class="correct">Answered</span>'
+                        :
+                        '<span class="wrong">Not Answered</span>'
+                    }
+
+                </p>
+
+            `;
+
+        }
+
+
+        /* ============================================
+           CODING
+        ============================================ */
+
+        else if(answer.type === "CODING"){
+
+            let status =
+                answer.status ||
+                "Wrong";
+
+
+            let score =
+                Number(answer.score || 0);
+
+
+            let statusClass =
+                "wrong";
+
+
+            let icon =
+                "✗";
+
+
+            if(status === "Complete"){
+
+                statusClass =
+                    "complete";
+
+                icon =
+                    "✓";
+
+            }
+
+            else if(
+                status === "Partially Correct"
+            ){
+
+                statusClass =
+                    "partial";
+
+                icon =
+                    "🟡";
+
+            }
+
+
+            div.innerHTML = `
+
+                <h3>
+                    ${index+1}. ${escapeHTML(
+                        answer.question
+                    )}
+                </h3>
+
+                <p>
+                    <strong>Your Answer:</strong>
+                </p>
+
+                <div class="answer">
+
+                    ${
+                        answer.code &&
+                        answer.code.trim()
+                        ?
+                        escapeHTML(answer.code)
+                        :
+                        "Not Answered"
+                    }
+
+                </div>
+
+
+                <p>
+
+                    <strong>
+                        Coding Evaluation:
+                    </strong>
+
+                    <span class="${statusClass}">
+
+                        ${icon}
+                        ${escapeHTML(status)}
+
+                    </span>
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Coding Mark:
+                    </strong>
+
+                    ${score}/1
+
+                </p>
+
+            `;
+
+        }
+
+
+        container.appendChild(div);
 
     });
 
-    answerContainer.innerHTML =
-        answerHTML;
-
 }
 
 
-/* =========================================
-   SAFE HTML
-========================================= */
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
-function escapeHTML(text) {
+function escapeHTML(value){
 
-    if(text === undefined || text === null) {
+    return String(value)
 
-        return "";
+        .replace(/&/g,"&amp;")
 
-    }
+        .replace(/</g,"&lt;")
 
-    const div =
-        document.createElement("div");
+        .replace(/>/g,"&gt;")
 
-    div.textContent =
-        String(text);
+        .replace(/"/g,"&quot;")
 
-    return div.innerHTML;
-
-}
-
-
-/* =========================================
-   PDF REPORT
-========================================= */
-
-function downloadPDF() {
-
-    const latestAnswerSheet = answerSheet;
-
-    const { jsPDF } = window.jspdf;
-
-    const doc = new jsPDF();
-
-    let y = 20;
-
-
-    /* TITLE */
-
-    doc.setFontSize(18);
-
-    doc.text(
-        "STUDENT PLACEMENT",
-        20,
-        y
-    );
-
-    y += 8;
-
-    doc.text(
-        "ASSESSMENT REPORT",
-        20,
-        y
-    );
-
-    y += 10;
-
-    doc.line(
-        20,
-        y,
-        190,
-        y
-    );
-
-    y += 15;
-
-
-    /* STUDENT DETAILS */
-
-    doc.setFontSize(11);
-
-    doc.text(
-        "Student: " + studentName,
-        20,
-        y
-    );
-
-    y += 7;
-
-    doc.text(
-        "Username: " + username,
-        20,
-        y
-    );
-
-    y += 7;
-
-    doc.text(
-        "Year: " + year,
-        20,
-        y
-    );
-
-    y += 7;
-
-    doc.text(
-        "Assessment: Day " + day +
-        " Java Placement Assessment",
-        20,
-        y
-    );
-
-    y += 7;
-
-    doc.text(
-        "Topic: " +
-        (topics[day] || "Java Placement Practice"),
-        20,
-        y
-    );
-
-    y += 10;
-
-
-    /* SCORE */
-
-    doc.setFontSize(12);
-
-    doc.text(
-        "MCQ + Error Correction: " +
-        score + " / 12",
-        20,
-        y
-    );
-
-    y += 7;
-
-    doc.text(
-        "Coding: 0 / 3 - Pending Evaluation",
-        20,
-        y
-    );
-
-    y += 7;
-
-    doc.text(
-        "TOTAL: " +
-        finalScore +
-        " / 15",
-        20,
-        y
-    );
-
-    y += 7;
-
-    doc.text(
-        "Percentage: " +
-        percentage.toFixed(2) +
-        "%",
-        20,
-        y
-    );
-
-    y += 7;
-
-    doc.text(
-        "Status: Completed",
-        20,
-        y
-    );
-
-    y += 15;
-
-
-    /* ANSWER SHEET */
-
-    doc.setFontSize(15);
-
-    doc.text(
-        "ANSWER SHEET",
-        20,
-        y
-    );
-
-    y += 12;
-
-
-    if(latestAnswerSheet.length === 0) {
-
-        doc.setFontSize(10);
-
-        doc.text(
-            "No answer sheet found.",
-            20,
-            y
-        );
-
-    }
-    else {
-
-        latestAnswerSheet.forEach(
-            function(item, index) {
-
-                if(y > 255) {
-
-                    doc.addPage();
-
-                    y = 20;
-
-                }
-
-
-                doc.setFontSize(10);
-
-                const questionText =
-                    (index + 1) +
-                    ". " +
-                    String(
-                        item.question || ""
-                    );
-
-
-                const questionLines =
-                    doc.splitTextToSize(
-                        questionText,
-                        165
-                    );
-
-
-                doc.text(
-                    questionLines,
-                    20,
-                    y
-                );
-
-
-                y +=
-                    questionLines.length * 5 + 5;
-
-
-                doc.setFontSize(9);
-
-
-                const studentText =
-                    "Your Answer: " +
-                    String(
-                        item.studentAnswer ||
-                        "Not Answered"
-                    );
-
-
-                const studentLines =
-                    doc.splitTextToSize(
-                        studentText,
-                        160
-                    );
-
-
-                doc.text(
-                    studentLines,
-                    25,
-                    y
-                );
-
-
-                y +=
-                    studentLines.length * 5 + 4;
-
-
-                const correctText =
-                    "Correct Answer: " +
-                    String(
-                        item.correctAnswer || ""
-                    );
-
-
-                const correctLines =
-                    doc.splitTextToSize(
-                        correctText,
-                        160
-                    );
-
-
-                doc.text(
-                    correctLines,
-                    25,
-                    y
-                );
-
-
-                y +=
-                    correctLines.length * 5 + 4;
-
-
-                doc.text(
-                    "Status: " +
-                    String(
-                        item.status || "Pending"
-                    ),
-                    25,
-                    y
-                );
-
-
-                y += 8;
-
-
-                doc.line(
-                    20,
-                    y,
-                    190,
-                    y
-                );
-
-
-                y += 8;
-
-            }
-        );
-
-    }
-
-
-    /* FOOTER */
-
-    if(y > 275) {
-
-        doc.addPage();
-
-        y = 20;
-
-    }
-
-
-    doc.setFontSize(9);
-
-    doc.text(
-        "Generated by Student Placement Assessment Portal",
-        20,
-        y
-    );
-
-
-    /* SAVE */
-
-    doc.save(
-        "Student_" +
-        studentName.replace(/\s+/g, "_") +
-        "_Day_" +
-        day +
-        "_Assessment_Report.pdf"
-    );
+        .replace(/'/g,"&#039;");
 
 }
 
