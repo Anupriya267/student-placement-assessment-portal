@@ -1,92 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Java Placement Assessment</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <!-- Your existing CSS -->
     <link rel="stylesheet" href="style.css">
 
     <!-- Excel Reader -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
-
         body {
             font-family: Arial, sans-serif;
-            background: #f4f6fb;
             margin: 0;
-            padding: 20px;
+            background: #f4f6f9;
         }
 
         .container {
-            max-width: 900px;
-            margin: auto;
+            max-width: 1000px;
+            margin: 30px auto;
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
         }
 
         h1 {
-            margin-top: 0;
-            color: #222;
+            text-align: center;
         }
 
-        .assessment-info {
+        .info {
             background: #f1f5ff;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
         }
 
-        #timer {
-            color: #d00000;
-            font-weight: bold;
-        }
-
-        #loading {
-            padding: 20px;
+        .timer {
+            position: sticky;
+            top: 10px;
+            background: #222;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
             text-align: center;
+            font-size: 20px;
             font-weight: bold;
+            z-index: 10;
         }
 
-        .question-box {
+        .question {
             border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
             border-radius: 10px;
-            padding: 18px;
-            margin: 18px 0;
             background: #fff;
         }
 
-        .question-box h3 {
+        .question h3 {
             margin-top: 0;
-            line-height: 1.5;
-        }
-
-        .section-title {
-            background: #eeeeee;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 25px;
         }
 
         .option {
             display: block;
             padding: 10px;
-            margin: 7px 0;
+            margin: 8px 0;
+            background: #f7f7f7;
             border-radius: 6px;
             cursor: pointer;
         }
 
         .option:hover {
-            background: #f2f2f2;
+            background: #eaf0ff;
         }
 
         textarea {
@@ -97,37 +84,48 @@
             font-family: Consolas, monospace;
             font-size: 14px;
             border: 1px solid #ccc;
-            border-radius: 7px;
+            border-radius: 8px;
             resize: vertical;
         }
 
         .submit-btn {
             width: 100%;
-            padding: 14px;
-            background: #2864d7;
+            padding: 15px;
+            background: #2563eb;
             color: white;
             border: none;
-            border-radius: 7px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-size: 18px;
             cursor: pointer;
         }
 
         .submit-btn:hover {
-            background: #1e4fae;
+            background: #1d4ed8;
         }
 
-        .error-box {
-            background: #fff4f4;
-            border: 1px solid #e0aaaa;
+        .loading {
+            text-align: center;
+            padding: 30px;
+            font-size: 18px;
+        }
+
+        .error {
+            background: #ffe5e5;
+            color: #b00020;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .section-title {
+            background: #1e293b;
+            color: white;
             padding: 12px;
             border-radius: 8px;
+            margin-top: 30px;
         }
-
     </style>
-
 </head>
-
 
 <body>
 
@@ -135,1342 +133,1155 @@
 
     <h1>Java Placement Assessment</h1>
 
-    <div class="assessment-info">
-
-        <h2 id="assessmentTitle">
-            Loading...
-        </h2>
-
-        <p>
-            <b>Student:</b>
-            <span id="studentDisplay">Loading...</span>
-        </p>
-
-        <p>
-            <b>Year:</b>
-            <span id="yearDisplay">Loading...</span>
-        </p>
-
-        <p>
-            <b>Day:</b>
-            <span id="dayNumber">Loading...</span>
-        </p>
-
-        <p>
-            <b>Topic:</b>
-            <span id="topic">Loading...</span>
-        </p>
-
-        <p>
-            <b>Duration:</b>
-            40 Minutes
-        </p>
-
-        <h2>
-            Time Remaining:
-            <span id="timer">40:00</span>
-        </h2>
-
+    <div class="info">
+        <p><strong>Student:</strong> <span id="studentName">Student</span></p>
+        <p><strong>Year:</strong> <span id="studentYear">Final Year</span></p>
+        <p><strong>Assessment:</strong> <span id="assessmentName">Java Placement Assessment</span></p>
+        <p><strong>Topic:</strong> <span id="assessmentTopic">Loading...</span></p>
+        <p><strong>Duration:</strong> 40 Minutes</p>
     </div>
 
+    <div class="timer">
+        Time Remaining:
+        <span id="timer">40:00</span>
+    </div>
 
-    <!-- Loading message -->
-
-    <div id="loading">
+    <div id="loading" class="loading">
         Loading questions...
     </div>
 
+    <div id="errorBox" class="error" style="display:none;"></div>
 
-    <!-- Questions -->
+    <form id="assessmentForm" style="display:none;">
 
-    <form id="assessmentForm">
+        <div class="section-title">
+            Section A — Multiple Choice Questions
+        </div>
 
-        <div id="questionContainer"></div>
+        <div id="mcqContainer"></div>
+
+        <div class="section-title">
+            Section B — Error Correction
+        </div>
+
+        <div id="errorContainer"></div>
+
+        <div class="section-title">
+            Section C — Coding Questions
+        </div>
+
+        <div id="codingContainer"></div>
 
         <br>
 
-        <button
-            type="button"
-            class="submit-btn"
-            onclick="submitAssessment()">
-
+        <button type="submit" class="submit-btn">
             Submit Assessment
-
         </button>
 
     </form>
 
 </div>
 
-
 <script>
 
-"use strict";
-
-
 /* =========================================================
-   GLOBAL VARIABLES
-   ========================================================= */
+   SETTINGS
+========================================================= */
 
-let questions = [];
+const EXCEL_FILE =
+    "./Java_Placement_41_Day_MASTER_WITH_CODING_EVALUATION.xlsx?v=" +
+    Date.now();
 
-let timeLeft = 40 * 60;
+const ASSESSMENT_DURATION = 40 * 60;
 
+let timeRemaining = ASSESSMENT_DURATION;
 let timerInterval = null;
 
-let assessmentSubmitted = false;
+let allQuestions = [];
+let selectedQuestions = [];
 
+let studentName = localStorage.getItem("studentName") || "Student 1";
+let studentYear = localStorage.getItem("studentYear") || "Final Year";
 
-/* =========================================================
-   STUDENT INFORMATION
-   ========================================================= */
-
-const studentName =
-    localStorage.getItem("studentName") || "Student";
-
-const studentUsername =
-    localStorage.getItem("studentUsername") || "student1";
-
-const studentYear =
-    localStorage.getItem("studentYear") || "Final Year";
-
-
-document.getElementById("studentDisplay").textContent =
-    studentName;
-
-document.getElementById("yearDisplay").textContent =
-    studentYear;
-
-
-/* =========================================================
-   TOPICS FOR 41 DAYS
-   ========================================================= */
-
-const topics = {
-
-    1: "Loops, Conditions, Operators",
-
-    2: "Loops and Conditional Logic",
-
-    3: "Operators, Conditions and Loops",
-
-    4: "Loop Problem Solving and Edge Cases",
-
-    5: "Array Basics and Loop Traversal",
-
-    6: "Array Basics",
-
-    7: "Array Operations",
-
-    8: "Array Problem Solving",
-
-    9: "Array Searching and Sorting",
-
-    10: "Array Interview Problems",
-
-    11: "Array and String Basics",
-
-    12: "String Basics",
-
-    13: "String Operations",
-
-    14: "Array and String Problem Solving",
-
-    15: "String Manipulation",
-
-    16: "Array and String Interview Questions",
-
-    17: "Array and String Placement Problems",
-
-    18: "OOP Concepts and String Programs",
-
-    19: "Classes and Objects",
-
-    20: "Inheritance and Polymorphism",
-
-    21: "Encapsulation and Abstraction",
-
-    22: "OOP and String Programs",
-
-    23: "Java Frequently Asked Questions",
-
-    24: "OOP Placement Questions",
-
-    25: "String Placement Problems",
-
-    26: "Advanced String Problems",
-
-    27: "String and OOP Interview Questions",
-
-    28: "String Problem Solving",
-
-    29: "String and OOP Practice",
-
-    30: "Placement Coding Problems",
-
-    31: "Java Framework Basics",
-
-    32: "Collections Framework",
-
-    33: "ArrayList Basics",
-
-    34: "ArrayList Problem Solving",
-
-    35: "ArrayList Interview Questions",
-
-    36: "Collections and Generics",
-
-    37: "Collection Framework Problems",
-
-    38: "Java Placement Practice",
-
-    39: "Java Interview Questions",
-
-    40: "Java Coding and Placement Practice",
-
-    41: "Final Java Placement Assessment"
-
-};
-
-
-/* =========================================================
-   FIND CURRENT DAY
-   ========================================================= */
-
-function getCurrentDay() {
-
-    let day = parseInt(
-        localStorage.getItem("assignedDay") || "1",
-        10
+let currentDay =
+    parseInt(
+        localStorage.getItem("assessmentDay") ||
+        localStorage.getItem("currentDay") ||
+        "3"
     );
 
-    if (isNaN(day) || day < 1) {
-        day = 1;
+let currentTopic =
+    localStorage.getItem("assessmentTopic") ||
+    "Operators, Conditions and Loops";
+
+
+/* =========================================================
+   DISPLAY STUDENT INFORMATION
+========================================================= */
+
+document.getElementById("studentName").textContent = studentName;
+document.getElementById("studentYear").textContent = studentYear;
+document.getElementById("assessmentTopic").textContent = currentTopic;
+
+document.getElementById("assessmentName").textContent =
+    "Day " + currentDay + " Java Placement Assessment";
+
+
+/* =========================================================
+   HELPER FUNCTIONS
+========================================================= */
+
+function clean(value) {
+    if (value === undefined || value === null) {
+        return "";
     }
 
-    if (day > 41) {
-        day = 41;
-    }
-
-
-    let reports = [];
-
-    try {
-
-        reports = JSON.parse(
-            localStorage.getItem("studentReports") || "[]"
-        );
-
-    } catch (e) {
-
-        reports = [];
-
-    }
-
-
-    /*
-       Find reports belonging to this student
-    */
-
-    const mine = reports.filter(function(r) {
-
-        return String(r.username || "").trim()
-            === String(studentUsername).trim();
-
-    });
-
-
-    /*
-       Automatically assign next day
-       after previous assessment completion
-    */
-
-    if (mine.length > 0) {
-
-        let highest = 0;
-
-        mine.forEach(function(r) {
-
-            const d = parseInt(r.day, 10);
-
-            if (!isNaN(d) && d > highest) {
-
-                highest = d;
-
-            }
-
-        });
-
-
-        if (highest >= 41) {
-
-            day = 41;
-
-        }
-
-        else if (highest >= 1) {
-
-            day = highest + 1;
-
-        }
-
-    }
-
-
-    localStorage.setItem(
-        "assignedDay",
-        String(day)
-    );
-
-    return day;
-
+    return String(value).trim();
 }
 
 
-const assignedDay = getCurrentDay();
+function normalizeQuestionType(type) {
+
+    const value = clean(type).toUpperCase();
+
+    if (
+        value === "MCQ" ||
+        value.includes("MULTIPLE")
+    ) {
+        return "MCQ";
+    }
+
+    if (
+        value === "ERROR" ||
+        value.includes("ERROR")
+    ) {
+        return "ERROR";
+    }
+
+    if (
+        value === "CODING" ||
+        value.includes("CODE")
+    ) {
+        return "CODING";
+    }
+
+    return value;
+}
 
 
 /* =========================================================
-   DISPLAY DAY INFORMATION
-   ========================================================= */
+   RANDOM SELECTION
+========================================================= */
 
-document.getElementById("dayNumber").textContent =
-    assignedDay;
+function shuffle(array) {
+
+    const copy = [...array];
+
+    for (let i = copy.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [copy[i], copy[j]] =
+        [copy[j], copy[i]];
+    }
+
+    return copy;
+}
 
 
-document.getElementById("assessmentTitle").textContent =
-    "Day " + assignedDay +
-    " Java Placement Assessment";
+function selectQuestions(questions) {
 
+    const mcqs = questions.filter(
+        q => normalizeQuestionType(q["Question Type"]) === "MCQ"
+    );
 
-document.getElementById("topic").textContent =
-    topics[assignedDay] ||
-    "Java Placement Practice";
+    const errors = questions.filter(
+        q => normalizeQuestionType(q["Question Type"]) === "ERROR"
+    );
+
+    const coding = questions.filter(
+        q => normalizeQuestionType(q["Question Type"]) === "CODING"
+    );
+
+    /*
+       Required structure:
+
+       10 MCQ
+       2 Error Correction
+       3 Coding
+    */
+
+    if (mcqs.length < 10) {
+        throw new Error(
+            "Not enough MCQ questions for Day " + currentDay
+        );
+    }
+
+    if (errors.length < 2) {
+        throw new Error(
+            "Not enough Error Correction questions for Day " +
+            currentDay
+        );
+    }
+
+    if (coding.length < 3) {
+        throw new Error(
+            "Not enough Coding questions for Day " +
+            currentDay
+        );
+    }
+
+    const selectedMCQ =
+        shuffle(mcqs).slice(0, 10);
+
+    const selectedError =
+        shuffle(errors).slice(0, 2);
+
+    const selectedCoding =
+        shuffle(coding).slice(0, 3);
+
+    return [
+        ...selectedMCQ,
+        ...selectedError,
+        ...selectedCoding
+    ];
+}
 
 
 /* =========================================================
-   LOAD QUESTIONS FROM EXCEL
-   ========================================================= */
+   LOAD EXCEL
+========================================================= */
 
 async function loadQuestions() {
 
     try {
 
-        /* Check Excel library */
-
-        if (typeof XLSX === "undefined") {
-
-            throw new Error(
-                "Excel reader did not load. Please refresh the page."
-            );
-
-        }
-
-
-        /*
-           IMPORTANT:
-           This filename must exactly match
-           the Excel file in your GitHub repository.
-        */
+        document.getElementById("loading").style.display = "block";
 
         const response = await fetch(
-
-            "./Java_Placement_41_Day_FINAL_CORRECTED.xlsx?v="
-            + Date.now(),
-
+            EXCEL_FILE,
             {
                 cache: "no-store"
             }
-
         );
-
 
         if (!response.ok) {
 
             throw new Error(
-                "Excel file could not be loaded. HTTP "
-                + response.status
+                "Excel file could not be loaded. HTTP Status: " +
+                response.status
             );
-
         }
 
-
-        /* Read Excel file */
-
-        const data =
+        const arrayBuffer =
             await response.arrayBuffer();
 
-
         const workbook =
-            XLSX.read(data, {
+            XLSX.read(arrayBuffer, {
                 type: "array"
             });
 
+        if (!workbook.SheetNames.includes("Question Bank")) {
 
-        /*
-           Find Question Bank sheet
-        */
+            throw new Error(
+                "Question Bank sheet was not found in the Excel file."
+            );
+        }
 
         const sheet =
             workbook.Sheets["Question Bank"];
 
+        const data =
+            XLSX.utils.sheet_to_json(sheet, {
+                defval: ""
+            });
 
-        if (!sheet) {
+        if (!data.length) {
 
             throw new Error(
-                'The Excel file does not contain a "Question Bank" sheet.'
+                "Question Bank is empty."
             );
-
         }
 
-
         /*
-           Convert Excel rows to JSON
-        */
-
-        const rows =
-            XLSX.utils.sheet_to_json(
-                sheet,
-                {
-                    defval: ""
-                }
-            );
-
-
-        /*
-           Get only current day's questions
+           Filter questions for current day.
         */
 
         const dayQuestions =
-            rows.filter(function(q) {
+            data.filter(q => {
 
-                return String(q.Day || "").trim()
-                    === String(assignedDay);
+                const day =
+                    parseInt(clean(q["Day"]));
 
+                return day === currentDay;
             });
 
-
-        /*
-           MCQ QUESTIONS
-        */
-
-        const mcqs =
-            dayQuestions.filter(function(q) {
-
-                return String(
-                    q["Question Type"] || ""
-                )
-                .trim()
-                .toUpperCase()
-                === "MCQ";
-
-            });
-
-
-        /*
-           ERROR CORRECTION QUESTIONS
-        */
-
-        const errors =
-            dayQuestions.filter(function(q) {
-
-                const type =
-                    String(
-                        q["Question Type"] || ""
-                    )
-                    .trim()
-                    .toUpperCase();
-
-
-                return type === "ERROR"
-                    || type === "ERROR CORRECTION";
-
-            });
-
-
-        /*
-           CODING QUESTIONS
-        */
-
-        const coding =
-            dayQuestions.filter(function(q) {
-
-                return String(
-                    q["Question Type"] || ""
-                )
-                .trim()
-                .toUpperCase()
-                === "CODING";
-
-            });
-
-
-        /*
-           FINAL ASSESSMENT:
-
-           10 MCQ
-           2 ERROR
-           3 CODING
-
-           TOTAL = 15
-        */
-
-        questions =
-            mcqs.slice(0, 10)
-            .concat(
-                errors.slice(0, 2)
-            )
-            .concat(
-                coding.slice(0, 3)
-            );
-
-
-        /*
-           Validate question count
-        */
-
-        if (questions.length !== 15) {
+        if (!dayQuestions.length) {
 
             throw new Error(
-
-                "Day "
-                + assignedDay
-                + " has "
-                + questions.length
-                + " questions available. Expected 15."
-
+                "No questions found for Day " +
+                currentDay +
+                ". Please check the Day column in Excel."
             );
-
         }
 
+        allQuestions = dayQuestions;
 
-        /*
-           Hide loading message
-        */
+        selectedQuestions =
+            selectQuestions(dayQuestions);
 
-        document.getElementById(
-            "loading"
-        ).style.display = "none";
+        renderQuestions();
 
+        document.getElementById("loading").style.display =
+            "none";
 
-        /*
-           Display questions
-        */
-
-        displayQuestions();
-
-
-        /*
-           Start 40-minute timer
-        */
+        document.getElementById("assessmentForm").style.display =
+            "block";
 
         startTimer();
 
-    }
-
-
-    catch (error) {
+    } catch (error) {
 
         console.error(error);
 
+        document.getElementById("loading").style.display =
+            "none";
 
-        document.getElementById(
-            "loading"
-        ).innerHTML =
+        document.getElementById("errorBox").style.display =
+            "block";
 
-            "<div class='error-box'>" +
-
-            "<h3>Unable to load question bank.</h3>" +
-
-            "<p>" +
-            escapeHTML(error.message) +
-            "</p>" +
-
-            "<p><b>Check that the Excel file is uploaded to GitHub with the correct filename.</b></p>" +
-
-            "</div>";
-
+        document.getElementById("errorBox").innerHTML =
+            "<strong>Unable to load assessment.</strong><br><br>" +
+            error.message +
+            "<br><br>" +
+            "Please check that the Excel file is uploaded to GitHub with this exact name:<br>" +
+            "<strong>Java_Placement_41_Day_MASTER_WITH_CODING_EVALUATION.xlsx</strong>";
     }
-
 }
 
 
 /* =========================================================
-   DISPLAY QUESTIONS
-   ========================================================= */
+   RENDER QUESTIONS
+========================================================= */
 
-function displayQuestions() {
+function renderQuestions() {
 
-    const container =
-        document.getElementById(
-            "questionContainer"
-        );
+    const mcqContainer =
+        document.getElementById("mcqContainer");
 
+    const errorContainer =
+        document.getElementById("errorContainer");
 
-    container.innerHTML = "";
+    const codingContainer =
+        document.getElementById("codingContainer");
 
+    mcqContainer.innerHTML = "";
+    errorContainer.innerHTML = "";
+    codingContainer.innerHTML = "";
 
-    /*
-       SECTION A
-       10 MCQs
-    */
+    let mcqNumber = 0;
+    let errorNumber = 0;
+    let codingNumber = 0;
 
-    const mcqTitle =
-        document.createElement("h2");
-
-    mcqTitle.className =
-        "section-title";
-
-    mcqTitle.textContent =
-        "Section A - Multiple Choice Questions (10)";
-
-    container.appendChild(mcqTitle);
-
-
-    let mcqCount = 0;
-
-
-    questions.forEach(function(q, index) {
+    selectedQuestions.forEach((q, index) => {
 
         const type =
-            String(
-                q["Question Type"] || ""
-            )
-            .trim()
-            .toUpperCase();
+            normalizeQuestionType(q["Question Type"]);
 
+        if (type === "MCQ") {
 
-        if (type !== "MCQ") {
-            return;
-        }
+            mcqNumber++;
 
-
-        mcqCount++;
-
-
-        createObjectiveQuestion(
-            container,
-            q,
-            index + 1,
-            false
-        );
-
-    });
-
-
-    /*
-       SECTION B
-       2 ERROR CORRECTION
-    */
-
-    const errorTitle =
-        document.createElement("h2");
-
-    errorTitle.className =
-        "section-title";
-
-    errorTitle.textContent =
-        "Section B - Error Correction (2)";
-
-    container.appendChild(errorTitle);
-
-
-    questions.forEach(function(q, index) {
-
-        const type =
-            String(
-                q["Question Type"] || ""
-            )
-            .trim()
-            .toUpperCase();
-
-
-        if (
-            type !== "ERROR"
-            &&
-            type !== "ERROR CORRECTION"
-        ) {
-
-            return;
-
-        }
-
-
-        createObjectiveQuestion(
-            container,
-            q,
-            index + 1,
-            true
-        );
-
-    });
-
-
-    /*
-       SECTION C
-       3 CODING QUESTIONS
-    */
-
-    const codingTitle =
-        document.createElement("h2");
-
-    codingTitle.className =
-        "section-title";
-
-    codingTitle.textContent =
-        "Section C - Java Coding Questions (3)";
-
-    container.appendChild(codingTitle);
-
-
-    questions.forEach(function(q, index) {
-
-        const type =
-            String(
-                q["Question Type"] || ""
-            )
-            .trim()
-            .toUpperCase();
-
-
-        if (type !== "CODING") {
-            return;
-        }
-
-
-        createCodingQuestion(
-            container,
-            q,
-            index + 1
-        );
-
-    });
-
-}
-
-
-/* =========================================================
-   CREATE MCQ / ERROR QUESTION
-   ========================================================= */
-
-function createObjectiveQuestion(
-    container,
-    q,
-    number,
-    isError
-) {
-
-    const box =
-        document.createElement("div");
-
-    box.className =
-        "question-box";
-
-
-    const heading =
-        document.createElement("h3");
-
-
-    heading.textContent =
-        "Question "
-        + number
-        + ". "
-        + String(q.Question || "");
-
-
-    box.appendChild(heading);
-
-
-    if (isError) {
-
-        const note =
-            document.createElement("p");
-
-
-        note.innerHTML =
-            "<b>Error Correction:</b> Select the correct answer.";
-
-
-        box.appendChild(note);
-
-    }
-
-
-    /*
-       Options A B C D
-    */
-
-    ["A", "B", "C", "D"].forEach(
-        function(letter) {
-
-            const text =
-                q["Option " + letter];
-
-
-            if (
-                text === undefined
-                ||
-                String(text).trim() === ""
-            ) {
-
-                return;
-
-            }
-
-
-            const label =
-                document.createElement("label");
-
-
-            label.className =
-                "option";
-
-
-            const radio =
-                document.createElement("input");
-
-
-            radio.type =
-                "radio";
-
-
-            radio.name =
-                "question_" + number;
-
-
-            radio.value =
-                letter;
-
-
-            label.appendChild(radio);
-
-
-            label.appendChild(
-                document.createTextNode(
-                    " " +
-                    letter +
-                    ". " +
-                    String(text)
-                )
+            renderMCQ(
+                q,
+                mcqNumber,
+                mcqContainer
             );
-
-
-            box.appendChild(label);
-
         }
-    );
 
+        else if (type === "ERROR") {
 
-    container.appendChild(box);
+            errorNumber++;
 
+            renderErrorQuestion(
+                q,
+                errorNumber,
+                errorContainer
+            );
+        }
+
+        else if (type === "CODING") {
+
+            codingNumber++;
+
+            renderCodingQuestion(
+                q,
+                codingNumber,
+                codingContainer
+            );
+        }
+
+    });
 }
 
 
 /* =========================================================
-   CREATE CODING QUESTION
-   ========================================================= */
+   MCQ
+========================================================= */
 
-function createCodingQuestion(
-    container,
-    q,
-    number
-) {
+function renderMCQ(q, number, container) {
 
-    const box =
+    const question =
+        clean(q["Question"]);
+
+    const optionA =
+        clean(q["Option A"]);
+
+    const optionB =
+        clean(q["Option B"]);
+
+    const optionC =
+        clean(q["Option C"]);
+
+    const optionD =
+        clean(q["Option D"]);
+
+    const div =
         document.createElement("div");
 
+    div.className = "question";
 
-    box.className =
-        "question-box";
+    div.innerHTML = `
+
+        <h3>
+            ${number}. ${escapeHTML(question)}
+        </h3>
+
+        <label class="option">
+            <input
+                type="radio"
+                name="mcq_${number}"
+                value="A"
+            >
+            A. ${escapeHTML(optionA)}
+        </label>
+
+        <label class="option">
+            <input
+                type="radio"
+                name="mcq_${number}"
+                value="B"
+            >
+            B. ${escapeHTML(optionB)}
+        </label>
+
+        <label class="option">
+            <input
+                type="radio"
+                name="mcq_${number}"
+                value="C"
+            >
+            C. ${escapeHTML(optionC)}
+        </label>
+
+        <label class="option">
+            <input
+                type="radio"
+                name="mcq_${number}"
+                value="D"
+            >
+            D. ${escapeHTML(optionD)}
+        </label>
+
+    `;
+
+    container.appendChild(div);
+}
 
 
-    const heading =
-        document.createElement("h3");
+/* =========================================================
+   ERROR CORRECTION
+========================================================= */
+
+function renderErrorQuestion(q, number, container) {
+
+    const question =
+        clean(q["Question"]);
+
+    const div =
+        document.createElement("div");
+
+    div.className = "question";
+
+    div.innerHTML = `
+
+        <h3>
+            ${number}. ${escapeHTML(question)}
+        </h3>
+
+        <p>
+            Identify the error and provide the corrected answer.
+        </p>
+
+        <textarea
+            name="error_${number}"
+            placeholder="Enter your corrected answer..."
+        ></textarea>
+
+    `;
+
+    container.appendChild(div);
+}
 
 
-    heading.textContent =
-        "Question "
-        + number
-        + ". "
-        + String(q.Question || "");
+/* =========================================================
+   CODING QUESTION
+========================================================= */
 
+function renderCodingQuestion(q, number, container) {
 
-    box.appendChild(heading);
-
+    const question =
+        clean(q["Question"]);
 
     const requirement =
-        document.createElement("p");
+        clean(q["Coding Requirement"]);
 
+    const evaluationMode =
+        clean(q["Evaluation Mode"]);
 
-    requirement.innerHTML =
-        "<b>Coding Requirement:</b><br>"
-        +
-        escapeHTML(
-            String(
-                q["Coding Requirement"]
-                ||
-                q.Question
-                ||
-                ""
-            )
-        );
+    const inputFormat =
+        clean(q["Student Input Format"]);
 
+    const outputFormat =
+        clean(q["Student Output Format"]);
 
-    box.appendChild(requirement);
+    const constraints =
+        clean(q["Constraints / Contract"]);
 
+    const sampleInput =
+        clean(q["Sample Input"]);
 
-    const textarea =
-        document.createElement("textarea");
+    const sampleOutput =
+        clean(q["Sample Output"]);
 
+    const div =
+        document.createElement("div");
 
-    textarea.id =
-        "coding_" + number;
+    div.className = "question";
 
+    div.innerHTML = `
 
-    textarea.placeholder =
-        "Write your Java code here...";
+        <h3>
+            Coding Question ${number}
+        </h3>
 
+        <p>
+            <strong>Problem:</strong>
+        </p>
 
-    box.appendChild(textarea);
+        <p>
+            ${formatText(question)}
+        </p>
 
+        ${
+            requirement
+            ?
+            `
+            <p>
+                <strong>Requirement:</strong><br>
+                ${formatText(requirement)}
+            </p>
+            `
+            :
+            ""
+        }
 
-    container.appendChild(box);
+        ${
+            inputFormat
+            ?
+            `
+            <p>
+                <strong>Input Format:</strong><br>
+                ${formatText(inputFormat)}
+            </p>
+            `
+            :
+            ""
+        }
 
+        ${
+            outputFormat
+            ?
+            `
+            <p>
+                <strong>Output Format:</strong><br>
+                ${formatText(outputFormat)}
+            </p>
+            `
+            :
+            ""
+        }
+
+        ${
+            constraints
+            ?
+            `
+            <p>
+                <strong>Constraints / Contract:</strong><br>
+                ${formatText(constraints)}
+            </p>
+            `
+            :
+            ""
+        }
+
+        ${
+            sampleInput
+            ?
+            `
+            <p>
+                <strong>Sample Input:</strong>
+            </p>
+
+            <pre>${escapeHTML(sampleInput)}</pre>
+            `
+            :
+            ""
+        }
+
+        ${
+            sampleOutput
+            ?
+            `
+            <p>
+                <strong>Sample Output:</strong>
+            </p>
+
+            <pre>${escapeHTML(sampleOutput)}</pre>
+            `
+            :
+            ""
+        }
+
+        ${
+            evaluationMode
+            ?
+            `
+            <p>
+                <strong>Evaluation:</strong>
+                ${escapeHTML(evaluationMode)}
+            </p>
+            `
+            :
+            ""
+        }
+
+        <p>
+            <strong>Write your Java code:</strong>
+        </p>
+
+        <textarea
+            id="coding_${number}"
+            name="coding_${number}"
+            placeholder="Write your Java code here..."
+        ></textarea>
+
+    `;
+
+    container.appendChild(div);
 }
 
 
 /* =========================================================
-   SUBMIT ASSESSMENT
-   ========================================================= */
+   HTML SAFETY
+========================================================= */
 
-function submitAssessment() {
+function escapeHTML(value) {
 
-    if (assessmentSubmitted) {
-        return;
-    }
-
-
-    const confirmed =
-        confirm(
-            "Are you sure you want to submit the assessment?"
-        );
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
 
-    if (!confirmed) {
-        return;
-    }
+function formatText(value) {
 
-
-    finishAssessment();
-
+    return escapeHTML(value)
+        .replace(/\r?\n/g, "<br>");
 }
 
 
 /* =========================================================
-   FINISH ASSESSMENT
-   ========================================================= */
+   TIMER
+========================================================= */
 
-function finishAssessment() {
+function startTimer() {
 
-    if (assessmentSubmitted) {
-        return;
-    }
+    updateTimerDisplay();
+
+    timerInterval =
+        setInterval(() => {
+
+            timeRemaining--;
+
+            updateTimerDisplay();
+
+            if (timeRemaining <= 0) {
+
+                clearInterval(timerInterval);
+
+                alert(
+                    "Time is over. Your assessment will be submitted automatically."
+                );
+
+                submitAssessment(true);
+            }
+
+        }, 1000);
+}
 
 
-    assessmentSubmitted = true;
+function updateTimerDisplay() {
+
+    const minutes =
+        Math.floor(timeRemaining / 60);
+
+    const seconds =
+        timeRemaining % 60;
+
+    document.getElementById("timer").textContent =
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0");
+}
 
 
-    /*
-       Stop timer
-    */
+/* =========================================================
+   GET STUDENT ANSWERS
+========================================================= */
 
-    clearInterval(timerInterval);
-
-
-    let score = 0;
-
-    let totalObjective = 0;
+function collectAnswers() {
 
     const answerSheet = [];
 
+    let mcqNumber = 0;
+    let errorNumber = 0;
+    let codingNumber = 0;
 
-    /*
-       Evaluate every question
-    */
+    selectedQuestions.forEach((q) => {
 
-    questions.forEach(
-        function(q, index) {
+        const type =
+            normalizeQuestionType(q["Question Type"]);
 
-            const type =
-                String(
-                    q["Question Type"] || ""
-                )
-                .trim()
-                .toUpperCase();
+        if (type === "MCQ") {
+
+            mcqNumber++;
+
+            const selected =
+                document.querySelector(
+                    `input[name="mcq_${mcqNumber}"]:checked`
+                );
+
+            answerSheet.push({
+
+                questionType: "MCQ",
+
+                questionNumber:
+                    clean(q["Question No."]),
+
+                question:
+                    clean(q["Question"]),
+
+                studentAnswer:
+                    selected ? selected.value : "",
+
+                correctAnswer:
+                    clean(q["Correct Answer"]),
+
+                marks: 1
+
+            });
+
+        }
+
+        else if (type === "ERROR") {
+
+            errorNumber++;
+
+            const textarea =
+                document.querySelector(
+                    `textarea[name="error_${errorNumber}"]`
+                );
+
+            answerSheet.push({
+
+                questionType: "ERROR",
+
+                questionNumber:
+                    clean(q["Question No."]),
+
+                question:
+                    clean(q["Question"]),
+
+                studentAnswer:
+                    textarea ? textarea.value : "",
+
+                correctAnswer:
+                    clean(q["Correct Answer"]),
+
+                marks: 1
+
+            });
+
+        }
+
+        else if (type === "CODING") {
+
+            codingNumber++;
+
+            const textarea =
+                document.getElementById(
+                    `coding_${codingNumber}`
+                );
+
+            answerSheet.push({
+
+                questionType: "CODING",
+
+                questionNumber:
+                    clean(q["Question No."]),
+
+                question:
+                    clean(q["Question"]),
+
+                studentAnswer:
+                    textarea ? textarea.value : "",
+
+                correctAnswer:
+                    clean(q["Full-Mark Logic / Answer Key"]),
+
+                evaluationMode:
+                    clean(q["Evaluation Mode"]),
+
+                studentInputFormat:
+                    clean(q["Student Input Format"]),
+
+                studentOutputFormat:
+                    clean(q["Student Output Format"]),
+
+                constraints:
+                    clean(q["Constraints / Contract"]),
+
+                sampleInput:
+                    clean(q["Sample Input"]),
+
+                sampleOutput:
+                    clean(q["Sample Output"]),
+
+                status:
+                    "Pending Evaluation",
+
+                marks: 0
+
+            });
+
+        }
+
+    });
+
+    return answerSheet;
+}
 
 
-            const number =
-                index + 1;
+/* =========================================================
+   OBJECTIVE MARKING
+========================================================= */
 
+function calculateObjectiveScore(answerSheet) {
 
-            /*
-               MCQ + ERROR
-            */
+    let score = 0;
+
+    answerSheet.forEach(answer => {
+
+        if (
+            answer.questionType === "MCQ" ||
+            answer.questionType === "ERROR"
+        ) {
+
+            const student =
+                normalizeAnswer(answer.studentAnswer);
+
+            const correct =
+                normalizeAnswer(answer.correctAnswer);
 
             if (
-                type === "MCQ"
-                ||
-                type === "ERROR"
-                ||
-                type === "ERROR CORRECTION"
+                student &&
+                correct &&
+                (
+                    student === correct ||
+                    student.includes(correct) ||
+                    correct.includes(student)
+                )
             ) {
-
-                totalObjective++;
-
-
-                const selected =
-                    document.querySelector(
-                        'input[name="question_'
-                        + number
-                        + '"]:checked'
-                    );
-
-
-                const studentAnswer =
-                    selected
-                        ? selected.value
-                        : "Not Answered";
-
-
-                const correctAnswer =
-                    String(
-                        q["Correct Answer"] || ""
-                    ).trim();
-
-
-                const isCorrect =
-                    studentAnswer === correctAnswer;
-
-
-                if (isCorrect) {
-
-                    score++;
-
-                }
-
-
-                answerSheet.push({
-
-                    question:
-                        String(
-                            q.Question || ""
-                        ),
-
-                    studentAnswer:
-                        studentAnswer,
-
-                    correctAnswer:
-                        correctAnswer,
-
-                    status:
-                        isCorrect
-                            ? "Correct"
-                            : "Wrong"
-
-                });
-
+                score++;
             }
 
+        }
 
-            /*
-               CODING
-            */
+    });
 
-            else if (
-                type === "CODING"
-            ) {
-
-                const codeBox =
-                    document.getElementById(
-                        "coding_" + number
-                    );
+    return score;
+}
 
 
-                const code =
-                    codeBox
-                        ? codeBox.value.trim()
-                        : "";
+function normalizeAnswer(value) {
+
+    return String(value || "")
+        .trim()
+        .toUpperCase()
+        .replace(/\s+/g, " ");
+}
 
 
-                answerSheet.push({
+/* =========================================================
+   SUBMIT
+========================================================= */
 
-                    question:
-                        String(
-                            q.Question || ""
-                        ),
+document
+    .getElementById("assessmentForm")
+    .addEventListener(
+        "submit",
+        function(event) {
 
-                    studentAnswer:
-                        code || "Not Answered",
+            event.preventDefault();
 
-                    correctAnswer:
-                        "Coding evaluation pending",
-
-                    status:
-                        "Pending"
-
-                });
-
-            }
+            submitAssessment(false);
 
         }
     );
 
 
-    /*
-       Percentage currently based on
-       automatically evaluated MCQ
-       + Error Correction.
+function submitAssessment(autoSubmit) {
 
-       Coding requires backend evaluator.
-    */
+    if (!autoSubmit) {
 
-    const percentage =
-        totalObjective > 0
-
-            ? (
-                score /
-                totalObjective *
-                100
-            ).toFixed(2)
-
-            : "0.00";
-
-
-    /*
-       Save basic result
-    */
-
-    localStorage.setItem(
-        "score",
-        String(score)
-    );
-
-
-    localStorage.setItem(
-        "total",
-        String(totalObjective)
-    );
-
-
-    localStorage.setItem(
-        "answerSheet",
-        JSON.stringify(answerSheet)
-    );
-
-
-    localStorage.setItem(
-        "submittedDay",
-        String(assignedDay)
-    );
-
-
-    /*
-       Get previous reports
-    */
-
-    let studentReports = [];
-
-
-    try {
-
-        studentReports =
-            JSON.parse(
-                localStorage.getItem(
-                    "studentReports"
-                ) || "[]"
+        const confirmation =
+            confirm(
+                "Are you sure you want to submit the assessment?"
             );
 
-    }
-
-    catch (e) {
-
-        studentReports = [];
+        if (!confirmation) {
+            return;
+        }
 
     }
 
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+
+    const answerSheet =
+        collectAnswers();
+
+    const objectiveScore =
+        calculateObjectiveScore(answerSheet);
+
+    const codingCount =
+        answerSheet.filter(
+            a => a.questionType === "CODING"
+        ).length;
+
+    const totalQuestions =
+        answerSheet.length;
 
     /*
-       Create report
+       Current scoring:
+
+       MCQ = 10
+       Error = 2
+       Coding = 3
+
+       Coding remains Pending until the
+       secure evaluator is connected.
     */
 
-    const report = {
+    const objectiveTotal = 12;
 
-        id: Date.now(),
+    const codingScore = 0;
 
-        name:
+    const totalScore =
+        objectiveScore + codingScore;
+
+    const percentage =
+        (totalScore / totalQuestions) * 100;
+
+    const result = {
+
+        studentName:
             studentName,
-
-        username:
-            studentUsername,
 
         year:
             studentYear,
 
         day:
-            assignedDay,
+            currentDay,
 
-        score:
-            score,
+        topic:
+            currentTopic,
+
+        assessment:
+            "Day " + currentDay +
+            " Java Placement Assessment",
+
+        mcqErrorScore:
+            objectiveScore,
+
+        mcqErrorTotal:
+            objectiveTotal,
+
+        codingScore:
+            codingScore,
+
+        codingTotal:
+            codingCount,
+
+        totalScore:
+            totalScore,
 
         total:
-            totalObjective,
+            totalQuestions,
 
         percentage:
-            percentage,
+            Number(percentage.toFixed(2)),
 
         status:
             "Completed",
 
-        date:
-            new Date().toLocaleString(),
+        codingStatus:
+            codingCount > 0
+            ? "Pending Evaluation"
+            : "Completed",
 
-        answers:
-            answerSheet
+        submittedAt:
+            new Date().toISOString(),
+
+        answerSheet:
+            answerSheet,
+
+        report:
+            {
+                studentName:
+                    studentName,
+
+                year:
+                    studentYear,
+
+                day:
+                    currentDay,
+
+                topic:
+                    currentTopic,
+
+                mcqError:
+                    objectiveScore +
+                    " / " +
+                    objectiveTotal,
+
+                coding:
+                    codingScore +
+                    " / " +
+                    codingCount +
+                    " - Pending Evaluation",
+
+                total:
+                    totalScore +
+                    " / " +
+                    totalQuestions,
+
+                percentage:
+                    Number(percentage.toFixed(2)),
+
+                status:
+                    "Completed"
+            }
 
     };
 
 
     /*
-       Remove old result for same
-       student + same day
-    */
-
-    studentReports =
-        studentReports.filter(
-            function(r) {
-
-                return !(
-                    String(
-                        r.username || ""
-                    ).trim()
-                    ===
-                    String(
-                        studentUsername
-                    ).trim()
-
-                    &&
-
-                    String(
-                        r.day || ""
-                    )
-                    ===
-                    String(
-                        assignedDay
-                    )
-                );
-
-            }
-        );
-
-
-    /*
-       Add new report
-    */
-
-    studentReports.push(report);
-
-
-    /*
-       Save reports
+       Save current result.
     */
 
     localStorage.setItem(
-        "studentReports",
-        JSON.stringify(
-            studentReports
-        )
+        "latestAssessmentResult",
+        JSON.stringify(result)
     );
 
 
     /*
-       Assign next day
+       Save result history.
     */
 
-    if (assignedDay < 41) {
+    let history = [];
 
-        const nextDay =
-            assignedDay + 1;
+    try {
 
-
-        localStorage.setItem(
-            "assignedDay",
-            String(nextDay)
-        );
-
-
-        /*
-           Update student record
-        */
-
-        let students = [];
-
-
-        try {
-
-            students =
-                JSON.parse(
-                    localStorage.getItem(
-                        "students"
-                    ) || "[]"
-                );
-
-        }
-
-        catch (e) {
-
-            students = [];
-
-        }
-
-
-        const studentIndex =
-            students.findIndex(
-                function(s) {
-
-                    return String(
-                        s.username || ""
-                    ).trim()
-                    ===
-                    String(
-                        studentUsername
-                    ).trim();
-
-                }
-            );
-
-
-        if (studentIndex !== -1) {
-
-            students[
-                studentIndex
-            ].assignedDay =
-                nextDay;
-
-
-            localStorage.setItem(
-                "students",
-                JSON.stringify(
-                    students
+        history =
+            JSON.parse(
+                localStorage.getItem(
+                    "assessmentResults"
                 )
-            );
+            ) || [];
 
-        }
+    } catch (e) {
+
+        history = [];
 
     }
 
+    history.push(result);
+
+    localStorage.setItem(
+        "assessmentResults",
+        JSON.stringify(history)
+    );
+
 
     /*
-       Go to result page
+       Save current student's result.
+    */
+
+    localStorage.setItem(
+        "lastScore",
+        objectiveScore
+    );
+
+    localStorage.setItem(
+        "lastTotal",
+        totalQuestions
+    );
+
+    localStorage.setItem(
+        "lastPercentage",
+        Number(percentage.toFixed(2))
+    );
+
+    localStorage.setItem(
+        "lastDay",
+        currentDay
+    );
+
+    localStorage.setItem(
+        "lastTopic",
+        currentTopic
+    );
+
+
+    /*
+       Move to results page.
     */
 
     window.location.href =
@@ -1480,132 +1291,38 @@ function finishAssessment() {
 
 
 /* =========================================================
-   TIMER
-   ========================================================= */
+   PREVENT ACCIDENTAL REFRESH WARNING
+========================================================= */
 
-function startTimer() {
+let assessmentStarted = false;
 
-    updateTimer();
+window.addEventListener(
+    "beforeunload",
+    function(event) {
 
+        if (
+            document.getElementById(
+                "assessmentForm"
+            ).style.display !== "none"
+        ) {
 
-    timerInterval =
-        setInterval(
-            function() {
+            event.preventDefault();
 
-                timeLeft--;
+            event.returnValue = "";
 
+        }
 
-                updateTimer();
-
-
-                if (timeLeft <= 0) {
-
-                    clearInterval(
-                        timerInterval
-                    );
-
-
-                    if (
-                        !assessmentSubmitted
-                    ) {
-
-                        alert(
-                            "Time is over. Your assessment will be submitted automatically."
-                        );
-
-
-                        finishAssessment();
-
-                    }
-
-                }
-
-            },
-            1000
-        );
-
-}
-
-
-/* =========================================================
-   UPDATE TIMER DISPLAY
-   ========================================================= */
-
-function updateTimer() {
-
-    const minutes =
-        Math.floor(
-            timeLeft / 60
-        );
-
-
-    const seconds =
-        timeLeft % 60;
-
-
-    document.getElementById(
-        "timer"
-    ).textContent =
-
-        String(minutes)
-            .padStart(2, "0")
-
-        +
-
-        ":"
-
-        +
-
-        String(seconds)
-            .padStart(2, "0");
-
-}
-
-
-/* =========================================================
-   SECURITY / HTML ESCAPE
-   ========================================================= */
-
-function escapeHTML(value) {
-
-    return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
+    }
+);
 
 
 /* =========================================================
    START
-   ========================================================= */
+========================================================= */
 
 loadQuestions();
 
 </script>
 
 </body>
-
 </html>
