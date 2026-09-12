@@ -1,9 +1,9 @@
 /* =========================================================
-   JAVA PLACEMENT ASSESSMENT PORTAL
-   PROFESSIONAL GLOBAL STYLE
-   ========================================================= */
+   GLOBAL STYLE.CSS
+   DESIGN / LAYOUT ONLY
+   NO DATA OR FUNCTIONALITY CHANGES
+========================================================= */
 
-/* ---------- RESET ---------- */
 * {
     box-sizing: border-box;
 }
@@ -14,515 +14,232 @@ html {
 
 body {
     margin: 0;
-    padding: 0;
     min-height: 100vh;
     font-family: Arial, Helvetica, sans-serif;
     background:
-        radial-gradient(circle at top left, rgba(40, 85, 217, 0.08), transparent 32%),
-        linear-gradient(135deg, #f5f8ff 0%, #eef3fb 50%, #f8fafc 100%);
-    color: #172033;
-    line-height: 1.55;
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(40, 85, 217, 0.12),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 90% 100%,
+            rgba(16, 185, 129, 0.08),
+            transparent 32%
+        ),
+        #f4f7fb;
+    color: #1f2937;
 }
 
-/* ---------- GLOBAL LAYOUT ---------- */
-.dashboard,
-.container {
-    width: min(1180px, calc(100% - 32px));
-    margin: 0 auto;
-    padding: 28px 0 50px;
-}
+/* =========================
+   LOGIN
+========================= */
 
-.dashboard > h1,
-.container > h1 {
-    margin: 0 0 24px;
-    color: #173b9b;
-    font-size: clamp(26px, 4vw, 38px);
-    font-weight: 800;
-    text-align: center;
-}
-
-/* ---------- CARDS ---------- */
-.card,
-.question-card,
-.question-item,
-.student-info,
-.summary-card {
-    background: rgba(255, 255, 255, 0.97);
-    border: 1px solid #e3e9f4;
-    border-radius: 16px;
-    box-shadow: 0 8px 28px rgba(27, 49, 87, 0.08);
-}
-
-.card {
-    padding: 24px;
-    margin: 18px 0;
-}
-
-.card h2,
-.card h3 {
-    margin-top: 0;
-    color: #173b9b;
-}
-
-.card p {
-    text-align: left;
-}
-
-/* ---------- LOGIN ---------- */
 .login-box {
-    width: min(450px, calc(100% - 32px));
-    margin: 8vh auto;
-    padding: 34px 30px;
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid #e2e8f3;
+    width: min(450px, calc(100% - 30px));
+    margin: 70px auto;
+    padding: 32px;
+    background: #ffffff;
+    border: 1px solid #e5eaf2;
     border-radius: 20px;
-    box-shadow: 0 18px 45px rgba(27, 49, 87, 0.12);
     text-align: center;
+    box-shadow: 0 10px 35px rgba(15, 23, 42, 0.10);
 }
 
 .login-box h1 {
-    margin: 0 0 24px;
     color: #2855d9;
-    font-size: 30px;
+    margin-bottom: 25px;
 }
 
 .login-box input {
-    display: block;
-    width: 100%;
-    margin: 12px 0;
-    padding: 14px 16px;
-    border: 1px solid #ccd5e5;
+    width: 90%;
+    padding: 14px;
+    margin: 9px;
+    border: 1px solid #cbd5e1;
     border-radius: 10px;
-    background: #fbfcff;
-    color: #172033;
-    font-size: 16px;
     outline: none;
-    transition: border-color .2s, box-shadow .2s;
 }
 
 .login-box input:focus {
     border-color: #2855d9;
-    box-shadow: 0 0 0 3px rgba(40, 85, 217, 0.12);
+    box-shadow: 0 0 0 3px rgba(40, 85, 217, 0.10);
 }
 
-/* ---------- BUTTONS ---------- */
+/* =========================
+   BUTTONS
+========================= */
+
 button {
-    min-height: 44px;
-    border: 0;
-    border-radius: 10px;
-    padding: 11px 20px;
-    background: linear-gradient(135deg, #2855d9, #173b9b);
-    color: #fff;
+    background: #2855d9;
+    color: #ffffff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 9px;
+    cursor: pointer;
     font-size: 15px;
     font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 5px 14px rgba(40, 85, 217, 0.20);
-    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    transition: 0.2s ease;
 }
 
 button:hover {
+    background: #1746b8;
     transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(40, 85, 217, 0.25);
 }
 
-button:active {
-    transform: translateY(0);
+/* =========================
+   COMMON CONTAINERS
+========================= */
+
+.dashboard,
+.container {
+    max-width: 1100px;
+    margin: auto;
 }
 
-button:disabled {
-    opacity: .55;
-    cursor: not-allowed;
-    transform: none;
+.card {
+    background: #ffffff;
+    padding: 22px;
+    margin: 15px 0;
+    border-radius: 16px;
+    border: 1px solid #e5eaf2;
+    box-shadow: 0 7px 24px rgba(15, 23, 42, 0.07);
 }
 
-.delete-button,
-button.delete-button {
-    background: linear-gradient(135deg, #dc3545, #b42333);
+.card h2 {
+    color: #183b78;
+    margin-top: 0;
 }
 
-/* ---------- FORM ELEMENTS ---------- */
+.card p {
+    text-align: left;
+    line-height: 1.6;
+}
+
+/* =========================
+   FORMS
+========================= */
+
 input,
 select,
 textarea {
-    font-family: inherit;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 input[type="text"],
 input[type="password"],
-input[type="email"],
 input[type="number"],
-select,
-textarea {
-    border: 1px solid #ccd5e5;
-    border-radius: 10px;
-    background: #fbfcff;
-    color: #172033;
+select {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
     outline: none;
-    transition: border-color .2s, box-shadow .2s;
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus,
-input[type="email"]:focus,
 input[type="number"]:focus,
-select:focus,
-textarea:focus {
+select:focus {
     border-color: #2855d9;
     box-shadow: 0 0 0 3px rgba(40, 85, 217, 0.10);
 }
 
-/* ---------- STUDENT MANAGEMENT ---------- */
-.student-form {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
+input[type="file"] {
+    padding: 12px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    background: #f8fafc;
 }
 
-.student-form input,
-.student-form select {
-    width: 100%;
-    padding: 13px 14px;
-    font-size: 15px;
+/* =========================
+   RADIO OPTIONS
+========================= */
+
+.card label {
+    display: block;
+    text-align: left;
+    margin: 9px 0;
 }
 
-.student-form button {
-    grid-column: 1 / -1;
-    width: fit-content;
+.card input[type="radio"] {
+    width: auto;
+    margin: 8px 10px 8px 0;
+    display: inline-block;
 }
 
-.student-table {
-    width: 100%;
+/* =========================
+   CODE
+========================= */
+
+.card pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 14px;
+    text-align: left;
+    border-radius: 9px;
     overflow-x: auto;
-    border-radius: 12px;
+    line-height: 1.55;
 }
+
+textarea {
+    width: 100%;
+    min-height: 180px;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 9px;
+    border: 1px solid #cbd5e1;
+    resize: vertical;
+}
+
+textarea:focus {
+    border-color: #2855d9;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(40, 85, 217, 0.10);
+}
+
+/* =========================
+   TIMER
+========================= */
+
+#timer {
+    color: #2855d9;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+/* =========================
+   TABLES
+========================= */
 
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 700px;
-    background: #fff;
-}
-
-th,
-td {
-    border-bottom: 1px solid #e3e8f1;
-    padding: 12px 14px;
-    text-align: left;
-    vertical-align: middle;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 th {
     background: #2855d9;
-    color: #fff;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-tbody tr:hover {
-    background: #f7f9fd;
-}
-
-/* ---------- INFO / DASHBOARD ---------- */
-.info-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    padding: 10px 0;
-    border-bottom: 1px solid #edf0f6;
-}
-
-.info-row:last-child {
-    border-bottom: 0;
-}
-
-.label {
-    color: #64748b;
-    font-weight: 700;
-}
-
-.day-box {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding: 20px;
-    border: 1px solid #dfe6f2;
-    border-radius: 14px;
-    background: #f8faff;
-}
-
-.day-number {
-    min-width: 64px;
-    height: 64px;
-    display: grid;
-    place-items: center;
-    border-radius: 14px;
-    background: #2855d9;
-    color: #fff;
-    font-size: 22px;
-    font-weight: 800;
-}
-
-/* ---------- ASSESSMENT ---------- */
-.header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    width: 100%;
-    padding: 16px 20px;
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.96);
-    border: 1px solid #e1e7f1;
-    border-radius: 14px;
-    box-shadow: 0 6px 20px rgba(27, 49, 87, 0.10);
-    backdrop-filter: blur(10px);
-}
-
-.question-card {
-    padding: 22px;
-    margin: 18px 0;
-    scroll-margin-top: 100px;
-}
-
-.question-title {
-    margin: 0 0 16px;
-    color: #172033;
-    font-size: 17px;
-    font-weight: 700;
-}
-
-.option {
-    display: flex !important;
-    align-items: flex-start;
-    gap: 10px;
-    width: 100%;
-    margin: 9px 0 !important;
-    padding: 11px 13px;
-    border: 1px solid #e1e7f1;
-    border-radius: 10px;
-    background: #fafbfe;
-    text-align: left !important;
-    cursor: pointer;
-}
-
-.option:hover {
-    background: #f2f6ff;
-    border-color: #b9c8e8;
-}
-
-.card input[type="radio"],
-.question-card input[type="radio"] {
-    width: auto !important;
-    flex: 0 0 auto;
-    margin: 4px 2px 0 0 !important;
-}
-
-.card label,
-.question-card label {
+    color: #ffffff;
+    padding: 13px;
     text-align: left;
 }
 
-.card pre,
-.question-card pre {
-    overflow-x: auto;
-    margin: 14px 0;
-    padding: 16px;
-    border: 1px solid #dce3ee;
-    border-radius: 10px;
-    background: #f3f5f8;
-    color: #18202d;
-    text-align: left;
-    line-height: 1.5;
-    white-space: pre-wrap;
-    word-break: break-word;
+td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-textarea {
-    display: block;
-    width: 100%;
-    min-height: 150px;
-    padding: 14px;
-    resize: vertical;
-    line-height: 1.5;
+tr:hover td {
+    background: #f8fafc;
 }
 
-.timer,
-#timer {
-    position: sticky;
-    top: 82px;
-    z-index: 900;
-    display: block;
-    width: fit-content;
-    margin: 0 0 18px auto;
-    padding: 9px 15px;
-    border-radius: 10px;
-    background: #fff;
-    border: 1px solid #dce3ee;
-    box-shadow: 0 5px 16px rgba(27, 49, 87, 0.10);
-    color: #2855d9;
-    font-size: 25px;
-    font-weight: 800;
-}
+/* =========================
+   MOBILE
+========================= */
 
-/* ---------- SECTION TITLES ---------- */
-.section-title {
-    margin: 28px 0 12px;
-    padding: 12px 15px;
-    border-left: 5px solid #2855d9;
-    border-radius: 8px;
-    background: #eef3ff;
-    color: #173b9b;
-}
+@media (max-width: 700px) {
 
-/* ---------- CODE / STATUS ---------- */
-.error-code,
-.coding-box,
-.answer-box,
-.coding-evaluation {
-    border-radius: 10px;
-}
-
-.error-code {
-    margin: 14px 0;
-    padding: 16px;
-    overflow-x: auto;
-    background: #f5f6f8;
-    border: 1px solid #dce2eb;
-    font-family: Consolas, "Courier New", monospace;
-    white-space: pre-wrap;
-}
-
-.status-note {
-    padding: 10px 13px;
-    border-radius: 9px;
-    background: #f7f9fc;
-    color: #64748b;
-}
-
-/* ---------- RESULTS / REPORTS ---------- */
-.summary-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px;
-}
-
-.summary-card {
-    padding: 18px;
-    text-align: center;
-}
-
-.summary-card h3 {
-    margin: 0 0 7px;
-    color: #64748b;
-    font-size: 14px;
-}
-
-.summary-card strong {
-    color: #173b9b;
-    font-size: 25px;
-}
-
-.correct {
-    border-left: 5px solid #198754;
-}
-
-.wrong {
-    border-left: 5px solid #dc3545;
-}
-
-.partial {
-    border-left: 5px solid #f0a000;
-}
-
-.answer-card,
-.answer-box {
-    margin: 14px 0;
-    padding: 16px;
-    background: #fff;
-    border: 1px solid #e1e7f1;
-    border-radius: 12px;
-}
-
-.answer-card pre,
-.answer-box pre {
-    overflow-x: auto;
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-
-/* ---------- MODALS ---------- */
-.question-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(15, 23, 42, 0.60);
-}
-
-.question-modal-content {
-    width: min(950px, 100%);
-    max-height: 90vh;
-    overflow: auto;
-    background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
-}
-
-/* ---------- MOBILE NAV / STABLE TOP AREA ---------- */
-nav,
-.tabs,
-.navigation,
-.nav-tabs {
-    position: sticky;
-    top: 0;
-    z-index: 1100;
-}
-
-/* ---------- UTILITY ---------- */
-.text-center {
-    text-align: center;
-}
-
-.hidden {
-    display: none !important;
-}
-
-#message {
-    margin-top: 12px;
-    font-weight: 700;
-}
-
-/* ---------- RESPONSIVE ---------- */
-@media (max-width: 850px) {
-    .summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .student-form {
-        grid-template-columns: 1fr;
-    }
-
-    .student-form button {
-        grid-column: auto;
-        width: 100%;
-    }
-
-    .dashboard,
-    .container {
-        width: min(100% - 22px, 1180px);
-        padding-top: 18px;
-    }
-
-    .card,
-    .question-card {
-        padding: 18px;
-    }
-}
-
-@media (max-width: 600px) {
     body {
         font-size: 14px;
     }
@@ -530,95 +247,39 @@ nav,
     .dashboard,
     .container {
         width: calc(100% - 16px);
-        padding: 14px 0 35px;
     }
 
-    .dashboard > h1,
-    .container > h1 {
-        font-size: 25px;
-        margin-bottom: 18px;
-    }
-
-    .card,
-    .question-card {
-        padding: 15px;
-        border-radius: 13px;
+    .card {
+        padding: 17px;
+        border-radius: 14px;
     }
 
     .login-box {
-        width: calc(100% - 20px);
+        width: calc(100% - 24px);
         margin: 35px auto;
-        padding: 25px 18px;
+        padding: 24px 18px;
     }
 
-    .login-box h1 {
-        font-size: 25px;
+    .login-box input {
+        width: 100%;
+        margin: 7px 0;
     }
 
     button {
-        width: 100%;
+        min-height: 44px;
     }
 
-    .info-row {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 3px;
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
     }
 
-    .day-box {
-        align-items: flex-start;
-        flex-direction: column;
+    textarea {
+        min-height: 160px;
     }
 
-    .day-number {
-        min-width: 58px;
-        height: 58px;
-    }
-
-    .header {
-        padding: 12px;
-        border-radius: 10px;
-    }
-
-    .timer,
     #timer {
-        top: 70px;
-        width: 100%;
-        margin-bottom: 12px;
-        text-align: center;
-        font-size: 22px;
-    }
-
-    .question-title {
-        font-size: 16px;
-    }
-
-    .option {
-        padding: 10px;
-    }
-
-    .summary-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 9px;
-    }
-
-    .summary-card {
-        padding: 13px 8px;
-    }
-
-    .summary-card strong {
-        font-size: 21px;
-    }
-
-    th,
-    td {
-        padding: 10px;
-        font-size: 13px;
-    }
-}
-
-@media (max-width: 380px) {
-    .summary-grid {
-        grid-template-columns: 1fr;
+        font-size: 24px;
     }
 }
