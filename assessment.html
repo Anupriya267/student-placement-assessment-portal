@@ -1,442 +1,383 @@
 <!DOCTYPE html>
 <html>
-
 <head>
+    <title>Java Placement Assessment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
 
-<title>Java Placement Assessment</title>
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
 
-<link rel="stylesheet" href="style.css">
+        h1 {
+            text-align: center;
+        }
 
+        #timer {
+            position: sticky;
+            top: 0;
+            background: #222;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            padding: 18px;
+            margin-bottom: 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .option {
+            display: block;
+            padding: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            box-sizing: border-box;
+            font-family: monospace;
+            padding: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="dashboard">
+<div class="container">
 
-<h1>Java Placement Assessment</h1>
+    <h1>Java Placement Assessment</h1>
 
-<h2 id="assessmentTitle">
-Loading Assessment...
-</h2>
+    <div id="timer">40:00</div>
 
-<div class="card">
+    <div id="questions">
+        Loading questions...
+    </div>
 
-<h3>Time Remaining</h3>
-
-<h2 id="timer">40:00</h2>
+    <button onclick="submitTest()">Submit Assessment</button>
 
 </div>
 
-<div id="questionContainer">
-
-<p>Loading questions...</p>
-
-</div>
-
-<br>
-
-<button
-    type="button"
-    onclick="submitAssessment()"
->
-Submit Assessment
-</button>
-
-</div>
-
-
-<!-- QUESTION BANK FIRST -->
-
-<script src="java_question_bank.js"></script>
-
-<!-- MAIN SCRIPT SECOND -->
-
-<script src="script.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
 
-// ================= LOAD QUESTIONS =================
-
-function loadAssessment(){
-
-    if(!window.QUESTION_BANK){
-
-        document.getElementById(
-            "questionContainer"
-        ).innerHTML =
-            "<p>Question bank could not be loaded.</p>";
-
-        return;
-
-    }
+let questions = [];
+let timeLeft = 40 * 60;
+let submitted = false;
 
 
-    let assignedDay =
-        localStorage.getItem("assignedDay") || "1";
+/* ================= LOAD EXCEL ================= */
 
+async function loadQuestions() {
 
-    let questions =
-        window.QUESTION_BANK.filter(function(q){
+    const box = document.getElementById("questions");
 
-            return String(q.Day).trim() ===
-                   String(assignedDay).trim();
+    try {
 
-        });
-
-
-    if(questions.length === 0){
-
-        document.getElementById(
-            "questionContainer"
-        ).innerHTML =
-            "<p>No questions available for Day " +
-            assignedDay +
-            ".</p>";
-
-        return;
-
-    }
-
-
-    document.getElementById(
-        "assessmentTitle"
-    ).innerText =
-        "Day " +
-        assignedDay +
-        " Java Placement Assessment";
-
-
-    let container =
-        document.getElementById(
-            "questionContainer"
+        const response = await fetch(
+            "Java_Placement_41_Day_FINAL_Import_Ready.xlsx"
         );
 
+        if (!response.ok) {
+            throw new Error("Excel file not found");
+        }
 
-    container.innerHTML = "";
+        const data = await response.arrayBuffer();
+
+        const workbook = XLSX.read(data, {
+            type: "array"
+        });
+
+        const sheet =
+            workbook.Sheets["Question Bank"];
+
+        if (!sheet) {
+            throw new Error("Question Bank sheet not found");
+        }
+
+        const rows =
+            XLSX.utils.sheet_to_json(sheet);
+
+        const day =
+            localStorage.getItem("assignedDay") || "1";
+
+        questions =
+            rows.filter(q =>
+                String(q.Day).trim() === String(day).trim()
+            );
+
+        if (questions.length === 0) {
+
+            box.innerHTML =
+                "<h3>No questions available for Day " +
+                day +
+                "</h3>";
+
+            return;
+        }
+
+        displayQuestions();
+
+    } catch (error) {
+
+        box.innerHTML =
+            "<h3>Unable to load question bank.</h3>" +
+            "<p>Make sure the Excel file is in the GitHub repository root.</p>";
+
+        console.error(error);
+    }
+}
 
 
-    let mcqCount = 0;
-    let errorCount = 0;
-    let codingCount = 0;
+/* ================= DISPLAY ================= */
 
+function displayQuestions() {
 
-    questions.forEach(function(q){
+    const box =
+        document.getElementById("questions");
 
-        let type =
-            String(
-                q.QuestionType || ""
-            )
+    box.innerHTML = "";
+
+    questions.forEach((q, index) => {
+
+        const number = index + 1;
+
+        const type =
+            String(q["Question Type"] || "")
             .trim()
             .toUpperCase();
 
+        let html =
+            '<div class="question">' +
+            '<h3>Question ' +
+            number +
+            '</h3>' +
+            '<p><b>' +
+            q.Question +
+            '</b></p>';
 
-        // ================= MCQ =================
+        if (type === "MCQ" || type === "ERROR") {
 
-        if(type === "MCQ"){
+            const options = [
+                ["A", q["Option A"]],
+                ["B", q["Option B"]],
+                ["C", q["Option C"]],
+                ["D", q["Option D"]]
+            ];
 
-            mcqCount++;
+            options.forEach(option => {
 
+                if (option[1]) {
 
-            container.innerHTML +=
+                    html +=
+                        '<label class="option">' +
+                        '<input type="radio" name="q' +
+                        number +
+                        '" value="' +
+                        option[0] +
+                        '">' +
+                        ' ' +
+                        option[0] +
+                        ') ' +
+                        option[1] +
+                        '</label>';
+                }
+            });
 
-                "<div class='card'>" +
+        } else if (type === "CODING") {
 
-                "<h3>" +
-                mcqCount +
-                ". " +
-                escapeHTML(q.Question) +
-                "</h3>" +
-
-                option(
-                    "mcq_" + mcqCount,
-                    "A",
-                    q.OptionA
-                ) +
-
-                option(
-                    "mcq_" + mcqCount,
-                    "B",
-                    q.OptionB
-                ) +
-
-                option(
-                    "mcq_" + mcqCount,
-                    "C",
-                    q.OptionC
-                ) +
-
-                option(
-                    "mcq_" + mcqCount,
-                    "D",
-                    q.OptionD
-                ) +
-
-                "</div>";
-
+            html +=
+                '<textarea id="code' +
+                number +
+                '" placeholder="Write your Java code here..."></textarea>';
         }
 
+        html += "</div>";
 
-        // ================= ERROR =================
-
-        else if(
-            type === "ERROR" ||
-            type === "ERROR CORRECTION"
-        ){
-
-            errorCount++;
-
-
-            container.innerHTML +=
-
-                "<div class='card'>" +
-
-                "<h3>" +
-                "Error Correction " +
-                errorCount +
-                "</h3>" +
-
-                "<p>" +
-                escapeHTML(q.Question) +
-                "</p>" +
-
-                option(
-                    "error_" + errorCount,
-                    "A",
-                    q.OptionA
-                ) +
-
-                option(
-                    "error_" + errorCount,
-                    "B",
-                    q.OptionB
-                ) +
-
-                option(
-                    "error_" + errorCount,
-                    "C",
-                    q.OptionC
-                ) +
-
-                option(
-                    "error_" + errorCount,
-                    "D",
-                    q.OptionD
-                ) +
-
-                "</div>";
-
-        }
-
-
-        // ================= CODING =================
-
-        else if(type === "CODING"){
-
-            codingCount++;
-
-
-            container.innerHTML +=
-
-                "<div class='card'>" +
-
-                "<h3>" +
-                "Coding Question " +
-                codingCount +
-                "</h3>" +
-
-                "<p>" +
-                escapeHTML(q.Question) +
-                "</p>" +
-
-                "<textarea " +
-                "id='coding_" +
-                codingCount +
-                "' " +
-                "rows='10' " +
-                "placeholder='Write your Java code here...'>" +
-                "</textarea>" +
-
-                "</div>";
-
-        }
-
+        box.innerHTML += html;
     });
-
 }
 
 
-// ================= OPTION =================
+/* ================= SUBMIT ================= */
 
-function option(
-    name,
-    value,
-    text
-){
+function submitTest() {
 
-    return (
+    if (submitted) return;
 
-        "<label>" +
+    submitted = true;
 
-        "<input " +
-        "type='radio' " +
-        "name='" +
-        name +
-        "' " +
-        "value='" +
-        value +
-        "'>" +
+    let score = 0;
+    let objectiveTotal = 0;
+    let answers = [];
 
-        " " +
-        value +
-        ". " +
+    questions.forEach((q, index) => {
 
-        escapeHTML(text) +
+        const number = index + 1;
 
-        "</label><br>"
+        const type =
+            String(q["Question Type"] || "")
+            .trim()
+            .toUpperCase();
 
-    );
+        if (type === "MCQ" || type === "ERROR") {
 
-}
+            objectiveTotal++;
 
+            const selected =
+                document.querySelector(
+                    'input[name="q' +
+                    number +
+                    '"]:checked'
+                );
 
-// ================= SECURITY =================
+            const studentAnswer =
+                selected
+                ? selected.value
+                : "Not Answered";
 
-function escapeHTML(value){
+            const correct =
+                String(q["Correct Answer"] || "")
+                .trim();
 
-    if(value === undefined ||
-       value === null){
+            const isCorrect =
+                studentAnswer === correct;
 
-        return "";
+            if (isCorrect) score++;
 
-    }
+            answers.push({
+                question: q.Question,
+                studentAnswer: studentAnswer,
+                correctAnswer: correct,
+                status: isCorrect ? "Correct" : "Wrong"
+            });
 
+        } else if (type === "CODING") {
 
-    return String(value)
+            const code =
+                document.getElementById(
+                    "code" + number
+                );
 
-        .replace(/&/g, "&amp;")
-
-        .replace(/</g, "&lt;")
-
-        .replace(/>/g, "&gt;")
-
-        .replace(/"/g, "&quot;")
-
-        .replace(/'/g, "&#039;");
-
-}
-
-
-// ================= SUBMIT =================
-
-function submitAssessment(){
-
-    let responses = {};
-
-
-    document
-        .querySelectorAll(
-            "input[type='radio']:checked"
-        )
-        .forEach(function(input){
-
-            responses[input.name] =
-                input.value;
-
-        });
-
-
-    document
-        .querySelectorAll("textarea")
-        .forEach(function(box){
-
-            responses[box.id] =
-                box.value;
-
-        });
+            answers.push({
+                question: q.Question,
+                studentAnswer:
+                    code && code.value.trim()
+                    ? code.value.trim()
+                    : "Not Answered",
+                correctAnswer: "Pending coding evaluation",
+                status: "Pending"
+            });
+        }
+    });
 
 
     localStorage.setItem(
-        "studentResponses",
-        JSON.stringify(responses)
+        "score",
+        score
     );
 
+    localStorage.setItem(
+        "total",
+        objectiveTotal
+    );
 
-    // Use new scoring function
+    localStorage.setItem(
+        "answerSheet",
+        JSON.stringify(answers)
+    );
 
-    calculateAndSaveResult();
+    localStorage.setItem(
+        "submittedDay",
+        localStorage.getItem("assignedDay") || "1"
+    );
 
+    window.location.href = "results.html";
 }
 
 
-// ================= TIMER =================
+/* ================= TIMER ================= */
 
-let timeRemaining = 40 * 60;
+function startTimer() {
 
+    const timer =
+        document.getElementById("timer");
 
-let timer =
-    setInterval(function(){
+    const interval =
+        setInterval(function () {
 
-        let timerBox =
-            document.getElementById("timer");
+            if (submitted) {
+                clearInterval(interval);
+                return;
+            }
 
+            let minutes =
+                Math.floor(timeLeft / 60);
 
-        if(!timerBox){
+            let seconds =
+                timeLeft % 60;
 
-            clearInterval(timer);
+            timer.textContent =
+                String(minutes).padStart(2, "0") +
+                ":" +
+                String(seconds).padStart(2, "0");
 
-            return;
+            if (timeLeft <= 0) {
 
-        }
+                clearInterval(interval);
 
+                alert("Time is over. Assessment submitted.");
 
-        let minutes =
-            Math.floor(
-                timeRemaining / 60
-            );
+                submitTest();
 
+                return;
+            }
 
-        let seconds =
-            timeRemaining % 60;
+            timeLeft--;
 
-
-        timerBox.innerText =
-            minutes +
-            ":" +
-            (seconds < 10 ? "0" : "") +
-            seconds;
-
-
-        timeRemaining--;
-
-
-        if(timeRemaining < 0){
-
-            clearInterval(timer);
+        }, 1000);
+}
 
 
-            alert(
-                "Time is over. Assessment submitted automatically."
-            );
+/* ================= START ================= */
 
+window.onload = function () {
 
-            calculateAndSaveResult();
+    loadQuestions();
 
-        }
-
-    }, 1000);
-
-
-// ================= START =================
-
-window.onload = function(){
-
-    loadAssessment();
+    startTimer();
 
 };
 
 </script>
 
 </body>
-
 </html>
