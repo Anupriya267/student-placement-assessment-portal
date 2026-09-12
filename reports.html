@@ -14,64 +14,90 @@
 
 <style>
 
+*{
+    box-sizing:border-box;
+}
+
 body{
     margin:0;
     padding:20px;
-    font-family:Arial,sans-serif;
-    background:#f4f6fb;
+    font-family:Arial, sans-serif;
+    background:#f4f7fb;
+    color:#222;
 }
 
 .container{
-    max-width:1100px;
+    max-width:1150px;
     margin:auto;
 }
 
 .header{
-    background:white;
+    background:#ffffff;
     padding:25px;
-    border-radius:12px;
-    box-shadow:0 3px 12px rgba(0,0,0,.10);
+    border-radius:14px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.10);
     margin-bottom:20px;
 }
 
 .header h1{
-    margin-top:0;
+    margin:0 0 15px 0;
 }
 
-.info{
-    color:#555;
-    line-height:1.7;
+.student-info{
+    line-height:1.8;
+    font-size:16px;
+}
+
+.student-info b{
+    color:#111;
+}
+
+.back-btn{
+    margin-top:15px;
+    border:none;
+    padding:11px 20px;
+    border-radius:7px;
+    background:#555;
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.back-btn:hover{
+    opacity:.9;
 }
 
 .loading{
     background:white;
-    padding:25px;
-    border-radius:10px;
+    padding:30px;
     text-align:center;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.success{
+    background:#edf9ef;
+    border:1px solid #b7dfbc;
+    color:#17621d;
+    padding:14px 18px;
+    border-radius:8px;
+    margin-bottom:15px;
 }
 
 .error{
     background:#fff1f1;
-    border:1px solid #e0aaaa;
-    padding:18px;
-    border-radius:10px;
-    color:#a00000;
-}
-
-.success{
-    background:#effaf0;
-    border:1px solid #a8d5aa;
-    padding:15px;
-    border-radius:10px;
-    color:#17651b;
+    border:1px solid #e1b1b1;
+    color:#9b111e;
+    padding:14px 18px;
+    border-radius:8px;
     margin-bottom:15px;
 }
 
 .table-container{
     background:white;
     padding:20px;
-    border-radius:12px;
-    box-shadow:0 3px 12px rgba(0,0,0,.10);
+    border-radius:14px;
+    box-shadow:0 4px 15px rgba(0,0,0,.10);
     overflow-x:auto;
 }
 
@@ -82,30 +108,26 @@ table{
 
 th,
 td{
-    padding:12px;
+    padding:13px 12px;
     border-bottom:1px solid #ddd;
     text-align:left;
-    white-space:nowrap;
 }
 
 th{
-    background:#eeeeee;
-}
-
-tr:hover{
-    background:#f8f8f8;
-}
-
-.completed{
+    background:#f0f2f5;
     font-weight:bold;
 }
 
+tr:hover{
+    background:#fafafa;
+}
+
 .view-btn{
+    border:none;
+    padding:8px 15px;
+    border-radius:6px;
     background:#2864d7;
     color:white;
-    border:none;
-    padding:8px 14px;
-    border-radius:6px;
     cursor:pointer;
 }
 
@@ -113,42 +135,63 @@ tr:hover{
     background:#1e4fae;
 }
 
-.back-btn{
-    background:#555;
-    color:white;
-    border:none;
-    padding:10px 18px;
-    border-radius:7px;
-    cursor:pointer;
-    margin-top:15px;
+.no-report{
+    text-align:center;
+    padding:30px !important;
+    color:#666;
 }
+
+
+/* =====================================================
+   MODAL
+===================================================== */
 
 .modal{
     display:none;
     position:fixed;
-    z-index:999;
+    z-index:9999;
     left:0;
     top:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,.55);
+    background:rgba(0,0,0,.60);
     overflow:auto;
 }
 
 .modal-content{
     background:white;
-    width:90%;
-    max-width:850px;
-    margin:40px auto;
-    padding:25px;
-    border-radius:12px;
+    width:92%;
+    max-width:900px;
+    margin:35px auto;
+    padding:28px;
+    border-radius:14px;
+    position:relative;
 }
 
 .close{
-    float:right;
-    font-size:28px;
+    position:absolute;
+    right:22px;
+    top:15px;
+    font-size:30px;
     font-weight:bold;
     cursor:pointer;
+}
+
+.close:hover{
+    color:#d00;
+}
+
+.report-heading{
+    margin-top:0;
+    padding-right:35px;
+}
+
+.report-student{
+    background:#f6f8fc;
+    padding:15px;
+    border-radius:9px;
+    line-height:1.8;
+    margin-bottom:20px;
 }
 
 .summary-box{
@@ -159,32 +202,42 @@ tr:hover{
 }
 
 .summary-item{
-    background:#f1f5ff;
-    padding:15px;
-    border-radius:8px;
+    background:#eef3ff;
+    padding:17px 10px;
+    border-radius:9px;
     text-align:center;
 }
 
+.summary-title{
+    font-size:15px;
+}
+
 .summary-value{
-    font-size:24px;
+    margin-top:6px;
+    font-size:25px;
     font-weight:bold;
-    margin-top:5px;
 }
 
 .answer-box{
     border:1px solid #ddd;
-    border-radius:8px;
-    padding:15px;
-    margin:12px 0;
+    border-radius:9px;
+    padding:17px;
+    margin:13px 0;
+    background:#fff;
+}
+
+.answer-box h3{
+    margin-top:0;
+    line-height:1.5;
 }
 
 .answer-code{
     background:#f4f4f4;
-    padding:12px;
-    border-radius:6px;
+    padding:14px;
+    border-radius:7px;
     white-space:pre-wrap;
+    overflow-x:auto;
     font-family:Consolas,monospace;
-    overflow:auto;
 }
 
 .correct{
@@ -198,14 +251,43 @@ tr:hover{
 }
 
 .partial{
-    color:#c47a00;
+    color:#b36b00;
     font-weight:bold;
 }
 
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
 @media(max-width:700px){
+
+    body{
+        padding:10px;
+    }
+
+    .header{
+        padding:18px;
+    }
+
+    .header h1{
+        font-size:25px;
+    }
 
     .summary-box{
         grid-template-columns:repeat(2,1fr);
+    }
+
+    .modal-content{
+        width:96%;
+        padding:18px;
+        margin:20px auto;
+    }
+
+    th,
+    td{
+        padding:10px 8px;
+        font-size:13px;
     }
 
 }
@@ -229,20 +311,22 @@ tr:hover{
 
 <h1>Student Reports</h1>
 
-<div class="info">
+<div class="student-info">
 
-Student:
-<b id="studentName">Loading...</b>
+<div>
+<b>Name:</b>
+<span id="studentName">Loading...</span>
+</div>
 
-<br>
+<div>
+<b>Username:</b>
+<span id="studentUsername">Loading...</span>
+</div>
 
-Username:
-<b id="studentUsername">Loading...</b>
-
-<br>
-
-Year:
-<b id="studentYear">Loading...</b>
+<div>
+<b>Year:</b>
+<span id="studentYear">Loading...</span>
+</div>
 
 </div>
 
@@ -271,22 +355,22 @@ Loading reports...
 
 
 <!-- =====================================================
-     ERROR
+     SUCCESS
 ===================================================== -->
 
-<div id="error"
-     class="error"
+<div id="success"
+     class="success"
      style="display:none;">
 
 </div>
 
 
 <!-- =====================================================
-     SUCCESS
+     ERROR
 ===================================================== -->
 
-<div id="success"
-     class="success"
+<div id="error"
+     class="error"
      style="display:none;">
 
 </div>
@@ -307,21 +391,13 @@ Loading reports...
 <tr>
 
 <th>Day</th>
-
 <th>Topic</th>
-
 <th>MCQ + Error</th>
-
 <th>Coding</th>
-
 <th>Total</th>
-
 <th>Percentage</th>
-
 <th>Status</th>
-
 <th>Date</th>
-
 <th>Report</th>
 
 </tr>
@@ -360,10 +436,16 @@ onclick="closeModal()">
 </span>
 
 
-<h2>Assessment Report</h2>
+<h2 class="report-heading">
+Assessment Report
+</h2>
 
 
-<div id="modalStudent"></div>
+<div
+id="modalStudent"
+class="report-student">
+
+</div>
 
 
 <div class="summary-box">
@@ -371,11 +453,13 @@ onclick="closeModal()">
 
 <div class="summary-item">
 
-<div>MCQ + Error</div>
+<div class="summary-title">
+MCQ + Error
+</div>
 
 <div
-class="summary-value"
-id="modalObjective">
+id="modalObjective"
+class="summary-value">
 
 0/12
 
@@ -386,11 +470,13 @@ id="modalObjective">
 
 <div class="summary-item">
 
-<div>Coding</div>
+<div class="summary-title">
+Coding
+</div>
 
 <div
-class="summary-value"
-id="modalCoding">
+id="modalCoding"
+class="summary-value">
 
 0/3
 
@@ -401,11 +487,13 @@ id="modalCoding">
 
 <div class="summary-item">
 
-<div>Total</div>
+<div class="summary-title">
+Total
+</div>
 
 <div
-class="summary-value"
-id="modalTotal">
+id="modalTotal"
+class="summary-value">
 
 0/15
 
@@ -416,11 +504,13 @@ id="modalTotal">
 
 <div class="summary-item">
 
-<div>Percentage</div>
+<div class="summary-title">
+Percentage
+</div>
 
 <div
-class="summary-value"
-id="modalPercentage">
+id="modalPercentage"
+class="summary-value">
 
 0%
 
@@ -432,7 +522,9 @@ id="modalPercentage">
 </div>
 
 
-<div id="modalDetails"></div>
+<div id="modalDetails">
+
+</div>
 
 
 </div>
@@ -444,7 +536,7 @@ id="modalPercentage">
 
 
 /* =====================================================
-   GOOGLE APPS SCRIPT
+   GOOGLE APPS SCRIPT URL
 ===================================================== */
 
 const GOOGLE_SCRIPT_URL =
@@ -452,23 +544,33 @@ const GOOGLE_SCRIPT_URL =
 
 
 /* =====================================================
-   STUDENT INFORMATION
+   GET LOGGED-IN STUDENT
 ===================================================== */
 
 function getLoggedStudent(){
 
     try{
 
-        return JSON.parse(
+        const value =
             localStorage.getItem(
                 "loggedInStudent"
-            )
-            ||
-            "null"
-        );
+            );
+
+        if(!value){
+
+            return null;
+
+        }
+
+        return JSON.parse(value);
 
     }
     catch(error){
+
+        console.error(
+            "Login data error:",
+            error
+        );
 
         return null;
 
@@ -478,51 +580,80 @@ function getLoggedStudent(){
 
 
 const loggedStudent =
-getLoggedStudent();
+    getLoggedStudent();
 
 
 /* =====================================================
-   NORMALIZE STUDENT IDENTITY
+   STUDENT IDENTITY
 ===================================================== */
 
+/*
+   IMPORTANT:
+
+   The logged-in student's details are the
+   main source of truth.
+
+   This prevents:
+
+   Name = Student
+   Username = blank
+
+   when the actual login is:
+
+   Name = Student 1
+   Username = student1
+*/
+
+
 const studentName =
-    loggedStudent?.name
-    ||
-    loggedStudent?.Name
-    ||
-    localStorage.getItem("studentName")
-    ||
-    "Student";
+    String(
+        loggedStudent?.name
+        ||
+        loggedStudent?.Name
+        ||
+        localStorage.getItem(
+            "studentName"
+        )
+        ||
+        "Student"
+    ).trim();
 
 
 const studentUsername =
-    loggedStudent?.username
-    ||
-    loggedStudent?.Username
-    ||
-    localStorage.getItem("studentUsername")
-    ||
-    "";
+    String(
+        loggedStudent?.username
+        ||
+        loggedStudent?.Username
+        ||
+        localStorage.getItem(
+            "studentUsername"
+        )
+        ||
+        ""
+    ).trim();
 
 
 const studentYear =
-    loggedStudent?.year
-    ||
-    loggedStudent?.Year
-    ||
-    localStorage.getItem("studentYear")
-    ||
-    "";
+    String(
+        loggedStudent?.year
+        ||
+        loggedStudent?.Year
+        ||
+        localStorage.getItem(
+            "studentYear"
+        )
+        ||
+        ""
+    ).trim();
 
 
 const normalizedUsername =
-    String(studentUsername)
-    .trim()
-    .toLowerCase();
+    studentUsername
+        .toLowerCase();
 
 
 /* =====================================================
-   DISPLAY STUDENT
+   DISPLAY STUDENT IDENTITY
 ===================================================== */
 
 document.getElementById(
@@ -534,17 +665,17 @@ document.getElementById(
 document.getElementById(
     "studentUsername"
 ).textContent =
-    studentUsername;
+    studentUsername || "Not available";
 
 
 document.getElementById(
     "studentYear"
 ).textContent =
-    studentYear;
+    studentYear || "Not available";
 
 
 /* =====================================================
-   STORAGE
+   REPORT ARRAYS
 ===================================================== */
 
 let localReports = [];
@@ -555,7 +686,7 @@ let studentResults = [];
 
 
 /* =====================================================
-   READ LOCAL REPORTS
+   LOAD LOCAL REPORTS
 ===================================================== */
 
 function loadLocalReports(){
@@ -595,10 +726,31 @@ function loadLocalReports(){
                         ||
                         report.Username
                         ||
+                        report.studentUsername
+                        ||
                         ""
                     )
                     .trim()
                     .toLowerCase();
+
+
+                /*
+                   If username exists,
+                   it must match.
+
+                   If username is blank,
+                   allow it because this
+                   localStorage belongs to
+                   the current browser/student.
+                */
+
+                if(
+                    username === ""
+                ){
+
+                    return true;
+
+                }
 
 
                 return (
@@ -613,7 +765,7 @@ function loadLocalReports(){
     catch(error){
 
         console.error(
-            "Local reports error:",
+            "Local report error:",
             error
         );
 
@@ -635,9 +787,11 @@ function(data){
 
         if(!Array.isArray(data)){
 
-            throw new Error(
-                "Invalid Google Sheet result data."
-            );
+            googleReports = [];
+
+            mergeReports();
+
+            return;
 
         }
 
@@ -651,6 +805,8 @@ function(data){
                             row["Username"]
                             ||
                             row.username
+                            ||
+                            row.studentUsername
                             ||
                             ""
                         )
@@ -673,9 +829,9 @@ function(data){
     catch(error){
 
         console.error(
+            "Google report error:",
             error
         );
-
 
         mergeReports();
 
@@ -729,9 +885,8 @@ function loadGoogleReports(){
         function(){
 
             console.warn(
-                "Google Sheet could not be loaded."
+                "Google results unavailable."
             );
-
 
             mergeReports();
 
@@ -746,7 +901,7 @@ function loadGoogleReports(){
 
 
 /* =====================================================
-   MERGE LOCAL + GOOGLE RESULTS
+   MERGE LOCAL + GOOGLE REPORTS
 ===================================================== */
 
 function mergeReports(){
@@ -754,7 +909,7 @@ function mergeReports(){
     const combined = [];
 
 
-    /* LOCAL FIRST */
+    /* ---------- LOCAL ---------- */
 
     localReports.forEach(
         function(report){
@@ -770,7 +925,7 @@ function mergeReports(){
     );
 
 
-    /* GOOGLE RESULTS */
+    /* ---------- GOOGLE ---------- */
 
     googleReports.forEach(
         function(report){
@@ -787,31 +942,52 @@ function mergeReports(){
 
 
     /*
-       Remove duplicate student/day reports.
-       Local report is preferred because it is
-       immediately available after submission.
+       Remove invalid reports.
     */
 
-    const map =
+    const validReports =
+        combined.filter(
+            function(report){
+
+                return (
+                    report.day > 0
+                );
+
+            }
+        );
+
+
+    /*
+       Remove duplicates.
+
+       Same student + same day
+       = one report.
+
+       Local report is preferred
+       because it contains detailed
+       answer information immediately.
+    */
+
+    const reportMap =
         new Map();
 
 
-    combined.forEach(
+    validReports.forEach(
         function(report){
 
             const key =
                 normalizedUsername
                 +
-                "_"
+                "_day_"
                 +
-                String(
-                    report.day
-                );
+                report.day;
 
 
-            if(!map.has(key)){
+            if(
+                !reportMap.has(key)
+            ){
 
-                map.set(
+                reportMap.set(
                     key,
                     report
                 );
@@ -820,24 +996,34 @@ function mergeReports(){
             else{
 
                 const existing =
-                    map.get(key);
+                    reportMap.get(key);
 
 
                 /*
-                   Prefer Google if it has
-                   actual Answers data,
-                   otherwise keep local.
+                   Prefer report containing
+                   detailed answers.
                 */
 
                 if(
-                    report.source === "google"
-                    &&
-                    report.answers
-                    &&
-                    report.answers.length
+                    report.answers.length >
+                    existing.answers.length
                 ){
 
-                    map.set(
+                    reportMap.set(
+                        key,
+                        report
+                    );
+
+                }
+                else if(
+                    report.source === "google"
+                    &&
+                    existing.source !== "google"
+                    &&
+                    existing.answers.length === 0
+                ){
+
+                    reportMap.set(
                         key,
                         report
                     );
@@ -852,7 +1038,7 @@ function mergeReports(){
 
     studentResults =
         Array.from(
-            map.values()
+            reportMap.values()
         );
 
 
@@ -860,13 +1046,17 @@ function mergeReports(){
         function(a,b){
 
             return (
-                Number(a.day || 0)
+                Number(a.day)
                 -
-                Number(b.day || 0)
+                Number(b.day)
             );
 
         }
     );
+
+
+    window.studentResults =
+        studentResults;
 
 
     displayReports();
@@ -883,71 +1073,179 @@ function normalizeReport(
     source
 ){
 
-    const day =
-        parseInt(
-            row.day
-            ||
-            row.Day
-            ||
-            0,
-            10
+    /* ---------- DAY ---------- */
+
+    const rawDay =
+        row.day
+        ??
+        row.Day
+        ??
+        row.assessmentDay
+        ??
+        row.assignedDay
+        ??
+        "";
+
+
+    const dayText =
+        String(
+            rawDay
+        ).trim();
+
+
+    const dayMatch =
+        dayText.match(
+            /\d+/
         );
 
 
-    const topic =
-        row.topic
-        ||
-        row.Topic
-        ||
-        "Java Placement Practice";
+    const day =
+        dayMatch
+        ?
+        parseInt(
+            dayMatch[0],
+            10
+        )
+        :
+        0;
 
+
+    /* ---------- NAME ---------- */
+
+    const name =
+        String(
+            row.name
+            ??
+            row.Name
+            ??
+            row.studentName
+            ??
+            row.StudentName
+            ??
+            studentName
+            ??
+            "Student"
+        ).trim();
+
+
+    /* ---------- USERNAME ---------- */
+
+    const username =
+        String(
+            row.username
+            ??
+            row.Username
+            ??
+            row.studentUsername
+            ??
+            row.StudentUsername
+            ??
+            studentUsername
+            ??
+            ""
+        ).trim();
+
+
+    /* ---------- YEAR ---------- */
+
+    const year =
+        String(
+            row.year
+            ??
+            row.Year
+            ??
+            row.studentYear
+            ??
+            row.StudentYear
+            ??
+            studentYear
+            ??
+            ""
+        ).trim();
+
+
+    /* ---------- TOPIC ---------- */
+
+    const topic =
+        String(
+            row.topic
+            ??
+            row.Topic
+            ??
+            "Java Placement Practice"
+        ).trim();
+
+
+    /* =================================================
+       SCORES
+    ================================================= */
 
     let mcqScore =
-        row.mcqScore;
+        row.mcqScore
+        ??
+        row.MCQScore
+        ??
+        "";
 
 
     let errorScore =
-        row.errorScore;
+        row.errorScore
+        ??
+        row.ErrorScore
+        ??
+        "";
 
 
     let codingScore =
-        row.codingScore;
+        row.codingScore
+        ??
+        row.CodingScore
+        ??
+        "";
 
 
     let totalScore =
-        row.totalScore;
+        row.totalScore
+        ??
+        row.TotalScore
+        ??
+        "";
 
 
     let percentage =
-        row.percentage;
+        row.percentage
+        ??
+        row.Percentage
+        ??
+        "";
 
 
-    /* GOOGLE FORMAT */
+    /* ---------- GOOGLE OBJECTIVE SCORE ---------- */
 
     if(
-        mcqScore === undefined
+        mcqScore === ""
         &&
-        errorScore === undefined
+        errorScore === ""
     ){
 
-        const objective =
+        const objectiveText =
             String(
                 row["MCQ + Error"]
-                ||
+                ??
                 "0"
             );
 
 
         const match =
-            objective.match(
-                /[\d.]+/
+            objectiveText.match(
+                /-?\d+(?:\.\d+)?/
             );
 
 
         mcqScore =
             match
             ?
-            parseFloat(match[0])
+            Number(match[0])
             :
             0;
 
@@ -957,113 +1255,99 @@ function normalizeReport(
     }
 
 
-    if(codingScore === undefined){
-
-        const coding =
-            String(
-                row.Coding
-                ||
-                "0"
-            );
+    mcqScore =
+        parseReportNumber(
+            mcqScore
+        );
 
 
-        const match =
-            coding.match(
-                /[\d.]+/
-            );
+    errorScore =
+        parseReportNumber(
+            errorScore
+        );
 
 
-        codingScore =
-            match
-            ?
-            parseFloat(match[0])
-            :
-            0;
-
-    }
+    codingScore =
+        parseReportNumber(
+            codingScore
+        );
 
 
-    if(totalScore === undefined){
-
-        const total =
-            String(
-                row.Total
-                ||
-                ""
-            );
+    totalScore =
+        parseReportNumber(
+            totalScore
+        );
 
 
-        const match =
-            total.match(
-                /[\d.]+/
-            );
+    /* ---------- CALCULATE TOTAL ---------- */
 
+    if(
+        totalScore === 0
+        &&
+        (
+            mcqScore > 0
+            ||
+            errorScore > 0
+            ||
+            codingScore > 0
+        )
+    ){
 
-        if(match){
-
-            totalScore =
-                parseFloat(
-                    match[0]
-                );
-
-        }
-        else{
-
-            totalScore =
-                Number(mcqScore || 0)
-                +
-                Number(errorScore || 0)
-                +
-                Number(codingScore || 0);
-
-        }
+        totalScore =
+            mcqScore +
+            errorScore +
+            codingScore;
 
     }
 
 
-    if(percentage === undefined){
+    /* ---------- PERCENTAGE ---------- */
 
-        const p =
-            String(
-                row.Percentage
-                ||
-                ""
-            )
-            .replace(
-                "%",
-                ""
-            );
-
+    if(
+        percentage === ""
+        ||
+        percentage === null
+        ||
+        percentage === undefined
+    ){
 
         percentage =
-            parseFloat(p);
+            totalScore /
+            15 *
+            100;
 
+    }
+    else{
 
-        if(isNaN(percentage)){
-
-            percentage =
-                (
-                    Number(totalScore || 0)
-                    /
-                    15
-                    *
-                    100
-                ).toFixed(2);
-
-        }
+        percentage =
+            parseReportNumber(
+                String(
+                    percentage
+                )
+                .replace(
+                    "%",
+                    ""
+                )
+            );
 
     }
 
+
+    /* =================================================
+       ANSWERS
+    ================================================= */
 
     let answers =
         row.answers
-        ||
+        ??
         row.Answers
-        ||
+        ??
         [];
 
 
-    if(typeof answers === "string"){
+    if(
+        typeof answers === "string"
+    ){
 
         try{
 
@@ -1082,10 +1366,89 @@ function normalizeReport(
     }
 
 
+    if(
+        !Array.isArray(answers)
+    ){
+
+        answers = [];
+
+    }
+
+
+    /* =================================================
+       CODING EVALUATION
+    ================================================= */
+
+    let codingEvaluations =
+        row.codingEvaluations
+        ??
+        row["Coding Evaluation"]
+        ??
+        [];
+
+
+    if(
+        typeof codingEvaluations === "string"
+    ){
+
+        try{
+
+            codingEvaluations =
+                JSON.parse(
+                    codingEvaluations
+                );
+
+        }
+        catch(error){
+
+            /* Keep text */
+
+        }
+
+    }
+
+
+    /* =================================================
+       DATE
+    ================================================= */
+
+    const submittedAt =
+        row.submittedAt
+        ??
+        row["Submission Date"]
+        ??
+        row.submissionDate
+        ??
+        "";
+
+
+    /* =================================================
+       STATUS
+    ================================================= */
+
+    const status =
+        String(
+            row.status
+            ??
+            row.Status
+            ??
+            "Completed"
+        ).trim();
+
+
     return {
 
         source:
             source,
+
+        name:
+            name,
+
+        username:
+            username,
+
+        year:
+            year,
 
         day:
             day,
@@ -1094,59 +1457,67 @@ function normalizeReport(
             topic,
 
         mcqScore:
-            Number(
-                mcqScore || 0
-            ),
+            mcqScore,
 
         errorScore:
-            Number(
-                errorScore || 0
-            ),
+            errorScore,
 
         codingScore:
-            Number(
-                codingScore || 0
-            ),
+            codingScore,
 
         totalScore:
-            Number(
-                totalScore || 0
-            ),
+            totalScore,
 
         percentage:
-            Number(
-                percentage || 0
-            ),
+            percentage,
 
         status:
-            row.status
-            ||
-            row.Status
-            ||
-            "Completed",
+            status,
 
         submittedAt:
-            row.submittedAt
-            ||
-            row["Submission Date"]
-            ||
-            "",
+            submittedAt,
 
         answers:
-            Array.isArray(answers)
-            ?
-            answers
-            :
-            [],
+            answers,
 
         codingEvaluations:
-            row.codingEvaluations
-            ||
-            row["Coding Evaluation"]
-            ||
-            []
+            codingEvaluations
 
     };
+
+}
+
+
+/* =====================================================
+   NUMBER HELPER
+===================================================== */
+
+function parseReportNumber(value){
+
+    if(
+        value === null
+        ||
+        value === undefined
+        ||
+        value === ""
+    ){
+
+        return 0;
+
+    }
+
+
+    const match =
+        String(value).match(
+            /-?\d+(?:\.\d+)?/
+        );
+
+
+    return match
+        ?
+        Number(match[0])
+        :
+        0;
 
 }
 
@@ -1163,7 +1534,7 @@ function displayReports(){
         );
 
 
-    const reportArea =
+    const area =
         document.getElementById(
             "reportArea"
         );
@@ -1179,7 +1550,7 @@ function displayReports(){
         "none";
 
 
-    reportArea.style.display =
+    area.style.display =
         "block";
 
 
@@ -1187,14 +1558,16 @@ function displayReports(){
         "";
 
 
-    if(studentResults.length === 0){
+    if(
+        studentResults.length === 0
+    ){
 
         body.innerHTML =
 
             "<tr>" +
 
             "<td colspan='9' " +
-            "style='text-align:center'>" +
+            "class='no-report'>" +
 
             "No assessment reports found."
 
@@ -1213,96 +1586,113 @@ function displayReports(){
     studentResults.forEach(
         function(report,index){
 
+            const objective =
+                Number(
+                    report.mcqScore
+                )
+                +
+                Number(
+                    report.errorScore
+                );
+
+
             const tr =
                 document.createElement(
                     "tr"
                 );
 
 
-            const objective =
-                report.mcqScore
-                +
-                report.errorScore;
-
-
             tr.innerHTML =
 
-                "<td>Day " +
+                "<td>" +
+
+                "Day " +
+
                 escapeHTML(
                     report.day
                 ) +
+
                 "</td>"
 
 
                 +
 
                 "<td>" +
+
                 escapeHTML(
                     report.topic
                 ) +
+
                 "</td>"
 
 
                 +
 
                 "<td>" +
-                escapeHTML(
-                    objective +
-                    "/12"
-                ) +
+
+                objective +
+
+                "/12" +
+
                 "</td>"
 
 
                 +
 
                 "<td>" +
-                escapeHTML(
-                    report.codingScore +
-                    "/3"
-                ) +
+
+                report.codingScore +
+
+                "/3" +
+
                 "</td>"
 
 
                 +
 
                 "<td>" +
-                escapeHTML(
-                    report.totalScore +
-                    "/15"
-                ) +
+
+                report.totalScore +
+
+                "/15" +
+
                 "</td>"
 
 
                 +
 
                 "<td>" +
-                escapeHTML(
-                    Number(
-                        report.percentage
-                    ).toFixed(2)
-                    +
-                    "%"
-                ) +
+
+                Number(
+                    report.percentage
+                ).toFixed(2) +
+
+                "%" +
+
                 "</td>"
 
 
                 +
 
-                "<td class='completed'>" +
+                "<td>" +
+
                 escapeHTML(
                     report.status
                 ) +
+
                 "</td>"
 
 
                 +
 
                 "<td>" +
+
                 escapeHTML(
                     formatDate(
                         report.submittedAt
                     )
                 ) +
+
                 "</td>"
 
 
@@ -1333,10 +1723,6 @@ function displayReports(){
     );
 
 
-    window.studentResults =
-        studentResults;
-
-
     const success =
         document.getElementById(
             "success"
@@ -1348,18 +1734,15 @@ function displayReports(){
 
 
     success.textContent =
-        studentResults.length
-        +
-        " assessment report"
-        +
+        studentResults.length +
+        " assessment report" +
         (
             studentResults.length === 1
             ?
             ""
             :
             "s"
-        )
-        +
+        ) +
         " found.";
 
 }
@@ -1372,7 +1755,9 @@ function displayReports(){
 function openReport(index){
 
     const report =
-        studentResults[index];
+        window.studentResults[
+            index
+        ];
 
 
     if(!report){
@@ -1382,10 +1767,70 @@ function openReport(index){
     }
 
 
+    /*
+       ALWAYS use logged-in student's
+       identity for the report.
+
+       This guarantees:
+
+       Name = Student 1
+       Username = student1
+       Year = Final Year
+
+       instead of an old/incorrect
+       local report identity.
+    */
+
+    const displayName =
+        studentName
+        ||
+        report.name
+        ||
+        "Student";
+
+
+    const displayUsername =
+        studentUsername
+        ||
+        report.username
+        ||
+        "Not available";
+
+
+    const displayYear =
+        studentYear
+        ||
+        report.year
+        ||
+        "Not available";
+
+
     const objective =
-        report.mcqScore
+        Number(
+            report.mcqScore || 0
+        )
         +
-        report.errorScore;
+        Number(
+            report.errorScore || 0
+        );
+
+
+    const coding =
+        Number(
+            report.codingScore || 0
+        );
+
+
+    const total =
+        Number(
+            report.totalScore || 0
+        );
+
+
+    const percentage =
+        Number(
+            report.percentage || 0
+        );
 
 
     document.getElementById(
@@ -1397,95 +1842,80 @@ function openReport(index){
     document.getElementById(
         "modalCoding"
     ).textContent =
-        report.codingScore + "/3";
+        coding + "/3";
 
 
     document.getElementById(
         "modalTotal"
     ).textContent =
-        report.totalScore + "/15";
+        total + "/15";
 
 
     document.getElementById(
         "modalPercentage"
     ).textContent =
-        Number(
-            report.percentage
-        ).toFixed(2)
-        +
-        "%";
+        percentage.toFixed(2) + "%";
 
 
     document.getElementById(
         "modalStudent"
     ).innerHTML =
 
-        "<p>" +
-
         "<b>Name:</b> " +
-        escapeHTML(
-            studentName
-        )
 
-        +
+        escapeHTML(
+            displayName
+        ) +
 
         "<br>" +
 
         "<b>Username:</b> " +
-        escapeHTML(
-            studentUsername
-        )
 
-        +
+        escapeHTML(
+            displayUsername
+        ) +
 
         "<br>" +
 
         "<b>Year:</b> " +
-        escapeHTML(
-            studentYear
-        )
 
-        +
+        escapeHTML(
+            displayYear
+        ) +
 
         "<br>" +
 
-        "<b>Day:</b> " +
+        "<b>Day:</b> Day " +
+
         escapeHTML(
             report.day
-        )
-
-        +
+        ) +
 
         "<br>" +
 
         "<b>Topic:</b> " +
+
         escapeHTML(
             report.topic
-        )
-
-        +
+        ) +
 
         "<br>" +
 
         "<b>Status:</b> " +
+
         escapeHTML(
             report.status
-        )
-
-        +
+        ) +
 
         "<br>" +
 
         "<b>Submitted:</b> " +
+
         escapeHTML(
             formatDate(
                 report.submittedAt
             )
-        )
-
-        +
-
-        "</p>";
+        );
 
 
     displayAnswerDetails(
@@ -1502,7 +1932,7 @@ function openReport(index){
 
 
 /* =====================================================
-   DISPLAY ANSWERS
+   ANSWER DETAILS
 ===================================================== */
 
 function displayAnswerDetails(report){
@@ -1514,28 +1944,37 @@ function displayAnswerDetails(report){
 
 
     details.innerHTML =
-        "";
+        "<h2>Answer Details</h2>";
 
 
     const answers =
-        report.answers;
+        Array.isArray(
+            report.answers
+        )
+        ?
+        report.answers
+        :
+        [];
 
 
     if(
-        !Array.isArray(answers)
-        ||
         answers.length === 0
     ){
 
-        details.innerHTML =
-
-            "<h3>Answer Details</h3>" +
+        details.innerHTML +=
 
             "<div class='answer-box'>" +
 
-            "Detailed answers are not available."
+            "<p><b>Assessment submitted successfully.</b></p>" +
+
+            "<p>" +
+
+            "Detailed answers are not available " +
+            "for this stored report."
 
             +
+
+            "</p>" +
 
             "</div>";
 
@@ -1557,16 +1996,71 @@ function displayAnswerDetails(report){
                 "answer-box";
 
 
+            const type =
+                String(
+                    answer.type
+                    ||
+                    answer.Type
+                    ||
+                    ""
+                ).toUpperCase();
+
+
+            const question =
+                answer.question
+                ||
+                answer.Question
+                ||
+                "Question " +
+                (index + 1);
+
+
+            const studentAnswer =
+                answer.studentAnswer
+                ??
+                answer.answer
+                ??
+                answer.code
+                ??
+                "Not Answered";
+
+
+            const correctAnswer =
+                answer.correctAnswer
+                ??
+                answer.correct
+                ??
+                "";
+
+
+            const status =
+                answer.status
+                ||
+                "Not evaluated";
+
+
+            const score =
+                answer.score
+                ??
+                0;
+
+
             let statusClass =
                 "wrong";
 
 
             if(
-                answer.status ===
-                "Correct"
-                ||
-                answer.status ===
-                "Complete"
+                String(status)
+                .toLowerCase()
+                .includes(
+                    "correct"
+                )
+                &&
+                !String(status)
+                .toLowerCase()
+                .includes(
+                    "incorrect"
+                )
             ){
 
                 statusClass =
@@ -1576,8 +2070,11 @@ function displayAnswerDetails(report){
 
 
             if(
-                answer.status ===
-                "Partially Correct"
+                String(status)
+                .toLowerCase()
+                .includes(
+                    "partial"
+                )
             ){
 
                 statusClass =
@@ -1592,49 +2089,38 @@ function displayAnswerDetails(report){
 
                 "Q" +
                 (index + 1) +
-
                 ". " +
 
                 escapeHTML(
-                    answer.question
-                    ||
-                    ""
+                    question
                 ) +
 
-                "</h3>";
+                "</h3>" +
 
 
-            html +=
+                "<p>" +
 
-                "<p><b>Type:</b> " +
+                "<b>Type:</b> " +
 
                 escapeHTML(
-                    answer.type
-                    ||
-                    ""
+                    type
                 ) +
 
                 "</p>";
 
 
-            html +=
-
-                "<p><b>Your Answer:</b></p>";
-
-
             if(
-                answer.type ===
-                "CODING"
+                type === "CODING"
             ){
 
                 html +=
 
+                    "<p><b>Your Java Code:</b></p>" +
+
                     "<pre class='answer-code'>" +
 
                     escapeHTML(
-                        answer.studentAnswer
-                        ||
-                        "Not Answered"
+                        studentAnswer
                     ) +
 
                     "</pre>";
@@ -1644,12 +2130,10 @@ function displayAnswerDetails(report){
 
                 html +=
 
-                    "<p>" +
+                    "<p><b>Your Answer:</b> " +
 
                     escapeHTML(
-                        answer.studentAnswer
-                        ||
-                        "Not Answered"
+                        studentAnswer
                     ) +
 
                     "</p>";
@@ -1657,14 +2141,16 @@ function displayAnswerDetails(report){
             }
 
 
-            if(answer.correctAnswer){
+            if(
+                correctAnswer !== ""
+            ){
 
                 html +=
 
                     "<p><b>Correct Answer:</b> " +
 
                     escapeHTML(
-                        answer.correctAnswer
+                        correctAnswer
                     ) +
 
                     "</p>";
@@ -1678,26 +2164,19 @@ function displayAnswerDetails(report){
                 statusClass +
                 "'>" +
 
+                "<b>Status:</b> " +
+
                 escapeHTML(
-                    answer.status
-                    ||
-                    ""
+                    status
                 ) +
 
-                "</p>";
+                "</p>" +
 
-
-            html +=
 
                 "<p><b>Score:</b> " +
 
                 escapeHTML(
-                    answer.score
-                    !== undefined
-                    ?
-                    answer.score
-                    :
-                    "0"
+                    score
                 ) +
 
                 "</p>";
@@ -1718,50 +2197,16 @@ function displayAnswerDetails(report){
 
 
 /* =====================================================
-   CLOSE MODAL
-===================================================== */
-
-function closeModal(){
-
-    document.getElementById(
-        "reportModal"
-    ).style.display =
-        "none";
-
-}
-
-
-/* =====================================================
-   CLICK OUTSIDE MODAL
-===================================================== */
-
-window.onclick =
-function(event){
-
-    const modal =
-        document.getElementById(
-            "reportModal"
-        );
-
-
-    if(event.target === modal){
-
-        closeModal();
-
-    }
-
-};
-
-
-/* =====================================================
-   DATE
+   FORMAT DATE
 ===================================================== */
 
 function formatDate(value){
 
-    if(!value){
+    if(
+        !value
+    ){
 
-        return "-";
+        return "Not available";
 
     }
 
@@ -1770,9 +2215,15 @@ function formatDate(value){
         new Date(value);
 
 
-    if(isNaN(date.getTime())){
+    if(
+        isNaN(
+            date.getTime()
+        )
+    ){
 
-        return String(value);
+        return String(
+            value
+        );
 
     }
 
@@ -1821,6 +2272,44 @@ function escapeHTML(value){
 
 
 /* =====================================================
+   CLOSE MODAL
+===================================================== */
+
+function closeModal(){
+
+    document.getElementById(
+        "reportModal"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =====================================================
+   CLOSE WHEN CLICKING OUTSIDE
+===================================================== */
+
+window.onclick =
+function(event){
+
+    const modal =
+        document.getElementById(
+            "reportModal"
+        );
+
+
+    if(
+        event.target === modal
+    ){
+
+        closeModal();
+
+    }
+
+};
+
+
+/* =====================================================
    BACK TO DASHBOARD
 ===================================================== */
 
@@ -1839,9 +2328,7 @@ function goBack(){
 function startReports(){
 
     /*
-       Load local reports immediately.
-       This is important because the assessment
-       has just saved the result locally.
+       First load local reports.
     */
 
     localReports =
@@ -1849,14 +2336,14 @@ function startReports(){
 
 
     /*
-       Display immediately.
+       Display local reports immediately.
     */
 
     mergeReports();
 
 
     /*
-       Then also fetch Google Sheet results.
+       Then load Google Sheet reports.
     */
 
     loadGoogleReports();
