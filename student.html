@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,219 +11,486 @@
 <link rel="stylesheet" href="style.css">
 
 <style>
+
 /* =====================================================
-   STUDENT DASHBOARD
-   ===================================================== */
+   STUDENT DASHBOARD - PROFESSIONAL DESIGN
+===================================================== */
 
-body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f7fb;
-    color: #1f2937;
+*{
+    box-sizing:border-box;
 }
 
-.dashboard {
-    width: min(1000px, calc(100% - 32px));
-    margin: 0 auto;
-    padding: 30px 0 50px;
+html{
+    scroll-behavior:smooth;
 }
 
-.dashboard h1 {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    margin: 0 -16px 25px;
-    padding: 20px 16px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-    color: #1d4ed8;
-    font-size: 30px;
-    font-weight: 700;
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:linear-gradient(135deg,#eef4ff,#f8fbff);
+    color:#1f2937;
+    min-height:100vh;
 }
 
-.card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 25px;
-    margin-bottom: 22px;
-    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+/* Fixed Header */
+
+.top-header{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    height:72px;
+    background:#ffffff;
+    border-bottom:1px solid #e5e7eb;
+    box-shadow:0 3px 15px rgba(0,0,0,0.08);
+    z-index:1000;
+    display:flex;
+    align-items:center;
 }
 
-.card h2 {
-    margin: 0 0 20px;
-    color: #111827;
-    font-size: 21px;
+.header-inner{
+    width:100%;
+    max-width:1100px;
+    margin:auto;
+    padding:0 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 }
 
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    padding: 13px 0;
-    border-bottom: 1px solid #eef2f7;
+.brand{
+    font-size:22px;
+    font-weight:700;
+    color:#2855d9;
 }
 
-.info-row:last-child {
-    border-bottom: none;
+.brand-subtitle{
+    font-size:13px;
+    color:#64748b;
+    margin-top:3px;
 }
 
-.label {
-    font-weight: 600;
-    color: #6b7280;
+/* Header button */
+
+.header-logout{
+    border:none;
+    background:#ef4444;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
 }
 
-#studentName,
-#studentUsername,
-#studentYear {
-    font-weight: 600;
-    color: #111827;
+.header-logout:hover{
+    background:#dc2626;
 }
 
-.day-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 22px;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
+/* Main content */
+
+.dashboard{
+    width:100%;
+    max-width:1050px;
+    margin:0 auto;
+    padding:105px 22px 40px;
 }
 
-.day-number {
-    color: #1d4ed8;
-    font-size: 28px;
-    font-weight: 700;
+/* Page heading */
+
+.page-heading{
+    margin-bottom:25px;
 }
 
-.day-topic {
-    margin-top: 6px;
-    color: #6b7280;
-    font-size: 14px;
+.page-heading h1{
+    margin:0;
+    font-size:32px;
+    color:#172554;
 }
 
-.start-btn {
-    min-width: 180px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 13px 20px;
-    border-radius: 9px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
+.page-heading p{
+    margin:8px 0 0;
+    color:#64748b;
+    font-size:15px;
 }
 
-.start-btn:hover {
-    background: #1d4ed8;
+/* Cards */
+
+.card{
+    background:#ffffff;
+    padding:26px;
+    margin-bottom:22px;
+    border-radius:16px;
+    border:1px solid #e5e7eb;
+    box-shadow:0 8px 25px rgba(15,23,42,0.07);
 }
 
-.report-btn {
-    background: #059669;
-    color: white;
-    border: none;
-    padding: 13px 20px;
-    border-radius: 9px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
+.card h2{
+    margin:0 0 20px;
+    color:#172554;
+    font-size:21px;
 }
 
-.report-btn:hover {
-    background: #047857;
+.card-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:20px;
 }
 
-.logout-btn {
-    background: #dc2626;
-    color: white;
-    border: none;
-    padding: 13px 22px;
-    border-radius: 9px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
+.card-header h2{
+    margin:0;
 }
 
-.logout-btn:hover {
-    background: #b91c1c;
+/* Student information */
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
 }
 
-#message {
-    margin-top: 15px;
-    padding: 12px;
-    border-radius: 8px;
-    display: none;
+.info-box{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:12px;
+    padding:17px;
 }
 
-@media (max-width: 700px) {
+.info-label{
+    display:block;
+    font-size:13px;
+    color:#64748b;
+    margin-bottom:7px;
+    font-weight:600;
+}
 
-    .dashboard {
-        width: calc(100% - 20px);
-        padding-top: 20px;
+.info-value{
+    display:block;
+    font-size:16px;
+    font-weight:700;
+    color:#1e293b;
+    word-break:break-word;
+}
+
+/* Old info-row support */
+
+.info-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    padding:13px 0;
+    border-bottom:1px solid #edf2f7;
+}
+
+.info-row:last-child{
+    border-bottom:none;
+}
+
+.label{
+    font-weight:700;
+    color:#475569;
+}
+
+/* Assessment */
+
+.assessment-card{
+    background:linear-gradient(135deg,#eef4ff,#f8fbff);
+    border:1px solid #dbe7ff;
+}
+
+.day-box{
+    text-align:center;
+    padding:30px 25px;
+    background:#ffffff;
+    border-radius:14px;
+    border:1px solid #dbe4f5;
+    box-shadow:0 5px 18px rgba(37,85,217,0.07);
+}
+
+.assigned-label{
+    font-size:14px;
+    color:#64748b;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+}
+
+.day-number{
+    font-size:46px;
+    font-weight:800;
+    color:#2855d9;
+    margin:8px 0;
+}
+
+.topic-title{
+    font-size:20px;
+    color:#172554;
+    margin:8px 0 20px;
+}
+
+/* Buttons */
+
+button{
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
+    transition:all .2s ease;
+}
+
+.start-btn{
+    display:block;
+    width:100%;
+    background:#2855d9;
+    color:white;
+    padding:14px 22px;
+    border-radius:9px;
+    font-size:16px;
+    font-weight:700;
+    margin-top:18px;
+}
+
+.start-btn:hover{
+    background:#1d4ed8;
+    transform:translateY(-1px);
+    box-shadow:0 5px 15px rgba(40,85,217,.25);
+}
+
+.report-btn{
+    background:#16a34a;
+    color:white;
+    padding:13px 22px;
+    border-radius:9px;
+    font-size:15px;
+    font-weight:700;
+    width:100%;
+}
+
+.report-btn:hover{
+    background:#15803d;
+}
+
+.logout-btn{
+    background:#ef4444;
+    color:white;
+    padding:13px 22px;
+    border-radius:9px;
+    font-size:15px;
+    font-weight:700;
+    width:100%;
+    margin-top:12px;
+}
+
+.logout-btn:hover{
+    background:#dc2626;
+}
+
+/* Message */
+
+#message{
+    text-align:center;
+    margin-top:15px;
+    font-weight:700;
+    min-height:20px;
+}
+
+/* Footer */
+
+.dashboard-footer{
+    text-align:center;
+    color:#94a3b8;
+    font-size:13px;
+    padding:10px 0 20px;
+}
+
+/* Mobile */
+
+@media(max-width:800px){
+
+    .info-grid{
+        grid-template-columns:1fr;
     }
 
-    .dashboard h1 {
-        font-size: 24px;
-        margin-left: -10px;
-        margin-right: -10px;
+    .dashboard{
+        padding:95px 15px 30px;
     }
 
-    .card {
-        padding: 18px;
+    .page-heading h1{
+        font-size:27px;
     }
 
-    .info-row {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 5px;
+    .card{
+        padding:20px;
     }
 
-    .day-box {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .start-btn,
-    .report-btn,
-    .logout-btn {
-        width: 100%;
-    }
 }
+
+@media(max-width:600px){
+
+    .top-header{
+        height:64px;
+    }
+
+    .header-inner{
+        padding:0 15px;
+    }
+
+    .brand{
+        font-size:18px;
+    }
+
+    .brand-subtitle{
+        font-size:11px;
+    }
+
+    .header-logout{
+        padding:8px 12px;
+        font-size:13px;
+    }
+
+    .dashboard{
+        padding-top:84px;
+    }
+
+    .page-heading h1{
+        font-size:24px;
+    }
+
+    .page-heading p{
+        font-size:13px;
+    }
+
+    .day-number{
+        font-size:40px;
+    }
+
+    .topic-title{
+        font-size:17px;
+    }
+
+    .info-row{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:5px;
+    }
+
+}
+
+/* Prevent layout jumping */
+
+.start-btn,
+.report-btn,
+.logout-btn{
+    min-height:48px;
+}
+
 </style>
 
 </head>
 
 <body>
 
+<!-- =====================================================
+     FIXED HEADER
+===================================================== -->
+
+<header class="top-header">
+
+    <div class="header-inner">
+
+        <div>
+            <div class="brand">Java Placement Portal</div>
+            <div class="brand-subtitle">Student Dashboard</div>
+        </div>
+
+        <button
+            class="header-logout"
+            onclick="logout()">
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     MAIN DASHBOARD
+===================================================== -->
+
 <div class="dashboard">
 
-    <h1>Student Dashboard</h1>
+    <div class="page-heading">
+
+        <h1>Student Dashboard</h1>
+
+        <p>
+            Complete your daily Java placement assessment and track your progress.
+        </p>
+
+    </div>
 
 
     <!-- =================================================
-         STUDENT INFORMATION
-         ================================================= -->
+         STUDENT DETAILS
+    ================================================== -->
 
     <div class="card">
 
-        <h2>Student Information</h2>
+        <div class="card-header">
 
-        <div class="info-row">
-            <span class="label">Name</span>
-            <span id="studentName">-</span>
+            <h2>Student Details</h2>
+
         </div>
 
-        <div class="info-row">
-            <span class="label">Username</span>
-            <span id="studentUsername">-</span>
-        </div>
+        <div class="info-grid">
 
-        <div class="info-row">
-            <span class="label">Year</span>
-            <span id="studentYear">-</span>
+            <div class="info-box">
+
+                <span class="info-label">
+                    Name
+                </span>
+
+                <span
+                    class="info-value"
+                    id="studentName">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <span class="info-label">
+                    Username
+                </span>
+
+                <span
+                    class="info-value"
+                    id="studentUsername">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <span class="info-label">
+                    Year
+                </span>
+
+                <span
+                    class="info-value"
+                    id="studentYear">
+                    -
+                </span>
+
+            </div>
+
         </div>
 
     </div>
@@ -230,75 +498,95 @@ body {
 
     <!-- =================================================
          TODAY'S ASSESSMENT
-         ================================================= -->
+    ================================================== -->
 
-    <div class="card">
+    <div class="card assessment-card">
 
-        <h2>Today's Assessment</h2>
+        <div class="card-header">
 
-        <div class="day-box">
-
-            <div>
-
-                <div class="day-number" id="currentDay">
-                    Day 1
-                </div>
-
-                <div class="day-topic" id="currentTopic">
-                    Java Placement Assessment
-                </div>
-
-            </div>
-
-            <button
-                class="start-btn"
-                onclick="startAssessment()"
-            >
-                Start Assessment
-            </button>
+            <h2>Today's Assessment</h2>
 
         </div>
 
-        <div id="message"></div>
+        <div class="day-box">
+
+            <div class="assigned-label">
+                Assigned Assessment
+            </div>
+
+            <div class="day-number">
+
+                Day
+                <span id="assignedDay">
+                    1
+                </span>
+
+            </div>
+
+            <h3
+                id="topic"
+                class="topic-title">
+
+                Java Placement Practice
+
+            </h3>
+
+
+            <button
+                class="start-btn"
+                onclick="startAssessment()">
+
+                Start Today's Assessment
+
+            </button>
+
+
+            <div id="message"></div>
+
+        </div>
 
     </div>
 
 
     <!-- =================================================
          REPORTS
-         ================================================= -->
+    ================================================== -->
 
     <div class="card">
 
-        <h2>My Reports</h2>
+        <div class="card-header">
 
-        <p>
-            View your completed daily assessment reports,
-            scores and coding evaluation.
+            <h2>My Reports</h2>
+
+        </div>
+
+        <p style="color:#64748b; margin-top:-8px; margin-bottom:18px;">
+            View your completed assessment results and scores.
         </p>
 
         <button
             class="report-btn"
-            onclick="viewReports()"
-        >
+            onclick="viewReports()">
+
             View My Reports
+
+        </button>
+
+
+        <button
+            class="logout-btn"
+            onclick="logout()">
+
+            Logout
+
         </button>
 
     </div>
 
 
-    <!-- =================================================
-         LOGOUT
-         ================================================= -->
+    <div class="dashboard-footer">
 
-    <div class="card">
-
-        <button
-            class="logout-btn"
-            onclick="logout()"
-        >
-            Logout
-        </button>
+        Java Placement Assessment Portal
 
     </div>
 
@@ -308,282 +596,384 @@ body {
 <script>
 
 /* =====================================================
-   41-DAY TOPICS
-   ===================================================== */
+   GOOGLE APPS SCRIPT
+===================================================== */
+
+const GOOGLE_SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbzS_bzFzjBlBo_k6Jdm0w7qulI0PJypJglUqnYe4pnBXuj4p54A0iahIZfumbSrSzd3Ow/exec";
+
+
+/* =====================================================
+   TOPICS
+===================================================== */
 
 const topics = {
 
-    1: "Loops, Conditions, Operators",
+    1:"Java Basics and Input Output",
 
-    2: "Loops and Conditional Logic",
+    2:"Variables Data Types and Operators",
 
-    3: "Operators and Loop Logic",
+    3:"Operators Conditions and Loops",
 
-    4: "Nested Loops and Patterns",
+    4:"Loops and Conditional Problems",
 
-    5: "Array Basics",
+    5:"Loops Conditional and Basic Coding",
 
-    6: "Array Basics and Traversal",
+    6:"Array Basics",
 
-    7: "Array Input and Output",
+    7:"Array Operations",
 
-    8: "Array Operations",
+    8:"Array Problem Solving",
 
-    9: "Array Searching and Logic",
+    9:"Array Searching and Sorting",
 
-    10: "Array Thinking Programs",
+    10:"Array Interview Problems",
 
-    11: "Array + String Basics",
+    11:"Array and String Basics",
 
-    12: "String Basics",
+    12:"String Basics",
 
-    13: "String Operations",
+    13:"String Operations",
 
-    14: "String Methods",
+    14:"Array and String Problem Solving",
 
-    15: "String Logic Programs",
+    15:"String Manipulation",
 
-    16: "Arrays + Strings",
+    16:"Array and String Interview Questions",
 
-    17: "Arrays + Strings + Methods",
+    17:"Array and String Placement Problems",
 
-    18: "Class and Object",
+    18:"OOP Concepts and String Programs",
 
-    19: "OOP Concepts + String",
+    19:"Classes and Objects",
 
-    20: "Inheritance",
+    20:"Inheritance and Polymorphism",
 
-    21: "Polymorphism",
+    21:"Encapsulation and Abstraction",
 
-    22: "OOP + String Programs",
+    22:"OOP and String Programs",
 
-    23: "OOP + Placement Questions",
+    23:"Java Frequently Asked Questions",
 
-    24: "Advanced OOP + String",
+    24:"OOP Placement Questions",
 
-    25: "String + OOP Interview Practice",
+    25:"String Placement Problems",
 
-    26: "Advanced String + OOP",
+    26:"Advanced String Problems",
 
-    27: "String Manipulation + Inheritance",
+    27:"String and OOP Interview Questions",
 
-    28: "OOP Concepts + Placement Logic",
+    28:"String Problem Solving",
 
-    29: "Advanced String + Object Design",
+    29:"String and OOP Practice",
 
-    30: "String + OOP Interview Mock",
+    30:"Placement Coding Problems",
 
-    31: "Collection Framework Basics",
+    31:"Java Framework Basics",
 
-    32: "ArrayList Basics",
+    32:"Collections Framework",
 
-    33: "ArrayList Methods",
+    33:"ArrayList Basics",
 
-    34: "ArrayList Logic",
+    34:"ArrayList Problem Solving",
 
-    35: "ArrayList Medium Problems",
+    35:"ArrayList Interview Questions",
 
-    36: "LinkedList + ArrayList",
+    36:"Collections and Generics",
 
-    37: "Collection Methods",
+    37:"Collection Framework Problems",
 
-    38: "Collections + Previous Topics",
+    38:"Java Placement Practice",
 
-    39: "ArrayList Placement Practice",
+    39:"Java Interview Questions",
 
-    40: "LinkedList + ArrayList Placement",
+    40:"Java Coding and Placement Practice",
 
-    41: "Final Collections + Core Java Mock"
+    41:"Final Java Placement Assessment"
 
 };
 
 
 /* =====================================================
-   GET CURRENT STUDENT
-   ===================================================== */
+   GET LOGGED-IN STUDENT
+===================================================== */
 
-function getStudentName() {
+function getStudent(){
 
-    return (
-        localStorage.getItem("studentName") ||
-        ""
-    ).trim();
+    let student = null;
 
-}
+    try{
 
-
-function getStudentUsername() {
-
-    return (
-        localStorage.getItem("studentUsername") ||
-        ""
-    ).trim();
-
-}
-
-
-function getStudentYear() {
-
-    return (
-        localStorage.getItem("studentYear") ||
-        "Final Year"
-    ).trim();
-
-}
-
-
-/* =====================================================
-   GET ASSIGNED DAY
-   ===================================================== */
-
-function getAssignedDay() {
-
-    const values = [
-
-        localStorage.getItem("assignedDay"),
-
-        localStorage.getItem("assessmentDay"),
-
-        localStorage.getItem("currentDay")
-
-    ];
-
-    for (const value of values) {
-
-        if (
-            value !== null &&
-            value !== ""
-        ) {
-
-            const match =
-                String(value).match(/\d+/);
-
-            if (match) {
-
-                const day =
-                    parseInt(
-                        match[0],
-                        10
-                    );
-
-                if (
-                    Number.isFinite(day) &&
-                    day >= 1 &&
-                    day <= 41
-                ) {
-
-                    return day;
-
-                }
-
-            }
-
-        }
+        student =
+            JSON.parse(
+                localStorage.getItem("loggedInStudent")
+                || "null"
+            );
 
     }
 
-    return 1;
+    catch(e){
+
+        student = null;
+
+    }
+
+    return student;
 
 }
 
 
 /* =====================================================
-   GET COMPLETED DAYS
-   ===================================================== */
+   FALLBACK STUDENT INFORMATION
+===================================================== */
 
-function getCompletedDays() {
+function getStudentInformation(){
 
-    const username =
-        getStudentUsername();
+    const student = getStudent();
 
-    const reports =
-        JSON.parse(
-            localStorage.getItem(
-                "assessmentReports"
-            ) || "[]"
+    let name =
+        localStorage.getItem("studentName")
+        || "";
+
+    let username =
+        localStorage.getItem("studentUsername")
+        || "";
+
+    let year =
+        localStorage.getItem("studentYear")
+        || "";
+
+
+    if(student){
+
+        name =
+            student.name
+            || student.Name
+            || name;
+
+        username =
+            student.username
+            || student.Username
+            || username;
+
+        year =
+            student.year
+            || student.Year
+            || year;
+
+    }
+
+
+    return {
+
+        name:name,
+
+        username:username,
+
+        year:year
+
+    };
+
+}
+
+
+/* =====================================================
+   LOCAL REPORTS
+===================================================== */
+
+function getLocalReports(){
+
+    try{
+
+        const data =
+            JSON.parse(
+                localStorage.getItem("studentReports")
+                || "[]"
+            );
+
+        return Array.isArray(data)
+            ? data
+            : [];
+
+    }
+
+    catch(e){
+
+        return [];
+
+    }
+
+}
+
+
+/* =====================================================
+   GET NEXT DAY
+===================================================== */
+
+function calculateNextDay(){
+
+    const student =
+        getStudentInformation();
+
+
+    let baseDay =
+        parseInt(
+            localStorage.getItem("assignedDay")
+            || "1",
+            10
         );
 
-    return reports.filter(report => {
 
-        return String(
-            report.username || ""
-        ).trim().toLowerCase()
-        === username.toLowerCase();
+    if(
+        isNaN(baseDay)
+        ||
+        baseDay < 1
+    ){
 
-    });
+        baseDay = 1;
 
-}
+    }
 
 
-/* =====================================================
-   CALCULATE NEXT DAY
-   ===================================================== */
+    if(baseDay > 41){
 
-function calculateNextDay() {
+        baseDay = 41;
 
-    const assignedDay =
-        getAssignedDay();
+    }
+
+
+    /*
+       Check local reports first.
+       This supports the existing browser
+       result history.
+    */
 
     const reports =
-        getCompletedDays();
+        getLocalReports();
 
-    let highestDay =
-        assignedDay - 1;
 
-    reports.forEach(report => {
+    const mine =
+        reports.filter(function(report){
+
+            return String(
+                report.username
+                ||
+                report.Username
+                ||
+                ""
+            ).trim().toLowerCase()
+            ===
+            String(
+                student.username
+                ||
+                ""
+            ).trim().toLowerCase();
+
+        });
+
+
+    let highestCompletedDay = 0;
+
+
+    mine.forEach(function(report){
 
         const day =
             parseInt(
-                String(
-                    report.day ||
-                    report.assessmentDay ||
-                    report.submittedDay ||
-                    ""
-                ).replace(/\D/g, ""),
+                report.day
+                ||
+                report.Day
+                ||
+                "0",
                 10
             );
 
-        if (
-            Number.isFinite(day) &&
-            day > highestDay
-        ) {
 
-            highestDay = day;
+        if(
+            !isNaN(day)
+            &&
+            day > highestCompletedDay
+        ){
+
+            highestCompletedDay = day;
 
         }
 
     });
 
-    const nextDay =
-        Math.min(
-            highestDay + 1,
-            41
-        );
 
-    return nextDay;
+    /*
+       If all 41 days are completed,
+       remain on Day 41.
+    */
+
+    if(highestCompletedDay >= 41){
+
+        return 41;
+
+    }
+
+
+    /*
+       Otherwise move to the next day.
+    */
+
+    if(highestCompletedDay >= 1){
+
+        return highestCompletedDay + 1;
+
+    }
+
+
+    return baseDay;
 
 }
 
 
 /* =====================================================
    SET CURRENT DAY
-   ===================================================== */
+===================================================== */
 
-function setCurrentDay(day) {
+function setCurrentDay(day){
 
     day =
-        Math.max(
-            1,
-            Math.min(41, Number(day) || 1)
-        );
+        parseInt(day,10);
+
+
+    if(
+        isNaN(day)
+        ||
+        day < 1
+    ){
+
+        day = 1;
+
+    }
+
+
+    if(day > 41){
+
+        day = 41;
+
+    }
+
+
+    /*
+       Store all three names because older
+       pages in this project used different keys.
+    */
 
     localStorage.setItem(
-        "currentDay",
+        "assignedDay",
         String(day)
     );
 
     localStorage.setItem(
         "assessmentDay",
+        String(day)
+    );
+
+    localStorage.setItem(
+        "currentDay",
         String(day)
     );
 
@@ -592,77 +982,81 @@ function setCurrentDay(day) {
 
 /* =====================================================
    DISPLAY STUDENT
-   ===================================================== */
+===================================================== */
 
-function displayStudent() {
+function displayStudent(){
 
-    const name =
-        getStudentName();
+    const student =
+        getStudentInformation();
 
-    const username =
-        getStudentUsername();
-
-    const year =
-        getStudentYear();
 
     document.getElementById(
         "studentName"
     ).textContent =
-        name || "-";
+        student.name || "-";
+
 
     document.getElementById(
         "studentUsername"
     ).textContent =
-        username || "-";
+        student.username || "-";
+
 
     document.getElementById(
         "studentYear"
     ).textContent =
-        year || "-";
+        student.year || "-";
 
 }
 
 
 /* =====================================================
    DISPLAY DAY
-   ===================================================== */
+===================================================== */
 
-function displayDay() {
+function displayDay(){
 
     const day =
         calculateNextDay();
 
+
     setCurrentDay(day);
 
-    document.getElementById(
-        "currentDay"
-    ).textContent =
-        "Day " + day;
 
     document.getElementById(
-        "currentTopic"
+        "assignedDay"
     ).textContent =
-        topics[day] ||
-        "Java Placement Assessment";
+        day;
+
+
+    document.getElementById(
+        "topic"
+    ).textContent =
+        topics[day]
+        ||
+        "Java Placement Practice";
 
 }
 
 
 /* =====================================================
    START ASSESSMENT
-   ===================================================== */
+===================================================== */
 
-function startAssessment() {
+function startAssessment(){
 
     const day =
         calculateNextDay();
 
+
     setCurrentDay(day);
 
+
     localStorage.setItem(
-        "assessmentDay",
+        "assessmentStartedDay",
         String(day)
     );
+
 
     window.location.href =
         "assessment.html";
@@ -672,24 +1066,29 @@ function startAssessment() {
 
 /* =====================================================
    VIEW REPORTS
-   ===================================================== */
+===================================================== */
 
-function viewReports() {
+function viewReports(){
+
+    /*
+       Keep the existing project behavior:
+       open the result page.
+    */
 
     window.location.href =
-        "reports.html";
+        "results.html";
 
 }
 
 
 /* =====================================================
    LOGOUT
-   ===================================================== */
+===================================================== */
 
-function logout() {
+function logout(){
 
     localStorage.removeItem(
-        "loggedInUser"
+        "loggedInStudent"
     );
 
     localStorage.removeItem(
@@ -709,12 +1108,13 @@ function logout() {
     );
 
     localStorage.removeItem(
-        "currentDay"
+        "assessmentDay"
     );
 
     localStorage.removeItem(
-        "assessmentDay"
+        "currentDay"
     );
+
 
     window.location.href =
         "index.html";
@@ -723,12 +1123,12 @@ function logout() {
 
 
 /* =====================================================
-   PAGE LOAD
-   ===================================================== */
+   INITIALIZE
+===================================================== */
 
 window.addEventListener(
     "DOMContentLoaded",
-    function() {
+    function(){
 
         displayStudent();
 
@@ -740,4 +1140,5 @@ window.addEventListener(
 </script>
 
 </body>
+
 </html>
