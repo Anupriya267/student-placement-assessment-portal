@@ -2,8 +2,11 @@
 <html>
 
 <head>
+
 <title>Java Placement Assessment</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
@@ -12,186 +15,520 @@
 
 <h1>Java Placement Assessment</h1>
 
-
 <div class="card">
-<h2>Time Remaining</h2>
+
+<h2 id="assessmentTitle">
+Java Placement Assessment
+</h2>
+
+<p>
+<strong>Time:</strong> 40 Minutes
+</p>
+
+<h2>
+Time Remaining
+</h2>
+
 <h1 id="timer">40:00</h1>
-</div>
-
-
-<div class="card">
-
-<h2>MCQ Questions (10)</h2>
-
-
-<p>1. Which keyword is used to create an object in Java?</p>
-
-<label><input type="radio" name="q1" value="class"> class</label>
-<label><input type="radio" name="q1" value="new"> new</label>
-<label><input type="radio" name="q1" value="object"> object</label>
-<label><input type="radio" name="q1" value="create"> create</label>
-
-
-
-<p>2. Which loop is used when iterations are known?</p>
-
-<label><input type="radio" name="q2" value="while"> while</label>
-<label><input type="radio" name="q2" value="do-while"> do-while</label>
-<label><input type="radio" name="q2" value="for"> for</label>
-<label><input type="radio" name="q2" value="switch"> switch</label>
-
-
-
-<p>3. Which data type stores whole numbers?</p>
-
-<label><input type="radio" name="q3" value="float"> float</label>
-<label><input type="radio" name="q3" value="int"> int</label>
-<label><input type="radio" name="q3" value="char"> char</label>
-<label><input type="radio" name="q3" value="boolean"> boolean</label>
-
-
-
-<p>4. Which operator checks equality?</p>
-
-<label><input type="radio" name="q4" value="="> =</label>
-<label><input type="radio" name="q4" value="=="> ==</label>
-<label><input type="radio" name="q4" value="+"> +</label>
-<label><input type="radio" name="q4" value="&&"> &&</label>
-
-
-
-<p>5. Which statement is used for decision making?</p>
-
-<label><input type="radio" name="q5" value="if"> if</label>
-<label><input type="radio" name="q5" value="print"> print</label>
-<label><input type="radio" name="q5" value="import"> import</label>
-<label><input type="radio" name="q5" value="package"> package</label>
-
-
-
-<p>6. Array index starts from?</p>
-
-<label><input type="radio" name="q6" value="0"> 0</label>
-<label><input type="radio" name="q6" value="1"> 1</label>
-<label><input type="radio" name="q6" value="-1"> -1</label>
-<label><input type="radio" name="q6" value="2"> 2</label>
-
-
-
-<p>7. Java is which type of language?</p>
-
-<label><input type="radio" name="q7" value="Object Oriented"> Object Oriented</label>
-<label><input type="radio" name="q7" value="Procedural"> Procedural</label>
-<label><input type="radio" name="q7" value="Machine"> Machine</label>
-<label><input type="radio" name="q7" value="Assembly"> Assembly</label>
-
-
-
-<p>8. Logical AND operator is?</p>
-
-<label><input type="radio" name="q8" value="&&"> &&</label>
-<label><input type="radio" name="q8" value="||"> ||</label>
-<label><input type="radio" name="q8" value="!"> !</label>
-<label><input type="radio" name="q8" value="+"> +</label>
-
-
-
-<p>9. Java execution starts from?</p>
-
-<label><input type="radio" name="q9" value="main"> main()</label>
-<label><input type="radio" name="q9" value="start"> start()</label>
-<label><input type="radio" name="q9" value="run"> run()</label>
-<label><input type="radio" name="q9" value="begin"> begin()</label>
-
-
-
-<p>10. Keyword used to prevent inheritance?</p>
-
-<label><input type="radio" name="q10" value="final"> final</label>
-<label><input type="radio" name="q10" value="static"> static</label>
-<label><input type="radio" name="q10" value="private"> private</label>
-<label><input type="radio" name="q10" value="public"> public</label>
 
 </div>
 
 
+<div id="questionContainer">
 
-<div class="card">
-
-<h2>Error Correction Questions (2)</h2>
-
-<p>11. Find the correction:</p>
-
-<pre>
-int a = 10
-System.out.println(a);
-</pre>
-
-<label>
-<input type="radio" name="error1" value="semicolon">
-Add semicolon
-</label>
-
-<label>
-<input type="radio" name="error1" value="remove">
-Remove println
-</label>
-
-
-
-<p>12. Find the correction:</p>
-
-<pre>
-for(int i=0; i&lt;5 i++)
-{
-System.out.println(i);
-}
-</pre>
-
-
-<label>
-<input type="radio" name="error2" value="addsemicolon">
-Add semicolon after condition
-</label>
-
-
-<label>
-<input type="radio" name="error2" value="remove">
-Remove loop
-</label>
-
+<p>Loading assessment...</p>
 
 </div>
 
 
-
-<div class="card">
-
-<h2>Coding Questions (2)</h2>
-
-<p>13. Write Java program to find largest of 3 numbers.</p>
-
-<textarea rows="8" placeholder="Write your Java code here"></textarea>
-
-
-<p>14. Write Java program to reverse a string.</p>
-
-<textarea rows="8" placeholder="Write your Java code here"></textarea>
-
-</div>
-
-
-
-<button onclick="submitTest()">
+<button onclick="submitAssessment()">
 Submit Assessment
 </button>
 
-
 </div>
 
 
-<script src="script.js"></script>
+<script>
+
+/* ===============================
+   GET IMPORTED QUESTION BANK
+================================ */
+
+let questionBank =
+    JSON.parse(
+        localStorage.getItem("questionBank") || "[]"
+    );
+
+
+/*
+   Student's assigned day.
+
+   For now Day 1 is used.
+   Later we will connect this
+   automatically to student.html.
+*/
+
+let assignedDay =
+    localStorage.getItem("assignedDay") || "1";
+
+
+let dayQuestions =
+    questionBank.filter(function(q){
+
+        return String(q.Day) === String(assignedDay);
+
+    });
+
+
+/* ===============================
+   DISPLAY QUESTIONS
+================================ */
+
+function loadAssessment(){
+
+    let container =
+        document.getElementById(
+            "questionContainer"
+        );
+
+
+    if(dayQuestions.length === 0){
+
+        container.innerHTML =
+
+            "<div class='card'>" +
+
+            "<h2>No Assessment Found</h2>" +
+
+            "<p>" +
+            "No questions are available for Day " +
+            assignedDay +
+            "." +
+            "</p>" +
+
+            "</div>";
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "assessmentTitle"
+    ).innerText =
+        "Day " + assignedDay +
+        " Java Placement Assessment";
+
+
+    container.innerHTML = "";
+
+
+    let mcqNumber = 1;
+    let errorNumber = 1;
+    let codingNumber = 1;
+
+
+    dayQuestions.forEach(function(q){
+
+        let type =
+            String(q["Question Type"])
+            .toUpperCase();
+
+
+        /* ================= MCQ ================= */
+
+        if(type === "MCQ"){
+
+            let card =
+                document.createElement("div");
+
+            card.className = "card";
+
+
+            let html =
+
+                "<h3>MCQ " +
+                mcqNumber +
+                "</h3>" +
+
+                "<p>" +
+                escapeHTML(q.Question) +
+                "</p>" +
+
+                "<label>" +
+                "<input type='radio' " +
+                "name='mcq_" +
+                mcqNumber +
+                "' " +
+                "value='A'>" +
+                " A. " +
+                escapeHTML(q["Option A"]) +
+                "</label><br>" +
+
+                "<label>" +
+                "<input type='radio' " +
+                "name='mcq_" +
+                mcqNumber +
+                "' " +
+                "value='B'>" +
+                " B. " +
+                escapeHTML(q["Option B"]) +
+                "</label><br>" +
+
+                "<label>" +
+                "<input type='radio' " +
+                "name='mcq_" +
+                mcqNumber +
+                "' " +
+                "value='C'>" +
+                " C. " +
+                escapeHTML(q["Option C"]) +
+                "</label><br>" +
+
+                "<label>" +
+                "<input type='radio' " +
+                "name='mcq_" +
+                mcqNumber +
+                "' " +
+                "value='D'>" +
+                " D. " +
+                escapeHTML(q["Option D"]) +
+                "</label>";
+
+
+            card.innerHTML = html;
+
+            container.appendChild(card);
+
+            mcqNumber++;
+
+        }
+
+
+        /* ================= ERROR ================= */
+
+        else if(type === "ERROR"){
+
+            let card =
+                document.createElement("div");
+
+            card.className = "card";
+
+
+            let html =
+
+                "<h3>Error Correction " +
+                errorNumber +
+                "</h3>" +
+
+                "<p>" +
+                escapeHTML(q.Question) +
+                "</p>" +
+
+                "<label>" +
+                "<input type='radio' " +
+                "name='error_" +
+                errorNumber +
+                "' " +
+                "value='A'>" +
+                " A. " +
+                escapeHTML(q["Option A"]) +
+                "</label><br>" +
+
+                "<label>" +
+                "<input type='radio' " +
+                "name='error_" +
+                errorNumber +
+                "' " +
+                "value='B'>" +
+                " B. " +
+                escapeHTML(q["Option B"]) +
+                "</label><br>" +
+
+                "<label>" +
+                "<input type='radio' " +
+                "name='error_" +
+                errorNumber +
+                "' " +
+                "value='C'>" +
+                " C. " +
+                escapeHTML(q["Option C"]) +
+                "</label><br>" +
+
+                "<label>" +
+                "<input type='radio' " +
+                "name='error_" +
+                errorNumber +
+                "' " +
+                "value='D'>" +
+                " D. " +
+                escapeHTML(q["Option D"]) +
+                "</label>";
+
+
+            card.innerHTML = html;
+
+            container.appendChild(card);
+
+            errorNumber++;
+
+        }
+
+
+        /* ================= CODING ================= */
+
+        else if(type === "CODING"){
+
+            let card =
+                document.createElement("div");
+
+            card.className = "card";
+
+
+            let html =
+
+                "<h3>Coding Question " +
+                codingNumber +
+                "</h3>" +
+
+                "<p>" +
+                escapeHTML(q.Question) +
+                "</p>" +
+
+                "<textarea " +
+                "id='coding_" +
+                codingNumber +
+                "' " +
+                "rows='12' " +
+                "style='width:100%;' " +
+                "placeholder='Write your Java code here'>" +
+                "</textarea>";
+
+
+            card.innerHTML = html;
+
+            container.appendChild(card);
+
+            codingNumber++;
+
+        }
+
+    });
+
+}
+
+
+/* ===============================
+   SAFE HTML
+================================ */
+
+function escapeHTML(value){
+
+    if(value === undefined ||
+       value === null){
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* ===============================
+   SUBMIT
+================================ */
+
+function submitAssessment(){
+
+    /*
+       For this step we only save the
+       student's answers.
+
+       Automatic scoring will be connected
+       in the next step.
+    */
+
+    let responses = [];
+
+
+    dayQuestions.forEach(function(q,index){
+
+        let type =
+            String(q["Question Type"])
+            .toUpperCase();
+
+
+        let number =
+            Number(q["Question No."]);
+
+
+        if(type === "MCQ"){
+
+            let selected =
+                document.querySelector(
+                    'input[name="mcq_' +
+                    number +
+                    '"]:checked'
+                );
+
+
+            responses.push({
+
+                questionType: "MCQ",
+
+                question:
+                    q.Question,
+
+                answer:
+                    selected
+                    ? selected.value
+                    : "Not Answered"
+
+            });
+
+        }
+
+
+        else if(type === "ERROR"){
+
+            let selected =
+                document.querySelector(
+                    'input[name="error_' +
+                    number +
+                    '"]:checked'
+                );
+
+
+            responses.push({
+
+                questionType: "ERROR",
+
+                question:
+                    q.Question,
+
+                answer:
+                    selected
+                    ? selected.value
+                    : "Not Answered"
+
+            });
+
+        }
+
+
+        else if(type === "CODING"){
+
+            let box =
+                document.getElementById(
+                    "coding_" +
+                    number
+                );
+
+
+            responses.push({
+
+                questionType: "CODING",
+
+                question:
+                    q.Question,
+
+                answer:
+                    box
+                    ? box.value
+                    : ""
+
+            });
+
+        }
+
+    });
+
+
+    localStorage.setItem(
+        "studentResponses",
+        JSON.stringify(responses)
+    );
+
+
+    localStorage.setItem(
+        "submittedDay",
+        assignedDay
+    );
+
+
+    alert(
+        "Assessment submitted successfully."
+    );
+
+
+    /*
+       Next step will connect this
+       to automatic scoring and results.
+    */
+
+    window.location.href =
+        "results.html";
+
+}
+
+
+/* ===============================
+   START
+================================ */
+
+loadAssessment();
+
+
+/* ===============================
+   TIMER
+================================ */
+
+let time = 40 * 60;
+
+
+let timer =
+    setInterval(function(){
+
+        let minutes =
+            Math.floor(time / 60);
+
+        let seconds =
+            time % 60;
+
+
+        document.getElementById(
+            "timer"
+        ).innerText =
+
+            minutes +
+            ":" +
+            (seconds < 10 ? "0" : "") +
+            seconds;
+
+
+        time--;
+
+
+        if(time < 0){
+
+            clearInterval(timer);
+
+            submitAssessment();
+
+        }
+
+    },1000);
+
+</script>
 
 </body>
 
-  </html>
+</html>
