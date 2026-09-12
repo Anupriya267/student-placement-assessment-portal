@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Student Management</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.student-form {
+    display: grid;
+    gap: 12px;
+}
+
+.student-form input,
+.student-form select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.student-table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background: #2864dc;
+    color: white;
+}
+
+.delete-button {
+    background: #dc3545;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="dashboard">
+
+
+<h1>Student Management</h1>
+
+
+<!-- ========================================= -->
+<!-- ADD STUDENT -->
+<!-- ========================================= -->
+
+<div class="card">
+
+<h2>Add Student</h2>
+
+
+<div class="student-form">
+
+
+<input
+    type="text"
+    id="studentName"
+    placeholder="Student Name"
+>
+
+
+<input
+    type="text"
+    id="studentUsername"
+    placeholder="Username"
+>
+
+
+<input
+    type="password"
+    id="studentPassword"
+    placeholder="Password"
+>
+
+
+<input
+    type="text"
+    id="studentYear"
+    placeholder="Year (Example: Final Year)"
+>
+
+
+<select id="assignedDay">
+
+<option value="">
+Select Assigned Day
+</option>
+
+</select>
+
+
+<button onclick="addStudent()">
+Add Student
+</button>
+
+
+</div>
+
+</div>
+
+
+
+<!-- ========================================= -->
+<!-- STUDENT LIST -->
+<!-- ========================================= -->
+
+<div class="card">
+
+<h2>Student List</h2>
+
+
+<div class="student-table">
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+
+<th>Username</th>
+
+<th>Password</th>
+
+<th>Year</th>
+
+<th>Assigned Day</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="studentTableBody">
+
+</tbody>
+
+
+</table>
+
+</div>
+
+</div>
+
+
+
+<!-- ========================================= -->
+<!-- BACK -->
+<!-- ========================================= -->
+
+<div class="card">
+
+<button onclick="goBack()">
+Back to Admin Dashboard
+</button>
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+
+// ==============================================
+// LOAD DAYS
+// ==============================================
+
+function loadDays(){
+
+    let savedDays =
+        localStorage.getItem(
+            "questionBankDays"
+        );
+
+
+    let days =
+        savedDays
+        ?
+        JSON.parse(savedDays)
+        :
+        [];
+
+
+    let select =
+        document.getElementById(
+            "assignedDay"
+        );
+
+
+    select.innerHTML =
+
+        '<option value="">Select Assigned Day</option>';
+
+
+    days.forEach(
+        function(day){
+
+            let option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                day;
+
+
+            option.textContent =
+                "Day " + day;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+
+// ==============================================
+// ADD STUDENT
+// ==============================================
+
+function addStudent(){
+
+    let name =
+        document.getElementById(
+            "studentName"
+        ).value.trim();
+
+
+    let username =
+        document.getElementById(
+            "studentUsername"
+        ).value.trim();
+
+
+    let password =
+        document.getElementById(
+            "studentPassword"
+        ).value.trim();
+
+
+    let year =
+        document.getElementById(
+            "studentYear"
+        ).value.trim();
+
+
+    let assignedDay =
+        document.getElementById(
+            "assignedDay"
+        ).value;
+
+
+    if(
+        !name ||
+        !username ||
+        !password ||
+        !year ||
+        !assignedDay
+    ){
+
+        alert(
+            "Please fill all student details."
+        );
+
+        return;
+
+    }
+
+
+    let students =
+        JSON.parse(
+            localStorage.getItem(
+                "students"
+            )
+            ||
+            "[]"
+        );
+
+
+    // ==========================================
+    // CHECK DUPLICATE USERNAME
+    // ==========================================
+
+    let exists =
+        students.some(
+            function(student){
+
+                return student.username
+                    .toLowerCase()
+                    ===
+                    username.toLowerCase();
+
+            }
+        );
+
+
+    if(exists){
+
+        alert(
+            "Username already exists."
+        );
+
+        return;
+
+    }
+
+
+    // ==========================================
+    // CREATE STUDENT
+    // ==========================================
+
+    let student = {
+
+        id:
+            Date.now(),
+
+        name:
+            name,
+
+        username:
+            username,
+
+        password:
+            password,
+
+        year:
+            year,
+
+        assignedDay:
+            assignedDay
+
+    };
+
+
+    students.push(
+        student
+    );
+
+
+    localStorage.setItem(
+        "students",
+        JSON.stringify(
+            students
+        )
+    );
+
+
+    // ==========================================
+    // CLEAR FORM
+    // ==========================================
+
+    document.getElementById(
+        "studentName"
+    ).value = "";
+
+
+    document.getElementById(
+        "studentUsername"
+    ).value = "";
+
+
+    document.getElementById(
+        "studentPassword"
+    ).value = "";
+
+
+    document.getElementById(
+        "studentYear"
+    ).value = "";
+
+
+    document.getElementById(
+        "assignedDay"
+    ).value = "";
+
+
+    displayStudents();
+
+
+    alert(
+        "Student added successfully."
+    );
+
+}
+
+
+
+// ==============================================
+// DISPLAY STUDENTS
+// ==============================================
+
+function displayStudents(){
+
+    let students =
+        JSON.parse(
+            localStorage.getItem(
+                "students"
+            )
+            ||
+            "[]"
+        );
+
+
+    let tbody =
+        document.getElementById(
+            "studentTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if(
+        students.length === 0
+    ){
+
+        tbody.innerHTML =
+
+            "<tr>" +
+
+            "<td colspan='6'>" +
+
+            "No students added yet." +
+
+            "</td>" +
+
+            "</tr>";
+
+        return;
+
+    }
+
+
+    students.forEach(
+        function(student){
+
+            let row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML =
+
+                "<td>"
+                +
+                escapeHTML(student.name)
+                +
+                "</td>"
+
+                +
+
+                "<td>"
+                +
+                escapeHTML(student.username)
+                +
+                "</td>"
+
+                +
+
+                "<td>"
+                +
+                escapeHTML(student.password)
+                +
+                "</td>"
+
+                +
+
+                "<td>"
+                +
+                escapeHTML(student.year)
+                +
+                "</td>"
+
+                +
+
+                "<td>"
+                +
+                "Day "
+                +
+                escapeHTML(student.assignedDay)
+                +
+                "</td>"
+
+                +
+
+                "<td>"
+
+                +
+
+                "<button class='delete-button' " +
+
+                "onclick=\"deleteStudent(" +
+                student.id +
+                ")\">" +
+
+                "Delete" +
+
+                "</button>"
+
+                +
+
+                "</td>";
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+
+// ==============================================
+// DELETE STUDENT
+// ==============================================
+
+function deleteStudent(id){
+
+    if(
+        !confirm(
+            "Delete this student?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    let students =
+        JSON.parse(
+            localStorage.getItem(
+                "students"
+            )
+            ||
+            "[]"
+        );
+
+
+    students =
+        students.filter(
+            function(student){
+
+                return student.id !== id;
+
+            }
+        );
+
+
+    localStorage.setItem(
+        "students",
+        JSON.stringify(
+            students
+        )
+    );
+
+
+    displayStudents();
+
+}
+
+
+
+// ==============================================
+// BACK TO ADMIN
+// ==============================================
+
+function goBack(){
+
+    window.location.href =
+        "admin.html";
+
+}
+
+
+
+// ==============================================
+// ESCAPE HTML
+// ==============================================
+
+function escapeHTML(value){
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+
+// ==============================================
+// START
+// ==============================================
+
+window.onload =
+    function(){
+
+        loadDays();
+
+        displayStudents();
+
+    };
+
+
+</script>
+
+
+</body>
+
+</html>
