@@ -9,19 +9,20 @@
 
 <link rel="stylesheet" href="style.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 </head>
 
 
 <body>
 
+
 <div class="container">
 
 <h1>Java Placement Assessment</h1>
 
 <h2 id="assessmentTitle">
-Day 1 Java Placement Assessment
+Java Placement Assessment
 </h2>
 
 <p>
@@ -53,11 +54,15 @@ Loading questions...
 
 <div id="questionContainer"></div>
 
+
 <button
 type="button"
 onclick="submitAssessment()">
+
 Submit Assessment
+
 </button>
+
 
 </form>
 
@@ -66,6 +71,7 @@ Submit Assessment
 
 
 <script>
+
 
 let questions = [];
 
@@ -76,16 +82,17 @@ let timerInterval;
 
 
 // ==================================================
-// LOAD QUESTIONS FROM EXCEL
+// LOAD QUESTIONS
 // ==================================================
 
 async function loadQuestions(){
 
     try{
 
-        const response = await fetch(
-            "./Java_Placement_41_Day_FINAL_CORRECTED.xlsx"
-        );
+        const response =
+            await fetch(
+                "./Java_Placement_41_Day_FINAL_CORRECTED.xlsx"
+            );
 
 
         if(!response.ok){
@@ -105,13 +112,15 @@ async function loadQuestions(){
             XLSX.read(
                 data,
                 {
-                    type: "array"
+                    type:"array"
                 }
             );
 
 
         const sheet =
-            workbook.Sheets["Question Bank"];
+            workbook.Sheets[
+                "Question Bank"
+            ];
 
 
         if(!sheet){
@@ -125,94 +134,86 @@ async function loadQuestions(){
 
         const rows =
             XLSX.utils.sheet_to_json(
-                sheet
+                sheet,
+                {
+                    defval:""
+                }
             );
 
 
         const assignedDay =
             localStorage.getItem(
                 "assignedDay"
-            ) || "1";
+            )
+            ||
+            "1";
 
 
         const dayQuestions =
-            rows.filter(function(q){
+            rows.filter(
+                function(q){
 
-                return String(q.Day).trim()
-                ===
-                String(assignedDay).trim();
+                    return String(q.Day)
+                    ===
+                    String(assignedDay);
 
-            });
-
-
-        if(dayQuestions.length === 0){
-
-            throw new Error(
-                "No questions found for Day "
-                + assignedDay
+                }
             );
 
-        }
-
-
-
-        // ==========================================
-        // 10 MCQ
-        // ==========================================
 
         const mcqs =
-            dayQuestions.filter(function(q){
+            dayQuestions.filter(
+                function(q){
 
-                return String(
-                    q["Question Type"] || ""
-                )
-                .trim()
-                .toUpperCase()
-                === "MCQ";
+                    return String(
+                        q["Question Type"]
+                        ||
+                        ""
+                    )
+                    .trim()
+                    .toUpperCase()
+                    ===
+                    "MCQ";
 
-            });
+                }
+            );
 
-
-
-        // ==========================================
-        // 2 ERROR CORRECTION
-        // ==========================================
 
         const errors =
-            dayQuestions.filter(function(q){
+            dayQuestions.filter(
+                function(q){
 
-                return String(
-                    q["Question Type"] || ""
-                )
-                .trim()
-                .toUpperCase()
-                === "ERROR";
+                    return String(
+                        q["Question Type"]
+                        ||
+                        ""
+                    )
+                    .trim()
+                    .toUpperCase()
+                    ===
+                    "ERROR";
 
-            });
+                }
+            );
 
-
-
-        // ==========================================
-        // 3 CODING
-        // ==========================================
 
         const coding =
-            dayQuestions.filter(function(q){
+            dayQuestions.filter(
+                function(q){
 
-                return String(
-                    q["Question Type"] || ""
-                )
-                .trim()
-                .toUpperCase()
-                === "CODING";
+                    return String(
+                        q["Question Type"]
+                        ||
+                        ""
+                    )
+                    .trim()
+                    .toUpperCase()
+                    ===
+                    "CODING";
 
-            });
+                }
+            );
 
-
-
-        // ==========================================
-        // FINAL 15 QUESTIONS
-        // ==========================================
 
         questions = [
 
@@ -225,6 +226,16 @@ async function loadQuestions(){
         ];
 
 
+        if(
+            questions.length === 0
+        ){
+
+            throw new Error(
+                "No questions found for this day."
+            );
+
+        }
+
 
         document.getElementById(
             "dayNumber"
@@ -236,8 +247,10 @@ async function loadQuestions(){
             "assessmentTitle"
         ).innerText =
             "Day "
-            + assignedDay
-            + " Java Placement Assessment";
+            +
+            assignedDay
+            +
+            " Java Placement Assessment";
 
 
         document.getElementById(
@@ -268,10 +281,12 @@ async function loadQuestions(){
             "loading"
         ).innerHTML =
 
-            "<h3>Unable to load question bank.</h3>" +
-
-            "<p>" +
-            error.message +
+            "<h3>Unable to load question bank.</h3>"
+            +
+            "<p>"
+            +
+            error.message
+            +
             "</p>";
 
     }
@@ -300,13 +315,15 @@ function displayQuestions(){
 
             const type =
                 String(
-                    q["Question Type"] || ""
+                    q["Question Type"]
+                    ||
+                    ""
                 )
                 .trim()
                 .toUpperCase();
 
 
-            const questionNumber =
+            const number =
                 index + 1;
 
 
@@ -328,9 +345,12 @@ function displayQuestions(){
 
             heading.innerText =
                 "Question "
-                + questionNumber
-                + ". "
-                + q.Question;
+                +
+                number
+                +
+                ". "
+                +
+                q.Question;
 
 
             box.appendChild(
@@ -347,7 +367,7 @@ function displayQuestions(){
 
                 addOption(
                     box,
-                    questionNumber,
+                    number,
                     "A",
                     q["Option A"]
                 );
@@ -355,7 +375,7 @@ function displayQuestions(){
 
                 addOption(
                     box,
-                    questionNumber,
+                    number,
                     "B",
                     q["Option B"]
                 );
@@ -363,7 +383,7 @@ function displayQuestions(){
 
                 addOption(
                     box,
-                    questionNumber,
+                    number,
                     "C",
                     q["Option C"]
                 );
@@ -371,7 +391,7 @@ function displayQuestions(){
 
                 addOption(
                     box,
-                    questionNumber,
+                    number,
                     "D",
                     q["Option D"]
                 );
@@ -381,14 +401,14 @@ function displayQuestions(){
 
 
             // ======================================
-            // ERROR CORRECTION
+            // ERROR
             // ======================================
 
             else if(type === "ERROR"){
 
                 addOption(
                     box,
-                    questionNumber,
+                    number,
                     "A",
                     q["Option A"]
                 );
@@ -396,7 +416,7 @@ function displayQuestions(){
 
                 addOption(
                     box,
-                    questionNumber,
+                    number,
                     "B",
                     q["Option B"]
                 );
@@ -404,7 +424,7 @@ function displayQuestions(){
 
                 addOption(
                     box,
-                    questionNumber,
+                    number,
                     "C",
                     q["Option C"]
                 );
@@ -412,7 +432,7 @@ function displayQuestions(){
 
                 addOption(
                     box,
-                    questionNumber,
+                    number,
                     "D",
                     q["Option D"]
                 );
@@ -434,9 +454,19 @@ function displayQuestions(){
 
 
                 requirement.innerHTML =
-                    "<b>Coding Question:</b><br>"
+                    "<b>Coding Requirement:</b><br>"
                     +
-                    q.Question;
+                    escapeHTML(
+                        String(
+                            q[
+                                "Coding Requirement"
+                            ]
+                            ||
+                            q.Question
+                            ||
+                            ""
+                        )
+                    );
 
 
                 box.appendChild(
@@ -452,7 +482,8 @@ function displayQuestions(){
 
                 textarea.id =
                     "coding_"
-                    + questionNumber;
+                    +
+                    number;
 
 
                 textarea.placeholder =
@@ -491,13 +522,14 @@ function displayQuestions(){
 
 function addOption(
     box,
-    questionNumber,
+    number,
     letter,
     text
 ){
 
     if(
-        text === undefined ||
+        text === undefined
+        ||
         String(text).trim() === ""
     ){
 
@@ -525,7 +557,7 @@ function addOption(
         '<input type="radio" ' +
 
         'name="question_' +
-        questionNumber +
+        number +
         '" ' +
 
         'value="' +
@@ -578,21 +610,21 @@ function submitAssessment(){
     let answerSheet = [];
 
 
-
     questions.forEach(
         function(q,index){
 
             const type =
                 String(
-                    q["Question Type"] || ""
+                    q["Question Type"]
+                    ||
+                    ""
                 )
                 .trim()
                 .toUpperCase();
 
 
-            const questionNumber =
+            const number =
                 index + 1;
-
 
 
             // ======================================
@@ -600,7 +632,8 @@ function submitAssessment(){
             // ======================================
 
             if(
-                type === "MCQ" ||
+                type === "MCQ"
+                ||
                 type === "ERROR"
             ){
 
@@ -610,30 +643,35 @@ function submitAssessment(){
                 const selected =
                     document.querySelector(
                         'input[name="question_' +
-                        questionNumber +
+                        number +
                         '"]:checked'
                     );
 
 
                 const studentAnswer =
                     selected
-                    ? selected.value
-                    : "Not Answered";
+                    ?
+                    selected.value
+                    :
+                    "Not Answered";
 
 
                 const correctAnswer =
                     String(
-                        q["Correct Answer"] || ""
+                        q["Correct Answer"]
+                        ||
+                        ""
                     )
                     .trim();
 
 
-                const isCorrect =
-                    studentAnswer ===
+                const correct =
+                    studentAnswer
+                    ===
                     correctAnswer;
 
 
-                if(isCorrect){
+                if(correct){
 
                     score++;
 
@@ -652,9 +690,11 @@ function submitAssessment(){
                         correctAnswer,
 
                     status:
-                        isCorrect
-                        ? "Correct"
-                        : "Wrong"
+                        correct
+                        ?
+                        "Correct"
+                        :
+                        "Wrong"
 
                 });
 
@@ -666,19 +706,23 @@ function submitAssessment(){
             // CODING
             // ======================================
 
-            else if(type === "CODING"){
+            else if(
+                type === "CODING"
+            ){
 
-                const codingBox =
+                const box =
                     document.getElementById(
                         "coding_" +
-                        questionNumber
+                        number
                     );
 
 
-                const studentCode =
-                    codingBox
-                    ? codingBox.value.trim()
-                    : "";
+                const code =
+                    box
+                    ?
+                    box.value.trim()
+                    :
+                    "";
 
 
                 answerSheet.push({
@@ -687,9 +731,11 @@ function submitAssessment(){
                         q.Question,
 
                     studentAnswer:
-                        studentCode
-                        ? studentCode
-                        : "Not Answered",
+                        code
+                        ?
+                        code
+                        :
+                        "Not Answered",
 
                     correctAnswer:
                         "Coding evaluation pending",
@@ -706,9 +752,70 @@ function submitAssessment(){
 
 
 
-    // ==========================================
-    // SAVE RESULT
-    // ==========================================
+    // =================================================
+    // STUDENT INFORMATION
+    // =================================================
+
+    const studentName =
+        localStorage.getItem(
+            "studentName"
+        )
+        ||
+        "Student";
+
+
+    const studentUsername =
+        localStorage.getItem(
+            "studentUsername"
+        )
+        ||
+        "student1";
+
+
+    const studentYear =
+        localStorage.getItem(
+            "studentYear"
+        )
+        ||
+        "Final Year";
+
+
+    const assignedDay =
+        localStorage.getItem(
+            "assignedDay"
+        )
+        ||
+        "1";
+
+
+
+    // =================================================
+    // PERCENTAGE
+    // =================================================
+
+    const percentage =
+
+        totalObjective > 0
+
+        ?
+
+        (
+            score
+            /
+            totalObjective
+            *
+            100
+        ).toFixed(2)
+
+        :
+
+        "0.00";
+
+
+
+    // =================================================
+    // SAVE RESULT FOR RESULT PAGE
+    // =================================================
 
     localStorage.setItem(
         "score",
@@ -732,16 +839,106 @@ function submitAssessment(){
 
     localStorage.setItem(
         "submittedDay",
-        localStorage.getItem(
-            "assignedDay"
-        ) || "1"
+        assignedDay
     );
 
 
 
-    // ==========================================
-    // RESULT PAGE
-    // ==========================================
+    // =================================================
+    // CREATE ADMIN REPORT
+    // =================================================
+
+    const report = {
+
+        id:
+            Date.now(),
+
+        name:
+            studentName,
+
+        username:
+            studentUsername,
+
+        year:
+            studentYear,
+
+        day:
+            assignedDay,
+
+        score:
+            score,
+
+        total:
+            totalObjective,
+
+        percentage:
+            percentage,
+
+        status:
+            "Completed",
+
+        date:
+            new Date().toLocaleString(),
+
+        answers:
+            answerSheet
+
+    };
+
+
+
+    // =================================================
+    // SAVE REPORT
+    // =================================================
+
+    let reports =
+        JSON.parse(
+            localStorage.getItem(
+                "studentReports"
+            )
+            ||
+            "[]"
+        );
+
+
+    // Replace previous submission
+    // for same student + same day
+
+    reports =
+        reports.filter(
+            function(r){
+
+                return !(
+                    r.username
+                    ===
+                    studentUsername
+                    &&
+                    String(r.day)
+                    ===
+                    String(assignedDay)
+                );
+
+            }
+        );
+
+
+    reports.push(
+        report
+    );
+
+
+    localStorage.setItem(
+        "studentReports",
+        JSON.stringify(
+            reports
+        )
+    );
+
+
+
+    // =================================================
+    // GO TO RESULT
+    // =================================================
 
     window.location.href =
         "results.html";
@@ -769,7 +966,9 @@ function startTimer(){
                 updateTimer();
 
 
-                if(timeLeft <= 0){
+                if(
+                    timeLeft <= 0
+                ){
 
                     clearInterval(
                         timerInterval
@@ -826,12 +1025,12 @@ function updateTimer(){
 
 
 // ==================================================
-// SECURITY / HTML ESCAPE
+// ESCAPE HTML
 // ==================================================
 
 function escapeHTML(value){
 
-    return value
+    return String(value)
 
         .replace(
             /&/g,
@@ -863,12 +1062,13 @@ function escapeHTML(value){
 
 
 // ==================================================
-// START ASSESSMENT
+// START
 // ==================================================
 
 loadQuestions();
 
 </script>
+
 
 </body>
 
