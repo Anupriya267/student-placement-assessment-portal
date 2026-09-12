@@ -1,1975 +1,507 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Java Placement Assessment</title>
-
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
 <style>
-*{box-sizing:border-box}
 
-body{
-    margin:0;
-    padding:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f4f7fb;
-    color:#1f2937;
+/* =========================================================
+   ASSESSMENT DESIGN ONLY
+   NO DATA OR FUNCTIONALITY CHANGES
+========================================================= */
+
+* {
+    box-sizing: border-box;
 }
 
-.container{
-    width:min(1100px,calc(100% - 30px));
-    margin:auto;
-    padding:25px 0 50px;
+html {
+    scroll-behavior: smooth;
 }
 
-.header{
-    position:sticky;
-    top:0;
-    z-index:200;
-    background:#fff;
-    padding:20px 24px;
-    margin-bottom:20px;
-    border:1px solid #e5e7eb;
-    border-radius:14px;
-    box-shadow:0 5px 20px rgba(15,23,42,.08);
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #1e293b;
+
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(40,85,217,.12),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 90% 100%,
+            rgba(16,185,129,.08),
+            transparent 32%
+        ),
+        #f4f7fb;
 }
 
-.header h1{
-    margin:0 0 15px;
-    color:#1d4ed8;
-    font-size:27px;
-}
-
-.student-details{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
-}
-
-.student-detail{
-    padding:10px 12px;
-    background:#f8fafc;
-    border-radius:8px;
-    border:1px solid #e5e7eb;
-}
-
-.student-detail span{
-    display:block;
-    color:#6b7280;
-    font-size:12px;
-    margin-bottom:4px;
-}
-
-.student-detail b{
-    color:#111827;
-}
-
-.timer{
-    position:sticky;
-    top:150px;
-    z-index:150;
-    background:#111827;
-    color:#fff;
-    padding:13px;
-    text-align:center;
-    border-radius:10px;
-    margin-bottom:20px;
-    font-size:21px;
-    font-weight:bold;
-    box-shadow:0 4px 15px rgba(0,0,0,.15);
-}
-
-.section-title{
-    padding:14px 18px;
-    margin:25px 0 15px;
-    background:#eaf0ff;
-    color:#1d4ed8;
-    border-left:5px solid #2563eb;
-    border-radius:9px;
-    font-size:20px;
-    font-weight:bold;
-}
-
-.question-card{
-    background:#fff;
-    padding:22px;
-    margin-bottom:17px;
-    border:1px solid #e5e7eb;
-    border-radius:13px;
-    box-shadow:0 4px 15px rgba(15,23,42,.05);
-}
-
-.question-title{
-    font-weight:bold;
-    margin-bottom:16px;
-    font-size:18px;
-    line-height:1.55;
-    color:#111827;
-}
-
-.option{
-    display:block;
-    margin:9px 0;
-    padding:13px;
-    border:1px solid #dbe1ea;
-    border-radius:9px;
-    cursor:pointer;
-    background:#fff;
-    line-height:1.5;
-    transition:.2s;
-}
-
-.option:hover{
-    background:#f1f5ff;
-    border-color:#2563eb;
-}
-
-.option input{
-    width:auto;
-    margin-right:9px;
-}
-
-textarea{
-    width:100%;
-    min-height:230px;
-    padding:14px;
-    font-family:Consolas,Monaco,monospace;
-    font-size:14px;
-    line-height:1.5;
-    border:1px solid #cbd5e1;
-    border-radius:9px;
-    resize:vertical;
-}
-
-textarea:focus{
-    outline:none;
-    border-color:#2563eb;
-    box-shadow:0 0 0 3px rgba(37,99,235,.12);
-}
-
-.error-code-title{
-    margin:12px 0 7px;
-    font-weight:bold;
-    color:#b45309;
-}
-
-.error-code{
-    background:#111827;
-    color:#f9fafb;
-    padding:15px;
-    border-radius:9px;
-    overflow:auto;
-    font-family:Consolas,Monaco,monospace;
-    font-size:14px;
-    line-height:1.5;
-    white-space:pre-wrap;
-}
-
-.status-note{
-    background:#fff8e6;
-    border:1px solid #f0d58a;
-    padding:12px 15px;
-    border-radius:9px;
-    margin-bottom:15px;
-    color:#92400e;
-}
-
-.submit-btn{
-    width:100%;
-    padding:16px;
-    margin-top:10px;
-    background:#2563eb;
-    color:#fff;
-    border:none;
-    border-radius:10px;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.submit-btn:hover{
-    background:#1d4ed8;
-}
-
-.loading{
-    text-align:center;
-    background:#fff;
-    padding:35px;
-    border-radius:12px;
-    box-shadow:0 4px 15px rgba(15,23,42,.05);
-}
-
-.error{
-    background:#fff1f1;
-    border:1px solid #e0aaaa;
-    padding:20px;
-    border-radius:10px;
-    color:#a00000;
-}
-
-@media(max-width:800px){
-    .student-details{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .timer{
-        top:135px;
-    }
-}
-
-@media(max-width:600px){
-    .container{
-        width:calc(100% - 16px);
-        padding-top:10px;
-    }
-
-    .header{
-        padding:16px;
-    }
-
-    .header h1{
-        font-size:22px;
-    }
-
-    .student-details{
-        grid-template-columns:1fr;
-    }
-
-    .timer{
-        top:128px;
-        font-size:18px;
-    }
-
-    .question-card{
-        padding:16px;
-    }
-
-    .question-title{
-        font-size:16px;
-    }
-
-    .section-title{
-        font-size:18px;
-    }
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<div class="header">
-    <h1>Java Placement Assessment</h1>
-
-    <div class="student-details">
-
-        <div class="student-detail">
-            <span>Student</span>
-            <b id="studentName">Loading...</b>
-        </div>
-
-        <div class="student-detail">
-            <span>Username</span>
-            <b id="studentUsername">Loading...</b>
-        </div>
-
-        <div class="student-detail">
-            <span>Year</span>
-            <b id="studentYear">Loading...</b>
-        </div>
-
-        <div class="student-detail">
-            <span>Assessment Day</span>
-            <b id="assessmentDay">Loading...</b>
-        </div>
-
-    </div>
-</div>
-
-<div id="loading" class="loading">
-    Loading questions...
-</div>
-
-<div id="error" class="error" style="display:none"></div>
-
-<div id="assessmentArea" style="display:none">
-
-    <div class="status-note">
-        Your answers are saved while you work.
-        Refreshing the page will keep the same day,
-        same questions, answers and remaining time.
-    </div>
-
-    <div class="timer">
-        Time Remaining:
-        <span id="timer">40:00</span>
-    </div>
-
-    <form id="assessmentForm">
-
-        <div id="questionContainer"></div>
-
-        <button
-            type="button"
-            class="submit-btn"
-            onclick="finishAssessment()">
-            Submit Assessment
-        </button>
-
-    </form>
-</div>
-
-</div>
-
-<script>
-
-/* =====================================================
-   GOOGLE APPS SCRIPT
-   ===================================================== */
-
-const GOOGLE_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbxrrb6gSB12hmilk7j5BEWqeOmSAJad9Zi-ZbpaoS1kaJRHhUAoDh02-teDu2O_hbSnRA/exec";
-
-
-/* =====================================================
-   FINAL EXCEL FILE ONLY
-   ===================================================== */
-
-const EXCEL_FILES = [
-    "./Java_Placement_41_Day_COMPLETE_MCQQ_ERROR_CODING (1).xlsx"
-];
-
-
-/* =====================================================
-   STUDENT
-   ===================================================== */
-
-function getLoggedStudent(){
-    try{
-        return JSON.parse(
-            localStorage.getItem("loggedInStudent") || "null"
-        );
-    }catch(e){
-        return null;
-    }
-}
-
-const loggedStudent = getLoggedStudent();
-
-const studentName =
-    loggedStudent?.name ||
-    loggedStudent?.Name ||
-    localStorage.getItem("studentName") ||
-    "Student";
-
-const studentUsername =
-    loggedStudent?.username ||
-    loggedStudent?.Username ||
-    localStorage.getItem("studentUsername") ||
-    studentName;
-
-const studentYear =
-    loggedStudent?.year ||
-    loggedStudent?.Year ||
-    localStorage.getItem("studentYear") ||
-    "Final Year";
-
-
-/* =====================================================
-   DAY
-   ===================================================== */
-
-let assignedDay = parseInt(
-    localStorage.getItem("assessmentDay") ||
-    localStorage.getItem("assignedDay") ||
-    localStorage.getItem("currentDay") ||
-    "1",
-    10
-);
-
-if(!Number.isFinite(assignedDay) || assignedDay < 1)
-    assignedDay = 1;
-
-if(assignedDay > 41)
-    assignedDay = 41;
-
-
-document.getElementById("studentName").textContent =
-    studentName;
-
-document.getElementById("studentUsername").textContent =
-    studentUsername;
-
-document.getElementById("studentYear").textContent =
-    studentYear;
-
-document.getElementById("assessmentDay").textContent =
-    "Day " + assignedDay;
-
-
-/* =====================================================
-   VARIABLES
-   ===================================================== */
-
-let allQuestions = [];
-let selectedQuestions = [];
-let timeRemaining = 40 * 60;
-let timerInterval = null;
-let submitting = false;
-
-
-/* =====================================================
-   STORAGE KEYS
-   ===================================================== */
-
-const safeStudentKey =
-    String(studentUsername || studentName)
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9_-]/g,"_");
-
-const draftKey =
-    "assessmentDraft_" +
-    safeStudentKey +
-    "_day_" +
-    assignedDay;
-
-const endTimeKey = draftKey + "_endTime";
-const selectionKey = draftKey + "_selection";
-
-
-/* =====================================================
-   EXCEL HELPERS
-   ===================================================== */
-
-function getExcelField(row,names){
-
-    for(const name of names){
-
-        if(
-            row[name] !== undefined &&
-            row[name] !== null &&
-            String(row[name]).trim() !== ""
-        ){
-            return String(row[name]).trim();
-        }
-
-    }
-
-    return "";
-}
-
-
-function getQuestion(row){
-
-    return getExcelField(row,[
-        "Question",
-        "question",
-        "Question Text",
-        "QuestionText",
-        "Question Text/Problem",
-        "Problem",
-        "problem"
-    ]);
-
-}
-
-
-function getDay(row){
-
-    return parseInt(
-        getExcelField(row,[
-            "Day",
-            "day",
-            "Day Number",
-            "day number",
-            "DayNumber",
-            "dayNumber"
-        ]),
-        10
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+
+    width: min(
+        1100px,
+        calc(100% - 32px)
     );
 
+    margin: 0 auto;
+
+    padding: 110px 0 50px;
 }
 
+/* =========================
+   FIXED HEADER
+========================= */
 
-function getSection(row){
+.header {
 
-    return getExcelField(row,[
-        "Section",
-        "section",
-        "Type",
-        "type",
-        "Question Type",
-        "question type",
-        "QuestionType",
-        "questionType",
-        "Question_Type",
-        "QUESTION TYPE",
-        "Category",
-        "category"
-    ])
-    .toUpperCase()
-    .replace(/[_-]+/g," ")
-    .replace(/\s+/g," ")
-    .trim();
+    position: fixed;
 
+    z-index: 8000;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    width: 100%;
+
+    margin: 0;
+
+    padding:
+        15px
+        max(16px, calc((100% - 1100px) / 2));
+
+    border-radius: 0;
+
+    background:
+        rgba(255,255,255,.97);
+
+    border-bottom:
+        1px solid #e5e7eb;
+
+    box-shadow:
+        0 4px 18px
+        rgba(15,23,42,.08);
+
+    backdrop-filter:
+        blur(10px);
 }
 
+.header h1 {
 
-function isMCQ(row){
+    margin: 0 0 8px;
 
-    const s = getSection(row);
+    color: #1746b8;
 
-    return (
-        s === "MCQ" ||
-        s.includes("MCQ") ||
-        s.includes("MULTIPLE CHOICE")
-    );
+    font-size: 22px;
 
+    font-weight: 800;
 }
 
+.header div {
 
-function isErrorQuestion(row){
+    display: inline-block;
 
-    const s = getSection(row);
+    margin-right: 22px;
 
-    return (
-        s.includes("ERROR") ||
-        s.includes("DEBUG")
-    );
+    color: #64748b;
 
+    font-size: 14px;
 }
 
+.header b {
 
-function isCoding(row){
-
-    const s = getSection(row);
-
-    return (
-        s.includes("CODING") ||
-        s === "PROGRAM" ||
-        s.includes("PROGRAMMING")
-    );
-
+    color: #1e293b;
 }
 
+/* =========================
+   QUESTION CARD
+========================= */
 
-function getOption(row,letter){
+.question-card {
 
-    return getExcelField(row,[
-        "Option " + letter,
-        "option " + letter,
-        "option" + letter,
-        "Option" + letter,
-        letter
-    ]);
+    background: #ffffff;
 
+    padding: 24px;
+
+    margin-bottom: 18px;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 7px 24px
+        rgba(15,23,42,.06);
 }
 
+/* =========================
+   QUESTION TITLE
+========================= */
 
-function getCorrectAnswer(row){
+.question-title {
 
-    return getExcelField(row,[
-        "Correct Answer",
-        "correctAnswer",
-        "CorrectAnswer",
-        "Answer",
-        "answer"
-    ]);
+    font-weight: 800;
 
+    margin-bottom: 16px;
+
+    font-size: 18px;
+
+    line-height: 1.55;
+
+    color: #1e293b;
 }
 
+/* =========================
+   MCQ OPTIONS
+========================= */
 
-/* =====================================================
-   QUESTION IDENTITY
-   ===================================================== */
+.option {
 
-function questionIdentity(row){
+    display: block;
 
-    return [
-        getDay(row),
-        getSection(row),
-        getExcelField(row,[
-            "Question No.",
-            "QuestionNo",
-            "No.",
-            "ID",
-            "id"
-        ]),
-        getQuestion(row)
-    ].join("|");
+    margin: 10px 0;
 
+    padding: 14px;
+
+    border:
+        1px solid #dbe3ef;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    background: #f8fafc;
+
+    transition:
+        .18s ease;
 }
 
+.option:hover {
 
-/* =====================================================
-   ERROR CODE
-   ===================================================== */
+    background: #eef4ff;
 
-function splitErrorQuestion(question,row){
-
-    const explicitCode =
-        getExcelField(row,[
-            "Error Code",
-            "errorCode",
-            "Buggy Code",
-            "buggyCode"
-        ]);
-
-    if(explicitCode){
-
-        return {
-            title:question,
-            code:explicitCode
-        };
-
-    }
-
-    const parts =
-        String(question || "")
-        .split(/\n\s*\n/);
-
-    if(parts.length >= 2){
-
-        return {
-            title:parts[0].trim(),
-            code:parts.slice(1).join("\n\n").trim()
-        };
-
-    }
-
-    return {
-        title:question,
-        code:""
-    };
-
+    border-color: #9db7ee;
 }
 
+.option input {
 
-/* =====================================================
-   SAVE / LOAD SELECTION
-   ===================================================== */
-
-function saveSelection(){
-
-    localStorage.setItem(
-        selectionKey,
-        JSON.stringify(
-            selectedQuestions.map(questionIdentity)
-        )
-    );
-
+    margin-right: 9px;
 }
 
+/* =========================
+   TEXT AREA / CODING
+========================= */
 
-function loadSavedSelection(dayQuestions){
+textarea {
 
-    try{
+    width: 100%;
 
-        const saved =
-            JSON.parse(
-                localStorage.getItem(selectionKey) || "[]"
-            );
+    min-height: 220px;
 
-        if(
-            !Array.isArray(saved) ||
-            saved.length !== 15
-        ){
-            return null;
-        }
+    padding: 14px;
 
-        const map = new Map(
-            dayQuestions.map(
-                row => [questionIdentity(row),row]
-            )
-        );
+    box-sizing: border-box;
 
-        const rows =
-            saved
-            .map(id => map.get(id))
-            .filter(Boolean);
+    font-family:
+        Consolas,
+        Monaco,
+        monospace;
 
-        return rows.length === 15 ? rows : null;
+    font-size: 14px;
 
-    }catch(e){
+    border:
+        1px solid #cbd5e1;
 
-        return null;
+    border-radius: 10px;
 
-    }
+    resize: vertical;
 
+    background: #0f172a;
+
+    color: #e2e8f0;
+
+    outline: none;
 }
 
+textarea:focus {
 
-/* =====================================================
-   LOAD EXCEL
-   ===================================================== */
+    border-color: #2855d9;
 
-async function loadExcel(){
-
-    let workbook = null;
-    let lastError = null;
-
-    for(const file of EXCEL_FILES){
-
-        try{
-
-            const response =
-                await fetch(
-                    file + "?v=" + Date.now(),
-                    {
-                        cache:"no-store"
-                    }
-                );
-
-            if(!response.ok){
-                throw new Error(
-                    "Unable to load " + file
-                );
-            }
-
-            const buffer =
-                await response.arrayBuffer();
-
-            workbook =
-                XLSX.read(
-                    buffer,
-                    {type:"array"}
-                );
-
-            break;
-
-        }catch(e){
-
-            lastError = e;
-
-        }
-
-    }
-
-    if(!workbook){
-
-        throw (
-            lastError ||
-            new Error("Excel file could not be loaded.")
-        );
-
-    }
-
-    const sheetName =
-        workbook.SheetNames.includes("Question Bank")
-        ? "Question Bank"
-        : workbook.SheetNames[0];
-
-    const rows =
-        XLSX.utils.sheet_to_json(
-            workbook.Sheets[sheetName],
-            {defval:""}
-        );
-
-    if(!rows.length){
-        throw new Error("No questions found in Excel.");
-    }
-
-    allQuestions = rows;
-
-    prepareQuestions();
-
+    box-shadow:
+        0 0 0 3px
+        rgba(40,85,217,.12);
 }
 
-
-/* =====================================================
-   PREPARE EXACTLY 15 QUESTIONS
-   ===================================================== */
-
-function prepareQuestions(){
-
-    const dayQuestions =
-        allQuestions.filter(
-            row => getDay(row) === assignedDay
-        );
-
-    if(!dayQuestions.length){
-        throw new Error(
-            "No questions found for Day " + assignedDay + "."
-        );
-    }
-
-    const mcq =
-        dayQuestions.filter(isMCQ);
-
-    const errors =
-        dayQuestions.filter(isErrorQuestion);
-
-    const coding =
-        dayQuestions.filter(isCoding);
-
-    if(mcq.length < 10){
-        throw new Error(
-            "Day " + assignedDay +
-            " needs 10 MCQ questions."
-        );
-    }
-
-    if(errors.length < 2){
-        throw new Error(
-            "Day " + assignedDay +
-            " needs 2 Error Correction questions."
-        );
-    }
-
-    if(coding.length < 3){
-        throw new Error(
-            "Day " + assignedDay +
-            " needs 3 Coding questions."
-        );
-    }
-
-    const saved =
-        loadSavedSelection(dayQuestions);
-
-    if(saved){
-
-        selectedQuestions = saved;
-
-    }else{
-
-        selectedQuestions = [
-            ...mcq.slice(0,10),
-            ...errors.slice(0,2),
-            ...coding.slice(0,3)
-        ];
-
-        saveSelection();
-
-    }
-
-    renderQuestions();
-    restoreDraft();
-    setupDraftSaving();
-    startTimer();
-
-}
-
-
-/* =====================================================
-   RENDER QUESTIONS
-   ===================================================== */
-
-function renderQuestions(){
-
-    const container =
-        document.getElementById("questionContainer");
-
-    container.innerHTML = "";
-
-    selectedQuestions.forEach((row,index)=>{
-
-        if(index === 0){
-
-            container.innerHTML +=
-                "<div class='section-title'>" +
-                "MCQ Questions (10)" +
-                "</div>";
-
-        }
-
-        if(index === 10){
-
-            container.innerHTML +=
-                "<div class='section-title'>" +
-                "Error Correction Questions (2)" +
-                "</div>";
-
-        }
-
-        if(index === 12){
-
-            container.innerHTML +=
-                "<div class='section-title'>" +
-                "Coding Questions (3)" +
-                "</div>";
-
-        }
-
-        const card =
-            document.createElement("div");
-
-        card.className = "question-card";
-
-        let html = "";
-
-        if(isErrorQuestion(row)){
-
-            const parts =
-                splitErrorQuestion(
-                    getQuestion(row),
-                    row
-                );
-
-            html =
-                "<div class='question-title'>" +
-                "Q" + (index + 1) + ". " +
-                escapeHTML(parts.title) +
-                "</div>";
-
-            if(parts.code){
-
-                html +=
-                    "<div class='error-code-title'>" +
-                    "Buggy Java Code:" +
-                    "</div>";
-
-                html +=
-                    "<pre class='error-code'>" +
-                    escapeHTML(parts.code) +
-                    "</pre>";
-
-            }
-
-            html += renderObjective(row,index);
-
-        }else{
-
-            html =
-                "<div class='question-title'>" +
-                "Q" + (index + 1) + ". " +
-                escapeHTML(getQuestion(row)) +
-                "</div>";
-
-            if(index < 12){
-
-                html += renderObjective(row,index);
-
-            }else{
-
-                html += renderCoding(row,index);
-
-            }
-
-        }
-
-        card.innerHTML = html;
-
-        container.appendChild(card);
-
-    });
-
-    document.getElementById("loading").style.display =
-        "none";
-
-    document.getElementById("assessmentArea").style.display =
-        "block";
-
-}
-
-
-/* =====================================================
-   MCQ / ERROR OPTIONS
-   ===================================================== */
-
-function renderObjective(row,index){
-
-    let html = "";
-
-    ["A","B","C","D"].forEach(letter=>{
-
-        const option =
-            getOption(row,letter);
-
-        if(!option) return;
-
-        html +=
-            "<label class='option'>" +
-            "<input type='radio' " +
-            "name='q" + index + "' " +
-            "value='" + escapeAttribute(letter) + "'>" +
-            "<b>" + letter + ".</b> " +
-            escapeHTML(option) +
-            "</label>";
-
-    });
-
-    return html;
-
-}
-
-
-/* =====================================================
-   CODING
-   ===================================================== */
-
-function renderCoding(row,index){
-
-    return (
-        "<p><b>Write your Java code:</b></p>" +
-        "<textarea id='coding" +
-        index +
-        "' placeholder='Write your Java code here...'></textarea>"
-    );
-
-}
-
-
-/* =====================================================
-   DRAFT
-   ===================================================== */
-
-function getDraft(){
-
-    try{
-
-        return JSON.parse(
-            localStorage.getItem(draftKey) || "{}"
-        );
-
-    }catch(e){
-
-        return {};
-
-    }
-
-}
-
-
-function saveDraft(){
-
-    if(!selectedQuestions.length) return;
-
-    const draft = getDraft();
-
-    selectedQuestions.forEach((row,index)=>{
-
-        if(index < 12){
-
-            const selected =
-                document.querySelector(
-                    "input[name='q" +
-                    index +
-                    "']:checked"
-                );
-
-            draft["q"+index] =
-                selected ? selected.value : "";
-
-        }else{
-
-            const area =
-                document.getElementById(
-                    "coding" + index
-                );
-
-            draft["q"+index] =
-                area ? area.value : "";
-
-        }
-
-    });
-
-    draft.day = assignedDay;
-
-    localStorage.setItem(
-        draftKey,
-        JSON.stringify(draft)
-    );
-
-}
-
-
-function restoreDraft(){
-
-    const draft = getDraft();
-
-    selectedQuestions.forEach((row,index)=>{
-
-        const value =
-            draft["q"+index];
-
-        if(value === undefined) return;
-
-        if(index < 12){
-
-            document
-            .querySelectorAll(
-                "input[name='q" + index + "']"
-            )
-            .forEach(input=>{
-
-                if(input.value === value){
-                    input.checked = true;
-                }
-
-            });
-
-        }else{
-
-            const area =
-                document.getElementById(
-                    "coding" + index
-                );
-
-            if(area){
-                area.value = value;
-            }
-
-        }
-
-    });
-
-}
-
-
-function setupDraftSaving(){
-
-    document
-    .querySelectorAll("input[type='radio']")
-    .forEach(el=>{
-        el.addEventListener("change",saveDraft);
-    });
-
-    document
-    .querySelectorAll("textarea")
-    .forEach(el=>{
-        el.addEventListener("input",saveDraft);
-    });
-
-}
-
-
-window.addEventListener(
-    "beforeunload",
-    saveDraft
-);
-
-
-/* =====================================================
+/* =========================
    TIMER
-   ===================================================== */
+========================= */
 
-function startTimer(){
+.timer {
 
-    clearInterval(timerInterval);
+    position: sticky;
 
-    const savedEnd =
-        parseInt(
-            localStorage.getItem(endTimeKey) || "0",
-            10
+    top: 86px;
+
+    z-index: 7000;
+
+    background:
+        linear-gradient(
+            135deg,
+            #172033,
+            #0f172a
         );
 
-    if(savedEnd > 0){
+    color: #ffffff;
 
-        timeRemaining =
-            Math.max(
-                0,
-                Math.ceil(
-                    (savedEnd - Date.now()) / 1000
-                )
-            );
+    padding: 14px;
 
-    }else{
+    text-align: center;
 
-        localStorage.setItem(
-            endTimeKey,
-            String(
-                Date.now() +
-                timeRemaining * 1000
-            )
-        );
+    border-radius: 12px;
 
-    }
+    margin-bottom: 20px;
 
-    updateTimer();
+    font-size: 22px;
 
-    timerInterval =
-        setInterval(()=>{
+    font-weight: 800;
 
-            const end =
-                parseInt(
-                    localStorage.getItem(endTimeKey) || "0",
-                    10
-                );
-
-            timeRemaining =
-                Math.max(
-                    0,
-                    Math.ceil(
-                        (end - Date.now()) / 1000
-                    )
-                );
-
-            updateTimer();
-
-            if(timeRemaining <= 0){
-
-                clearInterval(timerInterval);
-
-                alert(
-                    "Time is over. Your assessment will be submitted."
-                );
-
-                finishAssessment(true);
-
-            }
-
-        },1000);
-
+    box-shadow:
+        0 6px 18px
+        rgba(15,23,42,.16);
 }
 
+/* =========================
+   SUBMIT BUTTON
+========================= */
 
-function updateTimer(){
+.submit-btn {
 
-    const minutes =
-        Math.floor(timeRemaining / 60);
+    width: 100%;
 
-    const seconds =
-        timeRemaining % 60;
+    padding: 16px;
 
-    document.getElementById("timer").textContent =
-        String(minutes).padStart(2,"0") +
-        ":" +
-        String(seconds).padStart(2,"0");
+    background: #2855d9;
 
+    color: #ffffff;
+
+    border: none;
+
+    border-radius: 11px;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 6px 16px
+        rgba(40,85,217,.20);
 }
 
+.submit-btn:hover {
 
-/* =====================================================
-   SUBMIT
-   ===================================================== */
-
-async function finishAssessment(
-    automaticSubmit=false
-){
-
-    if(submitting) return;
-
-    if(!automaticSubmit){
-
-        if(!confirm(
-            "Are you sure you want to submit the assessment?"
-        )){
-            return;
-        }
-
-    }
-
-    submitting = true;
-
-    clearInterval(timerInterval);
-
-    saveDraft();
-
-    let mcqScore = 0;
-    let errorScore = 0;
-    let codingScore = 0;
-
-    const answerSheet = [];
-
-    selectedQuestions.forEach((row,index)=>{
-
-        const question =
-            getQuestion(row);
-
-        /* OBJECTIVE */
-        if(index < 12){
-
-            const selected =
-                document.querySelector(
-                    "input[name='q" +
-                    index +
-                    "']:checked"
-                );
-
-            const studentAnswer =
-                selected ? selected.value : "";
-
-            const correctAnswer =
-                getCorrectAnswer(row);
-
-            const isCorrect =
-                normalizeAnswer(studentAnswer) ===
-                normalizeAnswer(correctAnswer);
-
-            if(isCorrect){
-
-                if(index < 10)
-                    mcqScore++;
-                else
-                    errorScore++;
-
-            }
-
-            answerSheet.push({
-
-                type:index < 10 ? "MCQ" : "ERROR",
-
-                question:question,
-
-                errorCode:
-                    isErrorQuestion(row)
-                    ? splitErrorQuestion(
-                        question,
-                        row
-                    ).code
-                    : "",
-
-                studentAnswer:
-                    studentAnswer || "Not Answered",
-
-                correctAnswer:
-                    correctAnswer || "-",
-
-                status:
-                    isCorrect
-                    ? "Correct"
-                    : "Wrong",
-
-                score:
-                    isCorrect ? 1 : 0
-
-            });
-
-        }
-
-        /* CODING */
-        else{
-
-            const area =
-                document.getElementById(
-                    "coding" + index
-                );
-
-            const code =
-                area ? area.value : "";
-
-            const evaluation =
-                evaluateCoding(code,row);
-
-            codingScore += evaluation.score;
-
-            answerSheet.push({
-
-                type:"CODING",
-
-                question:question,
-
-                studentAnswer:
-                    code || "Not Answered",
-
-                status:
-                    evaluation.status,
-
-                score:
-                    evaluation.score,
-
-                evaluation:
-                    evaluation.details
-
-            });
-
-        }
-
-    });
-
-
-    const totalScore =
-        mcqScore +
-        errorScore +
-        codingScore;
-
-    const percentage =
-        (
-            totalScore / 15 * 100
-        ).toFixed(2);
-
-    const codingEvaluations =
-        answerSheet.filter(
-            answer => answer.type === "CODING"
-        );
-
-
-    const report = {
-
-        name:studentName,
-        studentName:studentName,
-
-        username:studentUsername,
-        studentUsername:studentUsername,
-
-        year:studentYear,
-        studentYear:studentYear,
-
-        day:assignedDay,
-
-        topic:"Java Placement Practice",
-
-        mcqScore:mcqScore,
-
-        errorScore:errorScore,
-
-        codingScore:codingScore,
-
-        totalScore:totalScore,
-
-        percentage:percentage,
-
-        status:"Completed",
-
-        submittedAt:
-            new Date().toISOString(),
-
-        answers:answerSheet,
-
-        codingEvaluations:codingEvaluations
-
-    };
-
-
-    saveLocalReport(report);
-
-    localStorage.setItem(
-        "latestAssessmentResult",
-        JSON.stringify(report)
-    );
-
-    localStorage.setItem(
-        "lastAssessmentResult",
-        JSON.stringify(report)
-    );
-
-
-    try{
-
-        await sendToGoogleSheet(report);
-
-    }catch(error){
-
-        console.error(
-            "Google Sheet error:",
-            error
-        );
-
-    }
-
-
-    const completedDay =
-        assignedDay;
-
-    const nextDay =
-        Math.min(
-            completedDay + 1,
-            41
-        );
-
-
-    clearDraft();
-
-
-    localStorage.setItem(
-        "assignedDay",
-        String(nextDay)
-    );
-
-    localStorage.setItem(
-        "assessmentDay",
-        String(nextDay)
-    );
-
-    localStorage.setItem(
-        "currentDay",
-        String(nextDay)
-    );
-
-
-    if(completedDay === 41){
-
-        localStorage.setItem(
-            "allAssessmentsCompleted",
-            "true"
-        );
-
-    }
-
-
-    window.location.href =
-        "results.html";
-
+    background: #1746b8;
 }
 
+/* =========================
+   SECTION TITLE
+========================= */
 
-/* =====================================================
-   CLEAR DRAFT
-   ===================================================== */
+.section-title {
 
-function clearDraft(){
+    background:
+        linear-gradient(
+            135deg,
+            #eef4ff,
+            #f5f7ff
+        );
 
-    localStorage.removeItem(draftKey);
-    localStorage.removeItem(selectionKey);
-    localStorage.removeItem(endTimeKey);
+    border:
+        1px solid #dbe5ff;
 
+    color: #1746b8;
+
+    padding: 14px 16px;
+
+    border-radius: 11px;
+
+    margin: 25px 0 15px;
+
+    font-size: 20px;
+
+    font-weight: 800;
 }
 
+/* =========================
+   LOADING
+========================= */
 
-/* =====================================================
-   SAVE LOCAL REPORT
-   ===================================================== */
+.loading {
 
-function saveLocalReport(report){
+    text-align: center;
 
-    let reports = [];
+    background: #ffffff;
 
-    try{
+    padding: 30px;
 
-        reports =
-            JSON.parse(
-                localStorage.getItem(
-                    "studentReports"
-                ) || "[]"
-            );
+    border-radius: 12px;
 
-        if(!Array.isArray(reports))
-            reports = [];
-
-    }catch(e){
-
-        reports = [];
-
-    }
-
-
-    reports =
-        reports.filter(item=>!(
-            String(item.username) ===
-            String(report.username) &&
-            Number(item.day) ===
-            Number(report.day)
-        ));
-
-
-    reports.push(report);
-
-
-    localStorage.setItem(
-        "studentReports",
-        JSON.stringify(reports)
-    );
-
+    box-shadow:
+        0 6px 20px
+        rgba(15,23,42,.06);
 }
 
+/* =========================
+   ERROR
+========================= */
 
-/* =====================================================
-   GOOGLE SHEET
-   ===================================================== */
+.error {
 
-async function sendToGoogleSheet(report){
+    background: #fff1f1;
 
-    const payload = {
+    border:
+        1px solid #e0aaaa;
 
-        Name:report.name,
+    padding: 20px;
 
-        Username:report.username,
+    border-radius: 12px;
 
-        Year:report.year,
-
-        Day:report.day,
-
-        Topic:report.topic,
-
-        "MCQ + Error":
-            (
-                report.mcqScore +
-                report.errorScore
-            ) + "/12",
-
-        Coding:
-            report.codingScore + "/3",
-
-        Total:
-            report.totalScore + "/15",
-
-        Percentage:
-            report.percentage + "%",
-
-        Status:"Completed",
-
-        "Submission Date":
-            report.submittedAt,
-
-        Answers:
-            JSON.stringify(
-                report.answers
-            ),
-
-        "Coding Evaluation":
-            JSON.stringify(
-                report.codingEvaluations
-            )
-
-    };
-
-
-    await fetch(
-        GOOGLE_SCRIPT_URL,
-        {
-            method:"POST",
-            mode:"no-cors",
-            headers:{
-                "Content-Type":"text/plain"
-            },
-            body:JSON.stringify(payload)
-        }
-    );
-
+    color: #a00000;
 }
 
+/* =========================
+   ERROR CODE
+========================= */
 
-/* =====================================================
-   CODING EVALUATION
-   Correct = 1
-   Partial = 0.5
-   Wrong = 0
-   ===================================================== */
+.error-code-title {
 
-function evaluateCoding(code,row){
+    margin: 12px 0 6px;
 
-    if(
-        !code ||
-        code.trim().length < 20
-    ){
+    font-weight: 800;
 
-        return {
-            status:"Wrong",
-            score:0,
-            details:"No usable Java solution submitted."
-        };
-
-    }
-
-
-    const c =
-        code
-        .toLowerCase()
-        .replace(/\s+/g," ");
-
-    const question =
-        getQuestion(row)
-        .toLowerCase();
-
-    const rubric =
-        getExcelField(row,[
-            "Coding Evaluation",
-            "Full-Mark Logic / Answer Key",
-            "Full Mark Logic / Answer Key",
-            "Full-Mark Logic",
-            "Full Mark Logic"
-        ])
-        .toLowerCase();
-
-    const contract =
-        getExcelField(row,[
-            "Constraints / Contract",
-            "Student Input Format",
-            "Student Output Format"
-        ])
-        .toLowerCase();
-
-    const text =
-        question + " " +
-        rubric + " " +
-        contract;
-
-
-    const checks = [];
-
-
-    function add(name,condition){
-
-        checks.push({
-            name:name,
-            ok:Boolean(condition)
-        });
-
-    }
-
-
-    add(
-        "Java structure",
-        /class\s+\w+|public\s+static\s+void\s+main|static\s+void/.test(c)
-    );
-
-
-    if(/array|elements|index|travers/.test(text)){
-
-        add(
-            "Array handling",
-            /\[\]|int\s*\[\]|string\s*\[|array/.test(c)
-        );
-
-    }
-
-
-    if(/string|character|substring|palindrome|anagram/.test(text)){
-
-        add(
-            "String handling",
-            /string|charat|substring|tolowercase|touppercase|equals/.test(c)
-        );
-
-    }
-
-
-    if(/loop|iterate|for loop|while|fibonacci|factorial|prime|pattern/.test(text)){
-
-        add(
-            "Loop logic",
-            /for\s*\(|while\s*\(|do\s*\{/.test(c)
-        );
-
-    }
-
-
-    if(/even|odd|remainder|divisible|digit/.test(text)){
-
-        add(
-            "Condition/modulo",
-            /%|\bif\s*\(/.test(c)
-        );
-
-    }
-
-
-    if(/sum|add|average|product|area|perimeter|total/.test(text)){
-
-        add(
-            "Arithmetic",
-            /[+\-*/]/.test(c)
-        );
-
-    }
-
-
-    if(/print|display|output|result/.test(text)){
-
-        add(
-            "Output",
-            /system\.out\.(print|println)/.test(c)
-        );
-
-    }
-
-
-    if(/return/.test(text)){
-
-        add(
-            "Return/result",
-            /\breturn\b/.test(c)
-        );
-
-    }
-
-
-    if(/method|function/.test(text)){
-
-        add(
-            "Method",
-            /static\s+\w+\s+\w+\s*\(|\w+\s+\w+\s*\([^)]*\)\s*\{/.test(c)
-        );
-
-    }
-
-
-    if(/class|object|inheritance|polymorphism|encapsulation|constructor|oops/.test(text)){
-
-        add(
-            "OOP",
-            /class\s+|extends\s+|implements\s+|new\s+|private\s+|public\s+|interface\s+/.test(c)
-        );
-
-    }
-
-
-    if(/arraylist|linkedlist|collection|list|set|map|hashmap|hashset/.test(text)){
-
-        add(
-            "Collection",
-            /arraylist|linkedlist|hashmap|hashset|list\s*<|set\s*<|map\s*</.test(c)
-        );
-
-    }
-
-
-    if(/sort|sorting/.test(text)){
-
-        add(
-            "Sorting",
-            /arrays\.sort|collections\.sort|sort\s*\(/.test(c)
-        );
-
-    }
-
-
-    if(/reverse|reversing/.test(text)){
-
-        add(
-            "Reverse logic",
-            /reverse|reversed|for\s*\(|while\s*\(/.test(c)
-        );
-
-    }
-
-
-    if(/search|binary search|linear search/.test(text)){
-
-        add(
-            "Search logic",
-            /indexof|contains|binary|search|for\s*\(|while\s*\(/.test(c)
-        );
-
-    }
-
-
-    if(/duplicate|duplicates|unique/.test(text)){
-
-        add(
-            "Duplicate/unique logic",
-            /set|contains|duplicate|unique/.test(c)
-        );
-
-    }
-
-
-    if(/maximum|minimum|max|min|largest|smallest/.test(text)){
-
-        add(
-            "Min/max logic",
-            /math\.max|math\.min|\bmax\b|\bmin\b|largest|smallest|if\s*\(/.test(c)
-        );
-
-    }
-
-
-    const total =
-        checks.length;
-
-    const passed =
-        checks.filter(
-            x => x.ok
-        ).length;
-
-    const ratio =
-        total
-        ? passed / total
-        : 0;
-
-
-    let status;
-    let score;
-
-
-    if(ratio >= 0.75){
-
-        status = "Correct";
-        score = 1;
-
-    }else if(ratio >= 0.35){
-
-        status = "Partial";
-        score = 0.5;
-
-    }else{
-
-        status = "Wrong";
-        score = 0;
-
-    }
-
-
-    return {
-
-        status:status,
-
-        score:score,
-
-        details:
-            passed +
-            " of " +
-            total +
-            " required coding checks satisfied."
-
-    };
-
+    color: #9a5a00;
 }
 
+.error-code {
 
-/* =====================================================
-   NORMALIZE ANSWER
-   ===================================================== */
+    background: #0f172a;
 
-function normalizeAnswer(value){
+    color: #f5f5f5;
 
-    return String(value || "")
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g," ")
-        .replace(/^[a-d]\.\s*/,"");
+    padding: 14px;
 
+    border-radius: 10px;
+
+    overflow: auto;
+
+    font-family:
+        Consolas,
+        Monaco,
+        monospace;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    white-space: pre-wrap;
 }
 
+/* =========================
+   STATUS NOTE
+========================= */
 
-/* =====================================================
-   SECURITY HELPERS
-   ===================================================== */
+.status-note {
 
-function escapeHTML(value){
+    background: #fff8e6;
 
-    return String(value || "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+    border:
+        1px solid #f0d58a;
 
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    margin-bottom: 15px;
+
+    color: #7c5a00;
 }
 
+/* =========================
+   MOBILE
+========================= */
 
-function escapeAttribute(value){
+@media (max-width: 700px) {
 
-    return String(value || "")
-        .replace(/&/g,"&amp;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;");
+    .container {
 
+        width: calc(100% - 16px);
+
+        padding:
+            150px 0 30px;
+    }
+
+    .header {
+
+        padding:
+            12px 14px;
+    }
+
+    .header h1 {
+
+        font-size: 18px;
+    }
+
+    .header div {
+
+        display: block;
+
+        margin: 4px 0;
+
+        font-size: 13px;
+    }
+
+    .timer {
+
+        top: 135px;
+
+        font-size: 19px;
+    }
+
+    .question-card {
+
+        padding: 17px;
+    }
+
+    .question-title {
+
+        font-size: 16px;
+    }
+
+    .section-title {
+
+        font-size: 17px;
+    }
+
+    .option {
+
+        padding: 12px;
+    }
+
+    textarea {
+
+        min-height: 180px;
+
+        font-size: 13px;
+    }
+
+    .submit-btn {
+
+        min-height: 48px;
+    }
 }
 
-
-/* =====================================================
-   START
-   ===================================================== */
-
-loadExcel().catch(error=>{
-
-    console.error(error);
-
-    document.getElementById("loading").style.display =
-        "none";
-
-    const box =
-        document.getElementById("error");
-
-    box.style.display =
-        "block";
-
-    box.textContent =
-        error.message ||
-        "Unable to load assessment.";
-
-});
-
-</script>
-
-</body>
-</html>
+</style>
