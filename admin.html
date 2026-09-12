@@ -9,115 +9,206 @@
 
 <link rel="stylesheet" href="style.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Excel Reader -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
 
-body{
-    font-family: Arial, sans-serif;
-}
+/* ==============================
+   QUESTION VIEWER
+   ============================== */
 
-.container{
-    max-width: 1000px;
-    margin: auto;
-    padding: 20px;
-}
+.question-modal {
 
-.card{
-    background: white;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.10);
-}
-
-button{
-    background: #2864dc;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-button:hover{
-    opacity: 0.9;
-}
-
-.day-card{
-    background: #fafafa;
-    padding: 15px;
-    margin: 12px 0;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-}
-
-.question{
-    padding: 15px;
-    margin: 12px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: white;
-}
-
-.question h3{
-    margin-top: 0;
-}
-
-.coding{
-    border-left: 5px solid #2864dc;
-}
-
-.error{
-    border-left: 5px solid #f39c12;
-}
-
-.mcq{
-    border-left: 5px solid #28a745;
-}
-
-.option{
-    margin: 6px 0;
-}
-
-.modal{
     display: none;
+
     position: fixed;
+
     z-index: 9999;
+
     left: 0;
+
     top: 0;
+
     width: 100%;
+
     height: 100%;
+
     background: rgba(0,0,0,0.65);
+
 }
 
-.modal-content{
+
+/* Modal box */
+
+.question-modal-content {
+
     background: white;
+
     width: 92%;
-    max-width: 800px;
-    max-height: 90vh;
-    overflow-y: auto;
+
+    max-width: 850px;
+
+    height: 90vh;
+
     margin: 5vh auto;
-    padding: 20px;
+
     border-radius: 12px;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
 }
 
-.close{
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+
+/* Header */
+
+.question-modal-header {
+
+    padding: 15px 20px;
+
+    background: #2864dc;
+
+    color: white;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+
+.question-modal-header h2 {
+
+    margin: 0;
+
+    font-size: 20px;
+
+}
+
+
+/* Close button */
+
+.close-button {
+
+    font-size: 30px;
+
     cursor: pointer;
-}
 
-.success{
-    color: green;
     font-weight: bold;
+
 }
 
-.summary{
-    font-size: 18px;
-    line-height: 1.8;
+
+/* Scrollable questions area */
+
+.question-modal-body {
+
+    padding: 15px;
+
+    overflow-y: auto;
+
+    flex: 1;
+
 }
+
+
+/* Individual question */
+
+.question-item {
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    padding: 15px;
+
+    margin-bottom: 15px;
+
+    background: #fafafa;
+
+}
+
+
+/* Question title */
+
+.question-item h3 {
+
+    margin-top: 0;
+
+    font-size: 17px;
+
+}
+
+
+/* Question type */
+
+.question-type {
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+
+}
+
+
+/* Options */
+
+.option {
+
+    padding: 6px 0;
+
+}
+
+
+/* Coding question */
+
+.coding-question {
+
+    border-left: 5px solid #2864dc;
+
+}
+
+
+/* Error question */
+
+.error-question {
+
+    border-left: 5px solid #f39c12;
+
+}
+
+
+/* MCQ */
+
+.mcq-question {
+
+    border-left: 5px solid #28a745;
+
+}
+
+
+/* Coding requirement */
+
+.coding-box {
+
+    background: #f1f5ff;
+
+    padding: 12px;
+
+    border-radius: 6px;
+
+    margin-top: 10px;
+
+}
+
 
 </style>
 
@@ -127,15 +218,16 @@ button:hover{
 <body>
 
 
-<div class="container">
+<div class="dashboard">
 
 
 <h1>Admin Dashboard</h1>
 
 
-<!-- ================================================= -->
+
+<!-- ========================================= -->
 <!-- QUESTION BANK IMPORT -->
-<!-- ================================================= -->
+<!-- ========================================= -->
 
 <div class="card">
 
@@ -156,53 +248,63 @@ Upload the 41-Day Java Placement Question Bank Excel file.
 <br><br>
 
 
-<button
-    onclick="importQuestionBank()">
-    Import Question Bank
+<button onclick="importExcel()">
+
+Import Question Bank
+
 </button>
 
 
-<p
-    id="importStatus">
+<p id="importStatus"></p>
+
+</div>
+
+
+
+<!-- ========================================= -->
+<!-- QUESTION BANK SUMMARY -->
+<!-- ========================================= -->
+
+<div class="card">
+
+<h2>Question Bank Summary</h2>
+
+
+<p>
+
+Total Questions:
+
+<strong id="totalQuestions">
+0
+</strong>
+
+</p>
+
+
+<p>
+
+Total Days:
+
+<strong id="totalDays">
+0
+</strong>
+
 </p>
 
 </div>
 
 
 
-<!-- ================================================= -->
-<!-- QUESTION BANK SUMMARY -->
-<!-- ================================================= -->
-
-<div class="card">
-
-<h2>Question Bank Summary</h2>
-
-<div class="summary">
-
-Total Questions:
-<b id="totalQuestions">0</b>
-
-<br>
-
-Total Days:
-<b id="totalDays">0</b>
-
-</div>
-
-</div>
-
-
-
-<!-- ================================================= -->
+<!-- ========================================= -->
 <!-- DAILY ASSESSMENTS -->
-<!-- ================================================= -->
+<!-- ========================================= -->
 
 <div class="card">
 
 <h2>Daily Assessments</h2>
 
-<div id="dailyAssessments">
+
+<div id="dayList">
 
 <p>
 No question bank imported yet.
@@ -214,32 +316,40 @@ No question bank imported yet.
 
 
 
-<!-- ================================================= -->
+<!-- ========================================= -->
 <!-- STUDENT MANAGEMENT -->
-<!-- ================================================= -->
+<!-- ========================================= -->
 
 <div class="card">
 
 <h2>Student Management</h2>
 
-<button onclick="studentManagement()">
+
+<button
+onclick="studentManagement()">
+
 Manage Students
+
 </button>
 
 </div>
 
 
 
-<!-- ================================================= -->
+<!-- ========================================= -->
 <!-- REPORTS -->
-<!-- ================================================= -->
+<!-- ========================================= -->
 
 <div class="card">
 
 <h2>Reports</h2>
 
-<button onclick="viewReports()">
+
+<button
+onclick="viewReports()">
+
 View Student Reports
+
 </button>
 
 </div>
@@ -249,31 +359,50 @@ View Student Reports
 
 
 
-<!-- ================================================= -->
-<!-- QUESTION VIEW MODAL -->
-<!-- ================================================= -->
+<!-- ========================================= -->
+<!-- QUESTION MODAL -->
+<!-- ========================================= -->
 
 <div
     id="questionModal"
-    class="modal"
+    class="question-modal"
 >
 
-<div class="modal-content">
+
+<div class="question-modal-content">
 
 
-<span
-    class="close"
-    onclick="closeQuestionModal()">
-    &times;
-</span>
+<!-- HEADER -->
+
+<div class="question-modal-header">
 
 
 <h2 id="modalTitle">
-Questions
+
+Day Questions
+
 </h2>
 
 
-<div id="modalQuestions">
+<span
+    class="close-button"
+    onclick="closeQuestionModal()">
+
+&times;
+
+</span>
+
+
+</div>
+
+
+
+<!-- QUESTIONS -->
+
+<div
+    id="modalQuestions"
+    class="question-modal-body">
+
 </div>
 
 
@@ -286,33 +415,27 @@ Questions
 <script>
 
 
-// =====================================================
-// GLOBAL QUESTION BANK
-// =====================================================
+// ==================================================
+// IMPORT EXCEL
+// ==================================================
 
-let questionBank = [];
+function importExcel(){
 
 
-
-// =====================================================
-// IMPORT QUESTION BANK
-// =====================================================
-
-function importQuestionBank(){
-
-    const fileInput =
+    let fileInput =
         document.getElementById(
             "excelFile"
         );
 
 
-    if(
-        !fileInput.files ||
-        fileInput.files.length === 0
-    ){
+    let file =
+        fileInput.files[0];
+
+
+    if(!file){
 
         alert(
-            "Please choose the Excel file first."
+            "Please select the Excel file first."
         );
 
         return;
@@ -320,26 +443,24 @@ function importQuestionBank(){
     }
 
 
-    const file =
-        fileInput.files[0];
-
-
-    const reader =
+    let reader =
         new FileReader();
 
 
     reader.onload =
         function(event){
 
+
             try{
 
-                const data =
+
+                let data =
                     new Uint8Array(
                         event.target.result
                     );
 
 
-                const workbook =
+                let workbook =
                     XLSX.read(
                         data,
                         {
@@ -348,16 +469,18 @@ function importQuestionBank(){
                     );
 
 
-                const sheet =
-                    workbook.Sheets[
-                        "Question Bank"
-                    ];
+                let sheetName =
+                    "Question Bank";
 
 
-                if(!sheet){
+                if(
+                    !workbook.SheetNames.includes(
+                        sheetName
+                    )
+                ){
 
                     alert(
-                        "Question Bank sheet not found."
+                        "Question Bank sheet was not found."
                     );
 
                     return;
@@ -365,18 +488,27 @@ function importQuestionBank(){
                 }
 
 
-                questionBank =
+                let worksheet =
+                    workbook.Sheets[
+                        sheetName
+                    ];
+
+
+                let questions =
                     XLSX.utils.sheet_to_json(
-                        sheet
+                        worksheet,
+                        {
+                            defval: ""
+                        }
                     );
 
 
                 if(
-                    questionBank.length === 0
+                    questions.length === 0
                 ){
 
                     alert(
-                        "No questions found in Excel file."
+                        "No questions found in the Excel file."
                     );
 
                     return;
@@ -384,21 +516,60 @@ function importQuestionBank(){
                 }
 
 
-                // =====================================
-                // SAVE TO LOCAL STORAGE
-                // =====================================
+                // SAVE QUESTION BANK
 
                 localStorage.setItem(
                     "questionBank",
                     JSON.stringify(
-                        questionBank
+                        questions
                     )
                 );
 
 
-                // =====================================
-                // SHOW SUCCESS
-                // =====================================
+                // FIND DAYS
+
+                let days = [];
+
+
+                questions.forEach(
+                    function(q){
+
+
+                        if(
+                            q.Day !== undefined &&
+                            !days.includes(
+                                String(q.Day)
+                            )
+                        ){
+
+                            days.push(
+                                String(q.Day)
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                days.sort(
+                    function(a,b){
+
+                        return Number(a)
+                        -
+                        Number(b);
+
+                    }
+                );
+
+
+                localStorage.setItem(
+                    "questionBankDays",
+                    JSON.stringify(
+                        days
+                    )
+                );
+
 
                 document.getElementById(
                     "importStatus"
@@ -407,18 +578,18 @@ function importQuestionBank(){
                     "✅ Question Bank imported successfully.";
 
 
-                document.getElementById(
-                    "importStatus"
-                ).className =
-                    "success";
+                showSummary(
+                    questions,
+                    days
+                );
 
 
-                updateSummary();
+                alert(
+                    "Question Bank imported successfully!"
+                );
 
-                displayDailyAssessments();
 
             }
-
 
             catch(error){
 
@@ -426,7 +597,7 @@ function importQuestionBank(){
 
 
                 alert(
-                    "Error importing Excel file."
+                    "Error reading Excel file."
                 );
 
             }
@@ -442,82 +613,20 @@ function importQuestionBank(){
 
 
 
-// =====================================================
-// LOAD SAVED QUESTION BANK
-// =====================================================
+// ==================================================
+// SHOW SUMMARY
+// ==================================================
 
-function loadSavedQuestionBank(){
+function showSummary(
+    questions,
+    days
+){
 
-    const saved =
-        localStorage.getItem(
-            "questionBank"
-        );
-
-
-    if(saved){
-
-        try{
-
-            questionBank =
-                JSON.parse(
-                    saved
-                );
-
-
-            updateSummary();
-
-            displayDailyAssessments();
-
-
-            document.getElementById(
-                "importStatus"
-            ).innerHTML =
-                "✅ Question Bank imported successfully.";
-
-
-            document.getElementById(
-                "importStatus"
-            ).className =
-                "success";
-
-        }
-
-        catch(error){
-
-            console.error(error);
-
-        }
-
-    }
-
-}
-
-
-
-// =====================================================
-// UPDATE SUMMARY
-// =====================================================
-
-function updateSummary(){
 
     document.getElementById(
         "totalQuestions"
     ).innerText =
-        questionBank.length;
-
-
-    const days =
-        [
-            ...new Set(
-                questionBank.map(
-                    function(q){
-                        return String(
-                            q.Day
-                        ).trim();
-                    }
-                )
-            )
-        ];
+        questions.length;
 
 
     document.getElementById(
@@ -525,356 +634,493 @@ function updateSummary(){
     ).innerText =
         days.length;
 
+
+    let dayList =
+        document.getElementById(
+            "dayList"
+        );
+
+
+    dayList.innerHTML = "";
+
+
+
+    days.forEach(
+        function(day){
+
+
+            let dayQuestions =
+                questions.filter(
+                    function(q){
+
+                        return String(
+                            q.Day
+                        )
+                        ===
+                        String(day);
+
+                    }
+                );
+
+
+            let topic =
+
+                dayQuestions.length > 0
+
+                ?
+
+                (
+                    dayQuestions[0][
+                        "Source Date / Assessment"
+                    ]
+                    ||
+                    "Java Placement Assessment"
+                )
+
+                :
+
+                "";
+
+
+            let div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "card";
+
+
+            div.innerHTML =
+
+
+                "<h3>Day "
+                +
+                escapeHTML(day)
+                +
+                "</h3>" +
+
+
+                "<p>"
+                +
+                escapeHTML(topic)
+                +
+                "</p>" +
+
+
+                "<p>"
+                +
+                "Questions: "
+                +
+                "<strong>"
+                +
+                dayQuestions.length
+                +
+                "</strong>"
+                +
+                "</p>" +
+
+
+                "<button onclick=\"viewDay('"
+                +
+                escapeJS(day)
+                +
+                "')\">"
+                +
+                "View Questions"
+                +
+                "</button>";
+
+
+            dayList.appendChild(
+                div
+            );
+
+        }
+    );
+
 }
 
 
 
-// =====================================================
-// DISPLAY DAILY ASSESSMENTS
-// =====================================================
+// ==================================================
+// VIEW DAY QUESTIONS
+// ==================================================
 
-function displayDailyAssessments(){
+function viewDay(day){
 
-    const container =
-        document.getElementById(
-            "dailyAssessments"
+
+    let questions =
+
+        JSON.parse(
+
+            localStorage.getItem(
+                "questionBank"
+            )
+            ||
+            "[]"
+
         );
 
 
-    container.innerHTML = "";
+    let dayQuestions =
+
+        questions.filter(
+            function(q){
+
+                return String(
+                    q.Day
+                )
+                ===
+                String(day);
+
+            }
+        );
 
 
     if(
-        questionBank.length === 0
+        dayQuestions.length === 0
     ){
 
-        container.innerHTML =
-            "<p>No question bank imported yet.</p>";
+        alert(
+            "No questions found for Day "
+            +
+            day
+        );
 
         return;
 
     }
 
 
-    const days =
-        [
-            ...new Set(
-                questionBank.map(
-                    function(q){
 
-                        return String(
-                            q.Day
-                        ).trim();
+    // ============================================
+    // MODAL
+    // ============================================
 
-                    }
-                )
-            )
-        ]
-        .sort(
-            function(a,b){
-
-                return Number(a)
-                    -
-                    Number(b);
-
-            }
-        );
-
-
-    days.forEach(
-        function(day){
-
-            const dayQuestions =
-                questionBank.filter(
-                    function(q){
-
-                        return String(
-                            q.Day
-                        ).trim()
-                        ===
-                        String(day).trim();
-
-                    }
-                );
-
-
-            const firstQuestion =
-                dayQuestions[0];
-
-
-            const source =
-                firstQuestion
-                ? (
-                    firstQuestion[
-                        "Source Date / Assessment"
-                    ]
-                    ||
-                    "Java Placement Assessment"
-                )
-                : "";
-
-
-            const dayCard =
-                document.createElement(
-                    "div"
-                );
-
-
-            dayCard.className =
-                "day-card";
-
-
-            dayCard.innerHTML =
-
-                "<h3>Day " +
-                escapeHTML(day) +
-                "</h3>" +
-
-                "<p>" +
-                escapeHTML(
-                    String(source)
-                ) +
-                "</p>" +
-
-                "<p>Questions: <b>" +
-                dayQuestions.length +
-                "</b></p>" +
-
-                "<button onclick=\"viewQuestions('" +
-                escapeJS(day) +
-                "')\">" +
-
-                "View Questions" +
-
-                "</button>";
-
-
-            container.appendChild(
-                dayCard
-            );
-
-        }
-    );
-
-}
-
-
-
-// =====================================================
-// VIEW ALL QUESTIONS
-// =====================================================
-
-function viewQuestions(day){
-
-    const dayQuestions =
-        questionBank.filter(
-            function(q){
-
-                return String(
-                    q.Day
-                ).trim()
-                ===
-                String(day).trim();
-
-            }
-        );
-
-
-    const modal =
+    let modal =
         document.getElementById(
             "questionModal"
         );
 
 
-    const title =
+    let modalTitle =
         document.getElementById(
             "modalTitle"
         );
 
 
-    const content =
+    let modalQuestions =
         document.getElementById(
             "modalQuestions"
         );
 
 
-    title.innerText =
-        "Day " +
-        day +
-        " - All Questions";
+    modalTitle.innerText =
+
+        "Day "
+        +
+        day
+        +
+        " - "
+        +
+        dayQuestions.length
+        +
+        " Questions";
 
 
-    content.innerHTML = "";
+    modalQuestions.innerHTML = "";
 
 
-    // ==============================================
+
+    // ============================================
     // DISPLAY EVERY QUESTION
-    // ==============================================
+    // ============================================
 
     dayQuestions.forEach(
         function(q,index){
 
-            const type =
+
+            let type =
+
                 String(
-                    q["Question Type"] || ""
+                    q["Question Type"]
+                    ||
+                    ""
                 )
                 .trim()
                 .toUpperCase();
 
 
-            const question =
+            let questionBox =
+
                 document.createElement(
                     "div"
                 );
 
 
-            question.className =
-                "question";
+            questionBox.className =
+                "question-item";
 
+
+
+            // =====================================
+            // QUESTION TYPE CLASS
+            // =====================================
 
             if(type === "MCQ"){
 
-                question.classList.add(
-                    "mcq"
+                questionBox.classList.add(
+                    "mcq-question"
                 );
 
             }
 
 
-            if(type === "ERROR"){
+            else if(type === "ERROR"){
 
-                question.classList.add(
-                    "error"
+                questionBox.classList.add(
+                    "error-question"
                 );
 
             }
 
 
-            if(type === "CODING"){
+            else if(type === "CODING"){
 
-                question.classList.add(
-                    "coding"
+                questionBox.classList.add(
+                    "coding-question"
                 );
 
             }
 
+
+
+            // =====================================
+            // QUESTION NUMBER
+            // =====================================
 
             let html =
 
-                "<h3>" +
+                "<div class='question-type'>"
 
-                "Question " +
-                (index + 1) +
-                " (" +
-                escapeHTML(type) +
-                ")" +
+                +
 
-                "</h3>" +
+                escapeHTML(type)
 
-                "<p>" +
+                +
+
+                "</div>"
+
+
+                +
+
+                "<h3>Question "
+
+                +
+
+                (index + 1)
+
+                +
+
+                ". "
+
+                +
 
                 escapeHTML(
                     String(
-                        q.Question || ""
+                        q.Question
+                        ||
+                        ""
                     )
-                ) +
+                )
 
-                "</p>";
+                +
+
+                "</h3>";
 
 
 
-            // ======================================
-            // MCQ OPTIONS
-            // ======================================
+            // =====================================
+            // MCQ / ERROR OPTIONS
+            // =====================================
 
             if(
-                type === "MCQ" ||
+                type === "MCQ"
+                ||
                 type === "ERROR"
             ){
 
+
                 html +=
 
-                    "<div class='option'><b>A.</b> " +
-                    escapeHTML(
-                        String(
-                            q["Option A"] || ""
-                        )
-                    ) +
-                    "</div>" +
+                    "<div class='option'>"
 
-                    "<div class='option'><b>B.</b> " +
-                    escapeHTML(
-                        String(
-                            q["Option B"] || ""
-                        )
-                    ) +
-                    "</div>" +
+                    +
 
-                    "<div class='option'><b>C.</b> " +
-                    escapeHTML(
-                        String(
-                            q["Option C"] || ""
-                        )
-                    ) +
-                    "</div>" +
+                    "<b>A.</b> "
 
-                    "<div class='option'><b>D.</b> " +
+                    +
+
                     escapeHTML(
                         String(
-                            q["Option D"] || ""
+                            q["Option A"]
+                            ||
+                            ""
                         )
-                    ) +
+                    )
+
+                    +
+
+                    "</div>"
+
+
+                    +
+
+
+                    "<div class='option'>"
+
+                    +
+
+                    "<b>B.</b> "
+
+                    +
+
+                    escapeHTML(
+                        String(
+                            q["Option B"]
+                            ||
+                            ""
+                        )
+                    )
+
+                    +
+
+                    "</div>"
+
+
+                    +
+
+
+                    "<div class='option'>"
+
+                    +
+
+                    "<b>C.</b> "
+
+                    +
+
+                    escapeHTML(
+                        String(
+                            q["Option C"]
+                            ||
+                            ""
+                        )
+                    )
+
+                    +
+
+                    "</div>"
+
+
+                    +
+
+
+                    "<div class='option'>"
+
+                    +
+
+                    "<b>D.</b> "
+
+                    +
+
+                    escapeHTML(
+                        String(
+                            q["Option D"]
+                            ||
+                            ""
+                        )
+                    )
+
+                    +
+
                     "</div>";
 
             }
 
 
 
-            // ======================================
-            // CODING QUESTION
-            // ======================================
+            // =====================================
+            // CODING
+            // =====================================
 
-            if(type === "CODING"){
+            if(
+                type === "CODING"
+            ){
+
 
                 html +=
 
-                    "<p><b>Coding Requirement:</b></p>" +
 
-                    "<p>" +
+                    "<div class='coding-box'>"
+
+
+                    +
+
+                    "<b>Coding Requirement:</b>"
+
+
+                    +
+
+                    "<br><br>"
+
+
+                    +
 
                     escapeHTML(
+
                         String(
+
                             q[
                                 "Coding Requirement"
                             ]
-                            ||
-                            q.Question
-                            ||
-                            ""
-                        )
-                    ) +
 
-                    "</p>";
+                            ||
+
+                            q.Question
+
+                            ||
+
+                            ""
+
+                        )
+
+                    )
+
+
+                    +
+
+                    "</div>";
 
             }
 
 
 
-            question.innerHTML =
+            questionBox.innerHTML =
                 html;
 
 
-            content.appendChild(
-                question
+            modalQuestions.appendChild(
+                questionBox
             );
 
         }
     );
 
 
-    // ==============================================
-    // OPEN MODAL
-    // ==============================================
+
+    // SHOW MODAL
 
     modal.style.display =
         "block";
@@ -883,9 +1129,9 @@ function viewQuestions(day){
 
 
 
-// =====================================================
+// ==================================================
 // CLOSE QUESTION MODAL
-// =====================================================
+// ==================================================
 
 function closeQuestionModal(){
 
@@ -898,20 +1144,22 @@ function closeQuestionModal(){
 
 
 
-// =====================================================
-// CLOSE MODAL WHEN CLICKING OUTSIDE
-// =====================================================
+// ==================================================
+// CLOSE WHEN CLICKING OUTSIDE
+// ==================================================
 
 window.onclick =
     function(event){
 
-        const modal =
+        let modal =
             document.getElementById(
                 "questionModal"
             );
 
 
-        if(event.target === modal){
+        if(
+            event.target === modal
+        ){
 
             modal.style.display =
                 "none";
@@ -922,9 +1170,9 @@ window.onclick =
 
 
 
-// =====================================================
+// ==================================================
 // STUDENT MANAGEMENT
-// =====================================================
+// ==================================================
 
 function studentManagement(){
 
@@ -936,23 +1184,23 @@ function studentManagement(){
 
 
 
-// =====================================================
+// ==================================================
 // REPORTS
-// =====================================================
+// ==================================================
 
 function viewReports(){
 
     alert(
-        "Student reports will be added next."
+        "Reports section will be connected next."
     );
 
 }
 
 
 
-// =====================================================
+// ==================================================
 // ESCAPE HTML
-// =====================================================
+// ==================================================
 
 function escapeHTML(value){
 
@@ -987,17 +1235,19 @@ function escapeHTML(value){
 
 
 
-// =====================================================
+// ==================================================
 // ESCAPE JAVASCRIPT
-// =====================================================
+// ==================================================
 
 function escapeJS(value){
 
     return String(value)
+
         .replace(
             /\\/g,
             "\\\\"
         )
+
         .replace(
             /'/g,
             "\\'"
@@ -1007,11 +1257,61 @@ function escapeJS(value){
 
 
 
-// =====================================================
-// START
-// =====================================================
+// ==================================================
+// LOAD PREVIOUSLY IMPORTED BANK
+// ==================================================
 
-loadSavedQuestionBank();
+window.onload =
+    function(){
+
+
+        let saved =
+            localStorage.getItem(
+                "questionBank"
+            );
+
+
+        let savedDays =
+            localStorage.getItem(
+                "questionBankDays"
+            );
+
+
+        if(
+            saved
+            &&
+            savedDays
+        ){
+
+
+            let questions =
+                JSON.parse(
+                    saved
+                );
+
+
+            let days =
+                JSON.parse(
+                    savedDays
+                );
+
+
+            showSummary(
+                questions,
+                days
+            );
+
+
+            document.getElementById(
+                "importStatus"
+            ).innerHTML =
+
+                "✅ Previously imported question bank loaded.";
+
+        }
+
+    };
+
 
 </script>
 
