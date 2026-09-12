@@ -1,19 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Assessment Reports</title>
-
 <link rel="stylesheet" href="style.css">
 
 <style>
-
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
     margin:0;
@@ -24,101 +18,64 @@ body{
 }
 
 .container{
-    max-width:1300px;
+    max-width:1150px;
     margin:auto;
 }
 
-.header{
-    background:#ffffff;
-    padding:25px;
+.header,.table-container,.loading{
+    background:#fff;
     border-radius:14px;
-    box-shadow:0 4px 15px rgba(0,0,0,.10);
+    box-shadow:0 4px 15px rgba(0,0,0,.1);
+}
+
+.header{
+    padding:25px;
     margin-bottom:20px;
 }
 
 .header h1{
-    margin:0 0 18px;
-    font-size:32px;
+    margin:0 0 15px;
 }
 
-.info{
-    line-height:1.9;
-    font-size:16px;
+.student-info{
+    line-height:1.8;
 }
 
-.info b{
-    color:#111;
-}
-
-.admin-badge{
-    display:inline-block;
-    background:#222;
-    color:#fff;
-    font-size:13px;
-    padding:5px 10px;
-    border-radius:20px;
-    margin-left:8px;
-    vertical-align:middle;
-}
-
-.back-btn,
-.refresh-btn{
-    border:none;
-    padding:11px 20px;
+.back-btn,.view-btn{
+    border:0;
     border-radius:7px;
-    color:white;
+    padding:10px 18px;
+    color:#fff;
     cursor:pointer;
-    font-size:15px;
-    margin-top:15px;
-    margin-right:8px;
 }
 
 .back-btn{
+    margin-top:15px;
     background:#555;
 }
 
-.refresh-btn{
+.view-btn{
     background:#2864d7;
 }
 
-.back-btn:hover,
-.refresh-btn:hover{
-    opacity:.9;
-}
-
 .loading{
-    background:#fff;
     padding:30px;
     text-align:center;
-    border-radius:12px;
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
-}
-
-.message{
-    display:none;
-    padding:14px 18px;
-    border-radius:8px;
-    margin-bottom:15px;
 }
 
 .success{
     background:#edf9ef;
     border:1px solid #b7dfbc;
     color:#17621d;
-}
-
-.error{
-    background:#fff1f1;
-    border:1px solid #e1b1b1;
-    color:#9b111e;
+    padding:14px 18px;
+    border-radius:8px;
+    margin-bottom:15px;
 }
 
 .table-container{
-    background:#fff;
     padding:20px;
-    border-radius:14px;
-    box-shadow:0 4px 15px rgba(0,0,0,.10);
     overflow-x:auto;
+    display:none;
 }
 
 table{
@@ -126,53 +83,22 @@ table{
     border-collapse:collapse;
 }
 
-th,
-td{
-    padding:12px;
+th,td{
+    padding:13px 12px;
     border-bottom:1px solid #ddd;
     text-align:left;
-    white-space:nowrap;
 }
 
 th{
-    background:#eef2f7;
-    font-weight:bold;
+    background:#f0f2f5;
 }
-
-tr:hover{
-    background:#fafafa;
-}
-
-.view-btn{
-    border:none;
-    padding:8px 15px;
-    border-radius:6px;
-    background:#2864d7;
-    color:white;
-    cursor:pointer;
-}
-
-.view-btn:hover{
-    background:#1e4fae;
-}
-
-.no-report{
-    text-align:center;
-    padding:30px !important;
-    color:#666;
-}
-
-/* MODAL */
 
 .modal{
     display:none;
     position:fixed;
     z-index:9999;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,.65);
+    inset:0;
+    background:rgba(0,0,0,.6);
     overflow:auto;
 }
 
@@ -188,15 +114,11 @@ tr:hover{
 
 .close{
     position:absolute;
-    right:20px;
-    top:12px;
+    right:22px;
+    top:15px;
     font-size:30px;
     font-weight:bold;
     cursor:pointer;
-}
-
-.close:hover{
-    color:red;
 }
 
 .report-student{
@@ -222,12 +144,12 @@ tr:hover{
 }
 
 .summary-title{
-    font-size:14px;
+    font-size:15px;
 }
 
 .summary-value{
     margin-top:6px;
-    font-size:24px;
+    font-size:25px;
     font-weight:bold;
 }
 
@@ -240,6 +162,7 @@ tr:hover{
 }
 
 .answer-box h3{
+    margin-top:0;
     line-height:1.5;
 }
 
@@ -277,10 +200,6 @@ tr:hover{
         padding:18px;
     }
 
-    .header h1{
-        font-size:25px;
-    }
-
     .summary-box{
         grid-template-columns:repeat(2,1fr);
     }
@@ -291,1422 +210,353 @@ tr:hover{
         margin:20px auto;
     }
 
-    th,
-    td{
-        padding:9px;
+    th,td{
+        padding:10px 8px;
         font-size:13px;
     }
-
 }
-
 </style>
 </head>
-
 
 <body>
 
 <div class="container">
 
-
-<!-- HEADER -->
-
 <div class="header">
 
-    <h1>
-        Assessment Reports
-        <span id="adminBadge"></span>
-    </h1>
+<h1 id="pageTitle">Student Reports</h1>
 
+<div class="student-info">
 
-    <div class="info">
+<div>
+<b>Name:</b>
+<span id="studentName">Loading...</span>
+</div>
 
-        <div>
-            <b>Name:</b>
-            <span id="studentName">Loading...</span>
-        </div>
+<div>
+<b>Username:</b>
+<span id="studentUsername">Loading...</span>
+</div>
 
-        <div>
-            <b>Username:</b>
-            <span id="studentUsername">Loading...</span>
-        </div>
+<div>
+<b>Year:</b>
+<span id="studentYear">Loading...</span>
+</div>
 
-        <div>
-            <b>Year:</b>
-            <span id="studentYear">Loading...</span>
-        </div>
+</div>
 
-        <div>
-            <b>Access:</b>
-            <span id="accessType">Loading...</span>
-        </div>
-
-    </div>
-
-
-    <button
-        class="back-btn"
-        onclick="goBack()">
-
-        Back to Dashboard
-
-    </button>
-
-
-    <button
-        class="refresh-btn"
-        onclick="startReports()">
-
-        Refresh Reports
-
-    </button>
+<button
+class="back-btn"
+onclick="goBack()">
+Back to Dashboard
+</button>
 
 </div>
 
 
-<!-- LOADING -->
+<div id="loading" class="loading">
+Loading reports...
+</div>
+
 
 <div
-    id="loading"
-    class="loading">
-
-    Loading assessment reports...
-
+id="success"
+class="success"
+style="display:none">
 </div>
 
-
-<!-- SUCCESS -->
 
 <div
-    id="success"
-    class="message success">
+id="reportArea"
+class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Day</th>
+<th>Topic</th>
+<th>MCQ + Error</th>
+<th>Coding</th>
+<th>Total</th>
+<th>Percentage</th>
+<th>Status</th>
+<th>Date</th>
+<th>Report</th>
+</tr>
+
+</thead>
+
+<tbody id="reportBody">
+</tbody>
+
+</table>
+
+</div>
+
 </div>
 
 
-<!-- ERROR -->
+<div id="reportModal" class="modal">
+
+<div class="modal-content">
+
+<span
+class="close"
+onclick="closeModal()">
+&times;
+</span>
+
+<h2>Assessment Report</h2>
+
 
 <div
-    id="error"
-    class="message error">
+id="modalStudent"
+class="report-student">
 </div>
 
 
-<!-- REPORT TABLE -->
+<div class="summary-box">
+
+<div class="summary-item">
+
+<div class="summary-title">
+MCQ + Error
+</div>
 
 <div
-    id="reportArea"
-    class="table-container"
-    style="display:none;">
-
-    <table>
-
-        <thead>
-
-            <tr>
-
-                <th>Name</th>
-
-                <th>Username</th>
-
-                <th>Year</th>
-
-                <th>Day</th>
-
-                <th>Topic</th>
-
-                <th>MCQ + Error</th>
-
-                <th>Coding</th>
-
-                <th>Total</th>
-
-                <th>Percentage</th>
-
-                <th>Status</th>
-
-                <th>Date</th>
-
-                <th>Report</th>
-
-            </tr>
-
-        </thead>
-
-
-        <tbody id="reportBody">
-
-        </tbody>
-
-    </table>
-
+id="modalObjective"
+class="summary-value">
+0/12
 </div>
 
 </div>
 
 
-<!-- REPORT MODAL -->
+<div class="summary-item">
+
+<div class="summary-title">
+Coding
+</div>
 
 <div
-    id="reportModal"
-    class="modal">
+id="modalCoding"
+class="summary-value">
+0/3
+</div>
 
-    <div class="modal-content">
-
-        <span
-            class="close"
-            onclick="closeModal()">
-
-            &times;
-
-        </span>
+</div>
 
 
-        <h2>
-            Assessment Report
-        </h2>
+<div class="summary-item">
+
+<div class="summary-title">
+Total
+</div>
+
+<div
+id="modalTotal"
+class="summary-value">
+0/15
+</div>
+
+</div>
 
 
-        <div
-            id="modalStudent"
-            class="report-student">
+<div class="summary-item">
 
-        </div>
+<div class="summary-title">
+Percentage
+</div>
 
+<div
+id="modalPercentage"
+class="summary-value">
+0%
+</div>
 
-        <div class="summary-box">
+</div>
 
-
-            <div class="summary-item">
-
-                <div class="summary-title">
-                    MCQ + Error
-                </div>
-
-                <div
-                    id="modalObjective"
-                    class="summary-value">
-
-                    0/12
-
-                </div>
-
-            </div>
+</div>
 
 
-            <div class="summary-item">
+<div id="modalDetails"></div>
 
-                <div class="summary-title">
-                    Coding
-                </div>
-
-                <div
-                    id="modalCoding"
-                    class="summary-value">
-
-                    0/3
-
-                </div>
-
-            </div>
-
-
-            <div class="summary-item">
-
-                <div class="summary-title">
-                    Total
-                </div>
-
-                <div
-                    id="modalTotal"
-                    class="summary-value">
-
-                    0/15
-
-                </div>
-
-            </div>
-
-
-            <div class="summary-item">
-
-                <div class="summary-title">
-                    Percentage
-                </div>
-
-                <div
-                    id="modalPercentage"
-                    class="summary-value">
-
-                    0%
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div id="modalDetails">
-
-        </div>
-
-    </div>
-
+</div>
 </div>
 
 
 <script>
 
-
-/* =====================================================
-   GOOGLE APPS SCRIPT URL
-===================================================== */
-
 const GOOGLE_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbxrrb6gSB12hmilk7j5BEWqeOmSAJad9Zi-ZbpaoS1kaJRHhUAoDh02-teDu2O_hbSnRA/exec";
 
-
-/* =====================================================
-   GET LOGGED STUDENT
-===================================================== */
 
 function getLoggedStudent(){
 
     try{
 
-        const value =
+        return JSON.parse(
             localStorage.getItem(
                 "loggedInStudent"
-            );
-
-        if(value){
-
-            return JSON.parse(value);
-
-        }
-
-    }
-    catch(error){
-
-        console.error(
-            "Login data error:",
-            error
+            ) || "null"
         );
 
-    }
+    }catch(e){
 
-    return null;
+        return null;
+
+    }
 
 }
 
 
 const loggedStudent =
-    getLoggedStudent();
+getLoggedStudent();
 
-
-/* =====================================================
-   ADMIN CHECK
-===================================================== */
 
 const isAdmin =
-    String(
-        localStorage.getItem(
-            "loggedInUser"
-        )
-        ||
-        ""
-    )
-    .trim()
-    .toLowerCase()
-    ===
-    "admin";
+String(
+    localStorage.getItem(
+        "loggedInUser"
+    ) || ""
+)
+.trim()
+.toLowerCase()
+===
+"admin";
 
-
-/* =====================================================
-   STUDENT IDENTITY
-===================================================== */
 
 const studentName =
-
-    isAdmin
-
-    ?
-
-    "Administrator"
-
-    :
-
-    String(
-
-        loggedStudent?.name
-
-        ||
-
-        loggedStudent?.Name
-
-        ||
-
-        localStorage.getItem(
-            "studentName"
-        )
-
-        ||
-
-        "Student"
-
-    ).trim();
+String(
+    loggedStudent?.name ||
+    loggedStudent?.Name ||
+    localStorage.getItem(
+        "studentName"
+    ) ||
+    "Student"
+).trim();
 
 
 const studentUsername =
-
-    isAdmin
-
-    ?
-
-    "admin"
-
-    :
-
-    String(
-
-        loggedStudent?.username
-
-        ||
-
-        loggedStudent?.Username
-
-        ||
-
-        localStorage.getItem(
-            "studentUsername"
-        )
-
-        ||
-
-        ""
-
-    ).trim();
+String(
+    loggedStudent?.username ||
+    loggedStudent?.Username ||
+    localStorage.getItem(
+        "studentUsername"
+    ) ||
+    ""
+).trim();
 
 
 const studentYear =
-
-    isAdmin
-
-    ?
-
-    "Administrator"
-
-    :
-
-    String(
-
-        loggedStudent?.year
-
-        ||
-
-        loggedStudent?.Year
-
-        ||
-
-        localStorage.getItem(
-            "studentYear"
-        )
-
-        ||
-
-        ""
-
-    ).trim();
+String(
+    loggedStudent?.year ||
+    loggedStudent?.Year ||
+    localStorage.getItem(
+        "studentYear"
+    ) ||
+    "Final Year"
+).trim();
 
 
 const normalizedUsername =
-    studentUsername
-    .toLowerCase();
+studentUsername.toLowerCase();
 
-
-/* =====================================================
-   HEADER DISPLAY
-===================================================== */
 
 document.getElementById(
     "studentName"
 ).textContent =
-    studentName;
+isAdmin
+? "Administrator"
+: studentName;
 
 
 document.getElementById(
     "studentUsername"
 ).textContent =
-    studentUsername
-    ||
-    "Not available";
+isAdmin
+? "admin"
+: (
+    studentUsername ||
+    "Not available"
+);
 
 
 document.getElementById(
     "studentYear"
 ).textContent =
-    studentYear
-    ||
-    "Not available";
-
-
-document.getElementById(
-    "accessType"
-).textContent =
-
-    isAdmin
-
-    ?
-
-    "All Student Reports"
-
-    :
-
-    "My Reports";
+isAdmin
+? "All Students"
+: studentYear;
 
 
 if(isAdmin){
 
     document.getElementById(
-        "adminBadge"
-    ).innerHTML =
-        "<span class='admin-badge'>ADMIN</span>";
+        "pageTitle"
+    ).textContent =
+    "Admin Assessment Reports";
 
 }
 
 
-/* =====================================================
-   REPORT ARRAYS
-===================================================== */
-
-let localReports = [];
-
-let googleReports = [];
-
-let studentResults = [];
+let studentResults=[];
 
 
-/* =====================================================
-   LOAD LOCAL REPORTS
-===================================================== */
+function parseNumber(value){
 
-function loadLocalReports(){
+    if(
+        value === null ||
+        value === undefined ||
+        value === ""
+    ){
 
-    try{
-
-        const saved =
-            localStorage.getItem(
-                "studentReports"
-            );
-
-
-        if(!saved){
-
-            return [];
-
-        }
-
-
-        const parsed =
-            JSON.parse(saved);
-
-
-        if(!Array.isArray(parsed)){
-
-            return [];
-
-        }
-
-
-        return parsed;
+        return 0;
 
     }
-    catch(error){
 
-        console.error(
-            "Local report error:",
-            error
-        );
 
-        return [];
+    const match =
+    String(value).match(
+        /-?\d+(?:\.\d+)?/
+    );
 
-    }
+
+    return match
+    ? Number(match[0])
+    : 0;
 
 }
 
-
-/* =====================================================
-   GOOGLE JSONP CALLBACK
-===================================================== */
-
-window.handleAssessmentResults =
-function(data){
-
-    try{
-
-        if(!Array.isArray(data)){
-
-            googleReports = [];
-
-            mergeReports();
-
-            return;
-
-        }
-
-
-        /*
-         * IMPORTANT:
-         *
-         * ADMIN:
-         * ALL reports are loaded.
-         *
-         * STUDENT:
-         * only their own reports are loaded.
-         */
-
-        if(isAdmin){
-
-            googleReports =
-                data;
-
-        }
-        else{
-
-            googleReports =
-                data.filter(
-                    function(row){
-
-                        const username =
-                            String(
-
-                                row["Username"]
-
-                                ||
-
-                                row.username
-
-                                ||
-
-                                row.studentUsername
-
-                                ||
-
-                                ""
-
-                            )
-                            .trim()
-                            .toLowerCase();
-
-
-                        return (
-
-                            username ===
-                            normalizedUsername
-
-                        );
-
-                    }
-                );
-
-        }
-
-
-        mergeReports();
-
-    }
-    catch(error){
-
-        console.error(
-            "Google report error:",
-            error
-        );
-
-        googleReports = [];
-
-        mergeReports();
-
-    }
-
-};
-
-
-/* =====================================================
-   LOAD GOOGLE RESULTS
-===================================================== */
-
-function loadGoogleReports(){
-
-    const oldScript =
-        document.getElementById(
-            "googleResultsScript"
-        );
-
-
-    if(oldScript){
-
-        oldScript.remove();
-
-    }
-
-
-    const script =
-        document.createElement(
-            "script"
-        );
-
-
-    script.id =
-        "googleResultsScript";
-
-
-    script.src =
-
-        GOOGLE_SCRIPT_URL
-
-        +
-
-        "?action=getResults"
-
-        +
-
-        "&callback=handleAssessmentResults"
-
-        +
-
-        "&_="
-
-        +
-
-        Date.now();
-
-
-    script.onerror =
-    function(){
-
-        const error =
-            document.getElementById(
-                "error"
-            );
-
-
-        error.style.display =
-            "block";
-
-
-        error.textContent =
-            "Google Sheet reports could not be loaded.";
-
-        mergeReports();
-
-    };
-
-
-    document.body.appendChild(
-        script
-    );
-
-}
-
-
-/* =====================================================
-   MERGE REPORTS
-===================================================== */
-
-function mergeReports(){
-
-    const combined = [];
-
-
-    /* LOCAL */
-
-    localReports.forEach(
-        function(report){
-
-            combined.push(
-                normalizeReport(
-                    report,
-                    "local"
-                )
-            );
-
-        }
-    );
-
-
-    /* GOOGLE */
-
-    googleReports.forEach(
-        function(report){
-
-            combined.push(
-                normalizeReport(
-                    report,
-                    "google"
-                )
-            );
-
-        }
-    );
-
-
-    /*
-     * Remove invalid reports.
-     */
-
-    const validReports =
-        combined.filter(
-            function(report){
-
-                return (
-                    report.day > 0
-                );
-
-            }
-        );
-
-
-    /*
-     * Remove duplicates.
-     *
-     * ADMIN:
-     * Student + Day
-     *
-     * STUDENT:
-     * Username + Day
-     */
-
-    const reportMap =
-        new Map();
-
-
-    validReports.forEach(
-        function(report){
-
-            let identity;
-
-
-            if(isAdmin){
-
-                identity =
-                    String(
-
-                        report.username
-
-                        ||
-
-                        report.name
-
-                        ||
-
-                        "unknown"
-
-                    )
-                    .trim()
-                    .toLowerCase();
-
-            }
-            else{
-
-                identity =
-                    normalizedUsername;
-
-            }
-
-
-            const key =
-                identity
-                +
-                "_day_"
-                +
-                report.day;
-
-
-            if(
-                !reportMap.has(key)
-            ){
-
-                reportMap.set(
-                    key,
-                    report
-                );
-
-            }
-            else{
-
-                const existing =
-                    reportMap.get(key);
-
-
-                /*
-                 * Prefer report with
-                 * detailed answers.
-                 */
-
-                if(
-
-                    report.answers.length
-                    >
-
-                    existing.answers.length
-
-                ){
-
-                    reportMap.set(
-                        key,
-                        report
-                    );
-
-                }
-
-            }
-
-        }
-    );
-
-
-    studentResults =
-        Array.from(
-            reportMap.values()
-        );
-
-
-    /* SORT */
-
-    studentResults.sort(
-        function(a,b){
-
-            if(isAdmin){
-
-                const nameA =
-                    String(
-                        a.name || ""
-                    )
-                    .toLowerCase();
-
-
-                const nameB =
-                    String(
-                        b.name || ""
-                    )
-                    .toLowerCase();
-
-
-                if(
-                    nameA < nameB
-                ){
-
-                    return -1;
-
-                }
-
-
-                if(
-                    nameA > nameB
-                ){
-
-                    return 1;
-
-                }
-
-            }
-
-
-            return (
-
-                Number(a.day)
-                -
-                Number(b.day)
-
-            );
-
-        }
-    );
-
-
-    window.studentResults =
-        studentResults;
-
-
-    displayReports();
-
-}
-
-
-/* =====================================================
-   NORMALIZE REPORT
-===================================================== */
 
 function normalizeReport(
     row,
     source
 ){
 
-    /* DAY */
-
-    const rawDay =
-
-        row.day
-
-        ??
-
-        row.Day
-
-        ??
-
-        row.assessmentDay
-
-        ??
-
-        row.assignedDay
-
-        ??
-
-        "";
-
-
-    const dayText =
-        String(
-            rawDay
-        ).trim();
-
-
-    const dayMatch =
-        dayText.match(
-            /\d+/
-        );
-
-
-    const day =
-
-        dayMatch
-
-        ?
-
-        parseInt(
-            dayMatch[0],
-            10
-        )
-
-        :
-
-        0;
-
-
-    /* NAME */
-
-    let name =
-
-        String(
-
-            row.name
-
-            ??
-
-            row.Name
-
-            ??
-
-            row.studentName
-
-            ??
-
-            row.StudentName
-
-            ??
-
-            ""
-
-        ).trim();
-
-
-    /* USERNAME */
-
-    let username =
-
-        String(
-
-            row.username
-
-            ??
-
-            row.Username
-
-            ??
-
-            row.studentUsername
-
-            ??
-
-            row.StudentUsername
-
-            ??
-
-            ""
-
-        ).trim();
-
-
-    /*
-     * Name and username should
-     * be the same when one is missing.
-     */
-
-    if(
-        !name
-        &&
-        username
-    ){
-
-        name =
-            username;
-
-    }
-
-
-    if(
-        !username
-        &&
-        name
-    ){
-
-        username =
-            name;
-
-    }
-
-
-    /*
-     * Student fallback.
-     */
-
-    if(!isAdmin){
-
-        if(!name){
-
-            name =
-                studentName;
-
-        }
-
-
-        if(!username){
-
-            username =
-                studentUsername;
-
-        }
-
-    }
-
-
-    /* YEAR */
-
-    const year =
-
-        String(
-
-            row.year
-
-            ??
-
-            row.Year
-
-            ??
-
-            row.studentYear
-
-            ??
-
-            row.StudentYear
-
-            ??
-
-            (!isAdmin
-                ?
-                studentYear
-                :
-                "")
-
-            ??
-
-            ""
-
-        ).trim();
-
-
-    /* TOPIC */
-
-    const topic =
-
-        String(
-
-            row.topic
-
-            ??
-
-            row.Topic
-
-            ??
-
-            "Java Placement Practice"
-
-        ).trim();
-
-
-    /* SCORES */
-
-    let mcqScore =
-
-        row.mcqScore
-
-        ??
-
-        row.MCQScore
-
-        ??
-
-        "";
-
-
-    let errorScore =
-
-        row.errorScore
-
-        ??
-
-        row.ErrorScore
-
-        ??
-
-        "";
-
-
-    let codingScore =
-
-        row.codingScore
-
-        ??
-
-        row.CodingScore
-
-        ??
-
-        "";
-
-
-    let totalScore =
-
-        row.totalScore
-
-        ??
-
-        row.TotalScore
-
-        ??
-
-        "";
-
-
-    let percentage =
-
-        row.percentage
-
-        ??
-
-        row.Percentage
-
-        ??
-
-        "";
-
-
-    /*
-     * Google Sheet stores
-     * MCQ + Error together.
-     */
-
-    if(
-
-        mcqScore === ""
-
-        &&
-
-        errorScore === ""
-
-    ){
-
-        const objectiveText =
-
-            String(
-
-                row["MCQ + Error"]
-
-                ??
-
-                "0"
-
-            );
-
-
-        const match =
-
-            objectiveText.match(
-                /-?\d+(?:\.\d+)?/
-            );
-
-
-        mcqScore =
-
-            match
-
-            ?
-
-            Number(
-                match[0]
-            )
-
-            :
-
-            0;
-
-
-        errorScore =
-            0;
-
-    }
-
-
-    mcqScore =
-        parseReportNumber(
-            mcqScore
-        );
-
-
-    errorScore =
-        parseReportNumber(
-            errorScore
-        );
-
-
-    codingScore =
-        parseReportNumber(
-            codingScore
-        );
-
-
-    totalScore =
-        parseReportNumber(
-            totalScore
-        );
-
-
-    /*
-     * Calculate total if missing.
-     */
-
-    if(
-
-        totalScore === 0
-
-        &&
-
-        (
-            mcqScore > 0
-            ||
-            errorScore > 0
-            ||
-            codingScore > 0
-        )
-
-    ){
-
-        totalScore =
-
-            mcqScore
-            +
-            errorScore
-            +
-            codingScore;
-
-    }
-
-
-    /*
-     * Percentage.
-     */
-
-    if(
-
-        percentage === ""
-
-        ||
-
-        percentage === null
-
-        ||
-
-        percentage === undefined
-
-    ){
-
-        percentage =
-
-            totalScore
-            /
-            15
-            *
-            100;
-
-    }
-    else{
-
-        percentage =
-
-            parseReportNumber(
-
-                String(
-                    percentage
-                )
-                .replace(
-                    "%",
-                    ""
-                )
-
-            );
-
-    }
-
-
-    /* ANSWERS */
-
     let answers =
-
-        row.answers
-
-        ??
-
-        row.Answers
-
-        ??
-
-        [];
+    row.answers ??
+    row.Answers ??
+    [];
 
 
     if(
-        typeof answers === "string"
+        typeof answers ===
+        "string"
     ){
 
         try{
 
             answers =
-                JSON.parse(
-                    answers
-                );
+            JSON.parse(
+                answers
+            );
 
-        }
-        catch(error){
+        }catch(e){
 
-            answers = [];
+            answers=[];
 
         }
 
@@ -1719,237 +569,628 @@ function normalizeReport(
         )
     ){
 
-        answers = [];
+        answers=[];
 
     }
 
 
-    /* CODING EVALUATION */
+    /*
+    =====================================================
+    IMPORTANT FIX
 
-    let codingEvaluations =
+    NOT ANSWERED CODING QUESTION
+    CAN NEVER BE CORRECT.
 
-        row.codingEvaluations
+    Blank / Not Answered
+    => Wrong
+    => 0
+    =====================================================
+    */
 
-        ??
+    answers =
+    answers.map(
+        function(answer){
 
-        row["Coding Evaluation"]
+            const item =
+            {
+                ...answer
+            };
 
-        ??
 
-        [];
+            const type =
+            String(
+                item.type ??
+                item.Type ??
+                ""
+            )
+            .trim()
+            .toUpperCase();
+
+
+            const rawAnswer =
+            item.studentAnswer ??
+            item.answer ??
+            item.code ??
+            "";
+
+
+            const empty =
+            rawAnswer === null ||
+            rawAnswer === undefined ||
+            String(
+                rawAnswer
+            ).trim() === "" ||
+            String(
+                rawAnswer
+            )
+            .trim()
+            .toLowerCase() ===
+            "not answered";
+
+
+            if(
+                type === "CODING" &&
+                empty
+            ){
+
+                item.studentAnswer =
+                    "Not Answered";
+
+                item.status =
+                    "Wrong";
+
+                item.score =
+                    0;
+
+                item.evaluation =
+                    "No code submitted.";
+
+            }
+
+
+            return item;
+
+        }
+    );
+
+
+    let mcq =
+    parseNumber(
+        row.mcqScore ??
+        row.MCQScore
+    );
+
+
+    let error =
+    parseNumber(
+        row.errorScore ??
+        row.ErrorScore
+    );
+
+
+    let coding =
+    parseNumber(
+        row.codingScore ??
+        row.CodingScore
+    );
+
+
+    const objectiveRaw =
+    row["MCQ + Error"];
 
 
     if(
-        typeof codingEvaluations === "string"
+        row.mcqScore === undefined &&
+        row.errorScore === undefined &&
+        objectiveRaw !== undefined
     ){
 
-        try{
+        mcq =
+        parseNumber(
+            objectiveRaw
+        );
 
-            codingEvaluations =
-                JSON.parse(
-                    codingEvaluations
-                );
-
-        }
-        catch(error){
-
-            /* Keep original value */
-
-        }
+        error=0;
 
     }
 
 
-    /* DATE */
+    /*
+    Recalculate coding score
+    from individual coding answers.
+    */
 
-    const submittedAt =
+    const codingAnswers =
+    answers.filter(
+        function(answer){
 
-        row.submittedAt
+            return String(
+                answer.type ??
+                answer.Type ??
+                ""
+            )
+            .trim()
+            .toUpperCase()
+            ===
+            "CODING";
 
-        ??
-
-        row["Submission Date"]
-
-        ??
-
-        row.submissionDate
-
-        ??
-
-        "";
+        }
+    );
 
 
-    /* STATUS */
+    if(
+        codingAnswers.length
+    ){
 
-    const status =
+        coding =
+        codingAnswers.reduce(
+            function(sum,answer){
 
-        String(
+                const raw =
+                answer.studentAnswer ??
+                answer.answer ??
+                answer.code ??
+                "";
 
-            row.status
 
-            ??
+                const empty =
+                raw === null ||
+                raw === undefined ||
+                String(raw).trim()==="" ||
+                String(raw)
+                .trim()
+                .toLowerCase() ===
+                "not answered";
 
-            row.Status
 
-            ??
+                if(empty){
 
-            "Completed"
+                    return sum;
 
-        ).trim();
+                }
+
+
+                return (
+                    sum +
+                    parseNumber(
+                        answer.score
+                    )
+                );
+
+            },
+            0
+        );
+
+    }
+
+
+    let total =
+    parseNumber(
+        row.totalScore ??
+        row.TotalScore
+    );
+
+
+    if(
+        answers.length
+    ){
+
+        total =
+        mcq +
+        error +
+        coding;
+
+    }
+    else if(
+        total === 0
+    ){
+
+        total =
+        mcq +
+        error +
+        coding;
+
+    }
+
+
+    let percentage;
+
+
+    if(
+        answers.length
+    ){
+
+        percentage =
+        total /
+        15 *
+        100;
+
+    }
+    else{
+
+        percentage =
+        parseNumber(
+            row.percentage ??
+            row.Percentage
+        );
+
+    }
+
+
+    const rawDay =
+    row.day ??
+    row.Day ??
+    row.assessmentDay ??
+    row.assignedDay ??
+    "";
+
+
+    const dayMatch =
+    String(
+        rawDay
+    ).match(
+        /\d+/
+    );
+
+
+    const day =
+    dayMatch
+    ? parseInt(
+        dayMatch[0],
+        10
+      )
+    : 0;
 
 
     return {
 
         source:source,
 
-        name:name,
+        name:String(
+            row.name ??
+            row.Name ??
+            row.studentName ??
+            row.StudentName ??
+            studentName
+        ).trim(),
 
-        username:username,
+        username:String(
+            row.username ??
+            row.Username ??
+            row.studentUsername ??
+            row.StudentUsername ??
+            studentUsername
+        ).trim(),
 
-        year:year,
+        year:String(
+            row.year ??
+            row.Year ??
+            row.studentYear ??
+            row.StudentYear ??
+            studentYear
+        ).trim(),
 
         day:day,
 
-        topic:topic,
+        topic:String(
+            row.topic ??
+            row.Topic ??
+            "Java Placement Practice"
+        ).trim(),
 
-        mcqScore:mcqScore,
+        mcqScore:mcq,
 
-        errorScore:errorScore,
+        errorScore:error,
 
-        codingScore:codingScore,
+        codingScore:coding,
 
-        totalScore:totalScore,
+        totalScore:total,
 
         percentage:percentage,
 
-        status:status,
+        status:String(
+            row.status ??
+            row.Status ??
+            "Completed"
+        ).trim(),
 
-        submittedAt:submittedAt,
+        submittedAt:
+            row.submittedAt ??
+            row["Submission Date"] ??
+            row.submissionDate ??
+            "",
 
-        answers:answers,
-
-        codingEvaluations:codingEvaluations
+        answers:answers
 
     };
 
 }
 
 
-/* =====================================================
-   NUMBER HELPER
-===================================================== */
+function loadLocal(){
 
-function parseReportNumber(
-    value
-){
+    try{
 
-    if(
-
-        value === null
-
-        ||
-
-        value === undefined
-
-        ||
-
-        value === ""
-
-    ){
-
-        return 0;
-
-    }
-
-
-    const match =
-
-        String(value).match(
-            /-?\d+(?:\.\d+)?/
+        const reports =
+        JSON.parse(
+            localStorage.getItem(
+                "studentReports"
+            ) || "[]"
         );
 
 
-    return match
+        if(
+            !Array.isArray(
+                reports
+            )
+        ){
 
-        ?
+            return [];
 
-        Number(
-            match[0]
-        )
+        }
 
-        :
 
-        0;
+        if(isAdmin){
+
+            return reports;
+
+        }
+
+
+        return reports.filter(
+            function(report){
+
+                const username =
+                String(
+                    report.username ??
+                    report.Username ??
+                    report.studentUsername ??
+                    ""
+                )
+                .trim()
+                .toLowerCase();
+
+
+                return (
+                    !username ||
+                    username ===
+                    normalizedUsername
+                );
+
+            }
+        );
+
+    }catch(e){
+
+        return [];
+
+    }
 
 }
 
 
-/* =====================================================
-   DISPLAY REPORTS
-===================================================== */
+window.handleAssessmentResults =
+function(data){
+
+    const google =
+    Array.isArray(data)
+    ? data
+    : [];
+
+
+    const filtered =
+    isAdmin
+    ? google
+    : google.filter(
+        function(row){
+
+            return String(
+                row.Username ??
+                row.username ??
+                row.studentUsername ??
+                ""
+            )
+            .trim()
+            .toLowerCase()
+            ===
+            normalizedUsername;
+
+        }
+    );
+
+
+    merge(
+        loadLocal(),
+        filtered
+    );
+
+};
+
+
+function loadGoogle(){
+
+    const old =
+    document.getElementById(
+        "googleResultsScript"
+    );
+
+
+    if(old){
+
+        old.remove();
+
+    }
+
+
+    const script =
+    document.createElement(
+        "script"
+    );
+
+
+    script.id =
+    "googleResultsScript";
+
+
+    script.src =
+    GOOGLE_SCRIPT_URL +
+    "?action=getResults" +
+    "&callback=handleAssessmentResults" +
+    "&_=" +
+    Date.now();
+
+
+    script.onerror =
+    function(){
+
+        merge(
+            loadLocal(),
+            []
+        );
+
+    };
+
+
+    document.body.appendChild(
+        script
+    );
+
+}
+
+
+function merge(
+    local,
+    google
+){
+
+    const map =
+    new Map();
+
+
+    [
+        ...local,
+        ...google
+    ]
+    .forEach(
+        function(raw,index){
+
+            const report =
+            normalizeReport(
+                raw,
+                index < local.length
+                ? "local"
+                : "google"
+            );
+
+
+            if(
+                report.day <= 0
+            ){
+
+                return;
+
+            }
+
+
+            const key =
+            (
+                isAdmin
+                ? report.username
+                    .toLowerCase()
+                : normalizedUsername
+            ) +
+            "_day_" +
+            report.day;
+
+
+            const old =
+            map.get(key);
+
+
+            if(
+                !old ||
+                report.answers.length >
+                old.answers.length ||
+                (
+                    report.source ===
+                    "local" &&
+                    old.source ===
+                    "google"
+                )
+            ){
+
+                map.set(
+                    key,
+                    report
+                );
+
+            }
+
+        }
+    );
+
+
+    studentResults =
+    Array.from(
+        map.values()
+    );
+
+
+    studentResults.sort(
+        function(a,b){
+
+            return (
+                Number(a.day) -
+                Number(b.day)
+            );
+
+        }
+    );
+
+
+    window.studentResults =
+    studentResults;
+
+
+    displayReports();
+
+}
+
 
 function displayReports(){
 
-    const loading =
-        document.getElementById(
-            "loading"
-        );
+    document.getElementById(
+        "loading"
+    ).style.display =
+    "none";
 
 
-    const area =
-        document.getElementById(
-            "reportArea"
-        );
+    document.getElementById(
+        "reportArea"
+    ).style.display =
+    "block";
 
 
     const body =
-        document.getElementById(
-            "reportBody"
-        );
+    document.getElementById(
+        "reportBody"
+    );
 
 
-    loading.style.display =
-        "none";
-
-
-    area.style.display =
-        "block";
-
-
-    body.innerHTML =
-        "";
+    body.innerHTML="";
 
 
     if(
-        studentResults.length === 0
+        !studentResults.length
     ){
 
         body.innerHTML =
-
-            "<tr>" +
-
-            "<td colspan='12' class='no-report'>" +
-
-            (
-
-                isAdmin
-
-                ?
-
-                "No student assessment reports found in Google Sheet."
-
-                :
-
-                "No assessment reports found."
-
-            )
-
-            +
-
-            "</td>" +
-
-            "</tr>";
-
+        "<tr>" +
+        "<td colspan='9' " +
+        "style='text-align:center;padding:30px'>" +
+        "No assessment reports found." +
+        "</td>" +
+        "</tr>";
 
         return;
 
@@ -1957,152 +1198,76 @@ function displayReports(){
 
 
     studentResults.forEach(
-        function(
-            report,
-            index
-        ){
+        function(report,index){
 
             const objective =
-
-                Number(
-                    report.mcqScore
-                )
-
-                +
-
-                Number(
-                    report.errorScore
-                );
+            report.mcqScore +
+            report.errorScore;
 
 
             const tr =
-                document.createElement(
-                    "tr"
-                );
+            document.createElement(
+                "tr"
+            );
 
 
             tr.innerHTML =
 
-                "<td>" +
+            "<td>Day " +
+            report.day +
+            "</td>" +
 
-                escapeHTML(
-                    report.name
-                ) +
+            "<td>" +
+            escapeHTML(
+                report.topic
+            ) +
+            "</td>" +
 
-                "</td>" +
+            "<td>" +
+            objective +
+            "/12</td>" +
 
+            "<td>" +
+            report.codingScore +
+            "/3</td>" +
 
-                "<td>" +
+            "<td>" +
+            report.totalScore +
+            "/15</td>" +
 
-                escapeHTML(
-                    report.username
-                ) +
+            "<td>" +
+            Number(
+                report.percentage
+            ).toFixed(2) +
+            "%</td>" +
 
-                "</td>" +
+            "<td>" +
+            escapeHTML(
+                report.status
+            ) +
+            "</td>" +
 
+            "<td>" +
+            escapeHTML(
+                formatDate(
+                    report.submittedAt
+                )
+            ) +
+            "</td>" +
 
-                "<td>" +
+            "<td>" +
 
-                escapeHTML(
-                    report.year
-                ) +
+            "<button " +
+            "class='view-btn' " +
+            "onclick='openReport(" +
+            index +
+            ")'>" +
 
-                "</td>" +
+            "View" +
 
+            "</button>" +
 
-                "<td>Day " +
-
-                escapeHTML(
-                    report.day
-                ) +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                escapeHTML(
-                    report.topic
-                ) +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                objective +
-
-                "/12" +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                report.codingScore +
-
-                "/3" +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                report.totalScore +
-
-                "/15" +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                Number(
-                    report.percentage
-                ).toFixed(2) +
-
-                "%" +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                escapeHTML(
-                    report.status
-                ) +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                escapeHTML(
-                    formatDate(
-                        report.submittedAt
-                    )
-                ) +
-
-                "</td>" +
-
-
-                "<td>" +
-
-                "<button " +
-
-                "class='view-btn' " +
-
-                "onclick='openReport(" +
-
-                index +
-
-                ")'>" +
-
-                "View" +
-
-                "</button>" +
-
-                "</td>";
+            "</td>";
 
 
             body.appendChild(
@@ -2114,58 +1279,34 @@ function displayReports(){
 
 
     const success =
-        document.getElementById(
-            "success"
-        );
+    document.getElementById(
+        "success"
+    );
 
 
     success.style.display =
-        "block";
+    "block";
 
 
     success.textContent =
-
-        studentResults.length
-
-        +
-
-        " assessment report"
-
-        +
-
-        (
-
-            studentResults.length === 1
-
-            ?
-
-            ""
-
-            :
-
-            "s"
-
-        )
-
-        +
-
-        " found.";
+    studentResults.length +
+    " assessment report" +
+    (
+        studentResults.length === 1
+        ? ""
+        : "s"
+    ) +
+    " found.";
 
 }
 
 
-/* =====================================================
-   OPEN REPORT
-===================================================== */
-
-function openReport(
-    index
-){
+function openReport(index){
 
     const report =
-        window.studentResults[
-            index
-        ];
+    window.studentResults[
+        index
+    ];
 
 
     if(!report){
@@ -2176,139 +1317,111 @@ function openReport(
 
 
     const objective =
-
-        Number(
-            report.mcqScore || 0
-        )
-
-        +
-
-        Number(
-            report.errorScore || 0
-        );
-
-
-    const coding =
-
-        Number(
-            report.codingScore || 0
-        );
-
-
-    const total =
-
-        Number(
-            report.totalScore || 0
-        );
-
-
-    const percentage =
-
-        Number(
-            report.percentage || 0
-        );
+    report.mcqScore +
+    report.errorScore;
 
 
     document.getElementById(
         "modalObjective"
     ).textContent =
-
-        objective +
-        "/12";
+    objective +
+    "/12";
 
 
     document.getElementById(
         "modalCoding"
     ).textContent =
-
-        coding +
-        "/3";
+    report.codingScore +
+    "/3";
 
 
     document.getElementById(
         "modalTotal"
     ).textContent =
-
-        total +
-        "/15";
+    report.totalScore +
+    "/15";
 
 
     document.getElementById(
         "modalPercentage"
     ).textContent =
+    Number(
+        report.percentage
+    ).toFixed(2) +
+    "%";
 
-        percentage.toFixed(2) +
-        "%";
+
+    const name =
+    isAdmin
+    ? (
+        report.name ||
+        "Student"
+      )
+    : studentName;
+
+
+    const username =
+    isAdmin
+    ? (
+        report.username ||
+        "Not available"
+      )
+    : studentUsername;
+
+
+    const year =
+    isAdmin
+    ? (
+        report.year ||
+        "Not available"
+      )
+    : studentYear;
 
 
     document.getElementById(
         "modalStudent"
     ).innerHTML =
 
-        "<b>Name:</b> " +
+    "<b>Name:</b> " +
+    escapeHTML(name) +
 
-        escapeHTML(
-            report.name ||
-            "Not available"
-        ) +
+    "<br>" +
 
-        "<br>" +
+    "<b>Username:</b> " +
+    escapeHTML(username) +
 
+    "<br>" +
 
-        "<b>Username:</b> " +
+    "<b>Year:</b> " +
+    escapeHTML(year) +
 
-        escapeHTML(
-            report.username ||
-            "Not available"
-        ) +
+    "<br>" +
 
-        "<br>" +
+    "<b>Day:</b> Day " +
+    report.day +
 
+    "<br>" +
 
-        "<b>Year:</b> " +
+    "<b>Topic:</b> " +
+    escapeHTML(
+        report.topic
+    ) +
 
-        escapeHTML(
-            report.year ||
-            "Not available"
-        ) +
+    "<br>" +
 
-        "<br>" +
+    "<b>Status:</b> " +
+    escapeHTML(
+        report.status
+    ) +
 
+    "<br>" +
 
-        "<b>Day:</b> Day " +
-
-        escapeHTML(
-            report.day
-        ) +
-
-        "<br>" +
-
-
-        "<b>Topic:</b> " +
-
-        escapeHTML(
-            report.topic
-        ) +
-
-        "<br>" +
-
-
-        "<b>Status:</b> " +
-
-        escapeHTML(
-            report.status
-        ) +
-
-        "<br>" +
-
-
-        "<b>Submitted:</b> " +
-
-        escapeHTML(
-            formatDate(
-                report.submittedAt
-            )
-        );
+    "<b>Submitted:</b> " +
+    escapeHTML(
+        formatDate(
+            report.submittedAt
+        )
+    );
 
 
     displayAnswerDetails(
@@ -2319,64 +1432,42 @@ function openReport(
     document.getElementById(
         "reportModal"
     ).style.display =
-        "block";
+    "block";
 
 }
 
-
-/* =====================================================
-   ANSWER DETAILS
-===================================================== */
 
 function displayAnswerDetails(
     report
 ){
 
     const details =
-        document.getElementById(
-            "modalDetails"
-        );
+    document.getElementById(
+        "modalDetails"
+    );
 
 
     details.innerHTML =
-        "<h2>Answer Details</h2>";
+    "<h2>Answer Details</h2>";
 
 
     const answers =
-
-        Array.isArray(
-            report.answers
-        )
-
-        ?
-
+    Array.isArray(
         report.answers
-
-        :
-
-        [];
+    )
+    ? report.answers
+    : [];
 
 
     if(
-        answers.length === 0
+        !answers.length
     ){
 
         details.innerHTML +=
-
-            "<div class='answer-box'>" +
-
-            "<p><b>Assessment submitted successfully.</b></p>" +
-
-            "<p>" +
-
-            "Detailed answers are not available " +
-
-            "for this stored report." +
-
-            "</p>" +
-
-            "</div>";
-
+        "<div class='answer-box'>" +
+        "<b>Detailed answers are not available " +
+        "for this stored report.</b>" +
+        "</div>";
 
         return;
 
@@ -2384,170 +1475,162 @@ function displayAnswerDetails(
 
 
     answers.forEach(
-        function(
-            answer,
-            index
-        ){
-
-            const box =
-                document.createElement(
-                    "div"
-                );
-
-
-            box.className =
-                "answer-box";
-
+        function(answer,index){
 
             const type =
-
-                String(
-
-                    answer.type
-
-                    ||
-
-                    answer.Type
-
-                    ||
-
-                    ""
-
-                ).toUpperCase();
+            String(
+                answer.type ??
+                answer.Type ??
+                ""
+            )
+            .trim()
+            .toUpperCase();
 
 
             const question =
-
-                answer.question
-
-                ||
-
-                answer.Question
-
-                ||
-
-                "Question " +
-                (index + 1);
+            answer.question ??
+            answer.Question ??
+            "Question " +
+            (index + 1);
 
 
-            const studentAnswer =
-
-                answer.studentAnswer
-
-                ??
-
-                answer.answer
-
-                ??
-
-                answer.code
-
-                ??
-
-                "Not Answered";
+            const raw =
+            answer.studentAnswer ??
+            answer.answer ??
+            answer.code ??
+            "";
 
 
-            const correctAnswer =
-
-                answer.correctAnswer
-
-                ??
-
-                answer.correct
-
-                ??
-
-                "";
-
-
-            const status =
-
-                answer.status
-
-                ||
-
-                "Not evaluated";
+            const unanswered =
+            raw === null ||
+            raw === undefined ||
+            String(
+                raw
+            ).trim() === "" ||
+            String(
+                raw
+            )
+            .trim()
+            .toLowerCase() ===
+            "not answered";
 
 
-            const score =
+            let status =
+            String(
+                answer.status ??
+                ""
+            ).trim();
 
+
+            let score =
+            parseNumber(
                 answer.score
+            );
 
-                ??
 
+            /*
+            FINAL SAFETY CHECK
+
+            Coding without an answer
+            is ALWAYS Wrong and 0.
+            */
+
+            if(
+                type === "CODING" &&
+                unanswered
+            ){
+
+                status =
+                "Wrong";
+
+                score =
                 0;
+
+            }
+
+
+            if(!status){
+
+                if(score >= 1){
+
+                    status =
+                    "Correct";
+
+                }
+                else if(score > 0){
+
+                    status =
+                    "Partial";
+
+                }
+                else{
+
+                    status =
+                    "Wrong";
+
+                }
+
+            }
 
 
             let statusClass =
-                "wrong";
+            "wrong";
 
 
-            const statusText =
-                String(
-                    status
-                ).toLowerCase();
-
-
-            if(
-
-                statusText.includes(
-                    "correct"
-                )
-
-                &&
-
-                !statusText.includes(
-                    "incorrect"
-                )
-
-            ){
-
-                statusClass =
-                    "correct";
-
-            }
+            const lowerStatus =
+            status.toLowerCase();
 
 
             if(
-
-                statusText.includes(
+                lowerStatus.includes(
                     "partial"
                 )
-
             ){
 
                 statusClass =
-                    "partial";
+                "partial";
 
             }
+            else if(
+                lowerStatus.includes(
+                    "correct"
+                ) &&
+                !lowerStatus.includes(
+                    "incorrect"
+                )
+            ){
+
+                statusClass =
+                "correct";
+
+            }
+
+
+            const box =
+            document.createElement(
+                "div"
+            );
+
+
+            box.className =
+            "answer-box";
 
 
             let html =
 
-                "<h3>" +
+            "<h3>Q" +
+            (index + 1) +
+            ". " +
+            escapeHTML(
+                question
+            ) +
+            "</h3>" +
 
-                "Q" +
-
-                (index + 1) +
-
-                ". " +
-
-                escapeHTML(
-                    question
-                ) +
-
-                "</h3>" +
-
-
-                "<p>" +
-
-                "<b>Type:</b> " +
-
-                escapeHTML(
-                    type
-                ) +
-
-                "</p>";
+            "<p><b>Type:</b> " +
+            escapeHTML(
+                type
+            ) +
+            "</p>";
 
 
             if(
@@ -2556,77 +1639,99 @@ function displayAnswerDetails(
 
                 html +=
 
-                    "<p><b>Your Java Code:</b></p>" +
+                "<p><b>Your Java Code:</b></p>" +
 
-                    "<pre class='answer-code'>" +
+                "<pre class='answer-code'>" +
 
-                    escapeHTML(
-                        studentAnswer
-                    ) +
+                escapeHTML(
+                    unanswered
+                    ? "Not Answered"
+                    : raw
+                ) +
 
-                    "</pre>";
+                "</pre>";
 
             }
             else{
 
                 html +=
 
-                    "<p><b>Your Answer:</b> " +
+                "<p><b>Your Answer:</b> " +
 
-                    escapeHTML(
-                        studentAnswer
-                    ) +
+                escapeHTML(
+                    unanswered
+                    ? "Not Answered"
+                    : raw
+                ) +
 
-                    "</p>";
+                "</p>";
 
             }
 
 
+            const correct =
+            answer.correctAnswer ??
+            answer.correct ??
+            "";
+
+
             if(
-                correctAnswer !== ""
+                correct !== ""
             ){
 
                 html +=
 
-                    "<p><b>Correct Answer:</b> " +
+                "<p><b>Correct Answer:</b> " +
 
-                    escapeHTML(
-                        correctAnswer
-                    ) +
+                escapeHTML(
+                    correct
+                ) +
 
-                    "</p>";
+                "</p>";
 
             }
 
 
             html +=
 
-                "<p class='" +
+            "<p class='" +
+            statusClass +
+            "'>" +
 
-                statusClass +
+            "<b>Coding Evaluation:</b> " +
 
-                "'>" +
+            escapeHTML(
+                status
+            ) +
 
-                "<b>Status:</b> " +
+            "</p>" +
+
+            "<p><b>Mark:</b> " +
+
+            score +
+
+            "</p>";
+
+
+            if(
+                answer.evaluation
+            ){
+
+                html +=
+
+                "<p><b>Evaluation:</b> " +
 
                 escapeHTML(
-                    status
-                ) +
-
-                "</p>" +
-
-
-                "<p><b>Score:</b> " +
-
-                escapeHTML(
-                    score
+                    answer.evaluation
                 ) +
 
                 "</p>";
 
+            }
+
 
             box.innerHTML =
-                html;
+            html;
 
 
             details.appendChild(
@@ -2639,97 +1744,12 @@ function displayAnswerDetails(
 }
 
 
-/* =====================================================
-   FORMAT DATE
-===================================================== */
-
-function formatDate(
-    value
-){
-
-    if(!value){
-
-        return "Not available";
-
-    }
-
-
-    const date =
-        new Date(
-            value
-        );
-
-
-    if(
-
-        isNaN(
-            date.getTime()
-        )
-
-    ){
-
-        return String(
-            value
-        );
-
-    }
-
-
-    return date.toLocaleString();
-
-}
-
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHTML(
-    value
-){
-
-    return String(
-        value ?? ""
-    )
-
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-
-    .replace(
-        /</g,
-        "&lt;"
-    )
-
-    .replace(
-        />/g,
-        "&gt;"
-    )
-
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-
-}
-
-
-/* =====================================================
-   CLOSE MODAL
-===================================================== */
-
 function closeModal(){
 
     document.getElementById(
         "reportModal"
     ).style.display =
-        "none";
+    "none";
 
 }
 
@@ -2737,14 +1757,11 @@ function closeModal(){
 window.onclick =
 function(event){
 
-    const modal =
+    if(
+        event.target ===
         document.getElementById(
             "reportModal"
-        );
-
-
-    if(
-        event.target === modal
+        )
     ){
 
         closeModal();
@@ -2754,86 +1771,82 @@ function(event){
 };
 
 
-/* =====================================================
-   BACK BUTTON
-===================================================== */
-
 function goBack(){
 
-    if(isAdmin){
-
-        window.location.href =
-            "admin.html";
-
-    }
-    else{
-
-        window.location.href =
-            "student.html";
-
-    }
+    window.location.href =
+    isAdmin
+    ? "admin.html"
+    : "student.html";
 
 }
 
 
-/* =====================================================
-   START REPORTS
-===================================================== */
+function formatDate(value){
 
-function startReports(){
+    if(!value){
 
-    document.getElementById(
-        "loading"
-    ).style.display =
-        "block";
+        return "Not available";
+
+    }
 
 
-    document.getElementById(
-        "reportArea"
-    ).style.display =
-        "none";
+    const date =
+    new Date(value);
 
 
-    document.getElementById(
-        "success"
-    ).style.display =
-        "none";
+    if(
+        isNaN(
+            date.getTime()
+        )
+    ){
+
+        return String(value);
+
+    }
 
 
-    document.getElementById(
-        "error"
-    ).style.display =
-        "none";
-
-
-    localReports =
-        loadLocalReports();
-
-
-    googleReports = [];
-
-
-    /*
-     * Show local reports first.
-     */
-
-    mergeReports();
-
-
-    /*
-     * Then get latest Google Sheet data.
-     */
-
-    loadGoogleReports();
+    return date.toLocaleString();
 
 }
 
 
-/* =====================================================
-   START
-===================================================== */
+function escapeHTML(value){
 
-startReports();
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* START */
+
+merge(
+    loadLocal(),
+    []
+);
+
+loadGoogle();
 
 </script>
 
