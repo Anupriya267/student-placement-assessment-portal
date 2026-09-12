@@ -9,206 +9,100 @@
 
 <link rel="stylesheet" href="style.css">
 
-<!-- Excel Reader -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
 
-/* ==============================
-   QUESTION VIEWER
-   ============================== */
-
 .question-modal {
-
-    display: none;
-
-    position: fixed;
-
-    z-index: 9999;
-
-    left: 0;
-
-    top: 0;
-
-    width: 100%;
-
-    height: 100%;
-
-    background: rgba(0,0,0,0.65);
-
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.65);
 }
-
-
-/* Modal box */
 
 .question-modal-content {
-
-    background: white;
-
-    width: 92%;
-
-    max-width: 850px;
-
-    height: 90vh;
-
-    margin: 5vh auto;
-
-    border-radius: 12px;
-
-    overflow: hidden;
-
-    display: flex;
-
-    flex-direction: column;
-
+    background:white;
+    width:92%;
+    max-width:850px;
+    height:90vh;
+    margin:5vh auto;
+    border-radius:12px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
 }
-
-
-/* Header */
 
 .question-modal-header {
-
-    padding: 15px 20px;
-
-    background: #2864dc;
-
-    color: white;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
+    padding:15px 20px;
+    background:#2864dc;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
-
 
 .question-modal-header h2 {
-
-    margin: 0;
-
-    font-size: 20px;
-
+    margin:0;
+    font-size:20px;
 }
-
-
-/* Close button */
 
 .close-button {
-
-    font-size: 30px;
-
-    cursor: pointer;
-
-    font-weight: bold;
-
+    font-size:30px;
+    cursor:pointer;
+    font-weight:bold;
 }
-
-
-/* Scrollable questions area */
 
 .question-modal-body {
-
-    padding: 15px;
-
-    overflow-y: auto;
-
-    flex: 1;
-
+    padding:15px;
+    overflow-y:auto;
+    flex:1;
 }
-
-
-/* Individual question */
 
 .question-item {
-
-    border: 1px solid #ddd;
-
-    border-radius: 10px;
-
-    padding: 15px;
-
-    margin-bottom: 15px;
-
-    background: #fafafa;
-
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:15px;
+    background:#fafafa;
 }
-
-
-/* Question title */
 
 .question-item h3 {
-
-    margin-top: 0;
-
-    font-size: 17px;
-
+    margin-top:0;
+    font-size:17px;
 }
-
-
-/* Question type */
 
 .question-type {
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    margin-bottom: 8px;
-
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:8px;
 }
-
-
-/* Options */
 
 .option {
-
-    padding: 6px 0;
-
+    padding:6px 0;
 }
-
-
-/* Coding question */
 
 .coding-question {
-
-    border-left: 5px solid #2864dc;
-
+    border-left:5px solid #2864dc;
 }
-
-
-/* Error question */
 
 .error-question {
-
-    border-left: 5px solid #f39c12;
-
+    border-left:5px solid #f39c12;
 }
-
-
-/* MCQ */
 
 .mcq-question {
-
-    border-left: 5px solid #28a745;
-
+    border-left:5px solid #28a745;
 }
-
-
-/* Coding requirement */
 
 .coding-box {
-
-    background: #f1f5ff;
-
-    padding: 12px;
-
-    border-radius: 6px;
-
-    margin-top: 10px;
-
+    background:#f1f5ff;
+    padding:12px;
+    border-radius:6px;
+    margin-top:10px;
 }
-
 
 </style>
 
@@ -224,10 +118,7 @@
 <h1>Admin Dashboard</h1>
 
 
-
-<!-- ========================================= -->
 <!-- QUESTION BANK IMPORT -->
-<!-- ========================================= -->
 
 <div class="card">
 
@@ -237,23 +128,17 @@
 Upload the 41-Day Java Placement Question Bank Excel file.
 </p>
 
-
 <input
     type="file"
     id="excelFile"
     accept=".xlsx,.xls"
 >
 
-
 <br><br>
 
-
 <button onclick="importExcel()">
-
 Import Question Bank
-
 </button>
-
 
 <p id="importStatus"></p>
 
@@ -261,48 +146,31 @@ Import Question Bank
 
 
 
-<!-- ========================================= -->
 <!-- QUESTION BANK SUMMARY -->
-<!-- ========================================= -->
 
 <div class="card">
 
 <h2>Question Bank Summary</h2>
 
-
 <p>
-
 Total Questions:
-
-<strong id="totalQuestions">
-0
-</strong>
-
+<strong id="totalQuestions">0</strong>
 </p>
 
-
 <p>
-
 Total Days:
-
-<strong id="totalDays">
-0
-</strong>
-
+<strong id="totalDays">0</strong>
 </p>
 
 </div>
 
 
 
-<!-- ========================================= -->
 <!-- DAILY ASSESSMENTS -->
-<!-- ========================================= -->
 
 <div class="card">
 
 <h2>Daily Assessments</h2>
-
 
 <div id="dayList">
 
@@ -316,40 +184,28 @@ No question bank imported yet.
 
 
 
-<!-- ========================================= -->
 <!-- STUDENT MANAGEMENT -->
-<!-- ========================================= -->
 
 <div class="card">
 
 <h2>Student Management</h2>
 
-
-<button
-onclick="studentManagement()">
-
+<button onclick="studentManagement()">
 Manage Students
-
 </button>
 
 </div>
 
 
 
-<!-- ========================================= -->
 <!-- REPORTS -->
-<!-- ========================================= -->
 
 <div class="card">
 
 <h2>Reports</h2>
 
-
-<button
-onclick="viewReports()">
-
+<button onclick="viewReports()">
 View Student Reports
-
 </button>
 
 </div>
@@ -359,50 +215,36 @@ View Student Reports
 
 
 
-<!-- ========================================= -->
-<!-- QUESTION MODAL -->
-<!-- ========================================= -->
+<!-- QUESTION VIEWER -->
 
 <div
     id="questionModal"
     class="question-modal"
 >
 
-
 <div class="question-modal-content">
 
 
-<!-- HEADER -->
-
 <div class="question-modal-header">
 
-
 <h2 id="modalTitle">
-
 Day Questions
-
 </h2>
-
 
 <span
     class="close-button"
-    onclick="closeQuestionModal()">
-
+    onclick="closeQuestionModal()"
+>
 &times;
-
 </span>
-
 
 </div>
 
 
-
-<!-- QUESTIONS -->
-
 <div
     id="modalQuestions"
-    class="question-modal-body">
-
+    class="question-modal-body"
+>
 </div>
 
 
@@ -415,22 +257,17 @@ Day Questions
 <script>
 
 
-// ==================================================
+// ================================================
 // IMPORT EXCEL
-// ==================================================
+// ================================================
 
 function importExcel(){
 
-
     let fileInput =
-        document.getElementById(
-            "excelFile"
-        );
-
+        document.getElementById("excelFile");
 
     let file =
         fileInput.files[0];
-
 
     if(!file){
 
@@ -442,36 +279,29 @@ function importExcel(){
 
     }
 
-
     let reader =
         new FileReader();
-
 
     reader.onload =
         function(event){
 
-
             try{
-
 
                 let data =
                     new Uint8Array(
                         event.target.result
                     );
 
-
                 let workbook =
                     XLSX.read(
                         data,
                         {
-                            type: "array"
+                            type:"array"
                         }
                     );
 
-
                 let sheetName =
                     "Question Bank";
-
 
                 if(
                     !workbook.SheetNames.includes(
@@ -487,21 +317,18 @@ function importExcel(){
 
                 }
 
-
                 let worksheet =
                     workbook.Sheets[
                         sheetName
                     ];
 
-
                 let questions =
                     XLSX.utils.sheet_to_json(
                         worksheet,
                         {
-                            defval: ""
+                            defval:""
                         }
                     );
-
 
                 if(
                     questions.length === 0
@@ -515,9 +342,6 @@ function importExcel(){
 
                 }
 
-
-                // SAVE QUESTION BANK
-
                 localStorage.setItem(
                     "questionBank",
                     JSON.stringify(
@@ -525,15 +349,10 @@ function importExcel(){
                     )
                 );
 
-
-                // FIND DAYS
-
                 let days = [];
-
 
                 questions.forEach(
                     function(q){
-
 
                         if(
                             q.Day !== undefined &&
@@ -551,7 +370,6 @@ function importExcel(){
                     }
                 );
 
-
                 days.sort(
                     function(a,b){
 
@@ -562,7 +380,6 @@ function importExcel(){
                     }
                 );
 
-
                 localStorage.setItem(
                     "questionBankDays",
                     JSON.stringify(
@@ -570,31 +387,25 @@ function importExcel(){
                     )
                 );
 
-
                 document.getElementById(
                     "importStatus"
                 ).innerHTML =
-
                     "✅ Question Bank imported successfully.";
-
 
                 showSummary(
                     questions,
                     days
                 );
 
-
                 alert(
                     "Question Bank imported successfully!"
                 );
-
 
             }
 
             catch(error){
 
                 console.error(error);
-
 
                 alert(
                     "Error reading Excel file."
@@ -604,58 +415,47 @@ function importExcel(){
 
         };
 
-
-    reader.readAsArrayBuffer(
-        file
-    );
+    reader.readAsArrayBuffer(file);
 
 }
 
 
 
-// ==================================================
+// ================================================
 // SHOW SUMMARY
-// ==================================================
+// ================================================
 
 function showSummary(
     questions,
     days
 ){
 
-
     document.getElementById(
         "totalQuestions"
     ).innerText =
         questions.length;
-
 
     document.getElementById(
         "totalDays"
     ).innerText =
         days.length;
 
-
     let dayList =
         document.getElementById(
             "dayList"
         );
 
-
     dayList.innerHTML = "";
-
 
 
     days.forEach(
         function(day){
 
-
             let dayQuestions =
                 questions.filter(
                     function(q){
 
-                        return String(
-                            q.Day
-                        )
+                        return String(q.Day)
                         ===
                         String(day);
 
@@ -664,11 +464,8 @@ function showSummary(
 
 
             let topic =
-
                 dayQuestions.length > 0
-
                 ?
-
                 (
                     dayQuestions[0][
                         "Source Date / Assessment"
@@ -676,9 +473,7 @@ function showSummary(
                     ||
                     "Java Placement Assessment"
                 )
-
                 :
-
                 "";
 
 
@@ -687,40 +482,37 @@ function showSummary(
                     "div"
                 );
 
-
             div.className =
                 "card";
 
 
             div.innerHTML =
 
-
                 "<h3>Day "
                 +
                 escapeHTML(day)
                 +
-                "</h3>" +
+                "</h3>"
 
+                +
 
                 "<p>"
                 +
                 escapeHTML(topic)
                 +
-                "</p>" +
+                "</p>"
 
+                +
 
                 "<p>"
                 +
                 "Questions: "
                 +
-                "<strong>"
-                +
                 dayQuestions.length
                 +
-                "</strong>"
-                +
-                "</p>" +
+                "</p>"
 
+                +
 
                 "<button onclick=\"viewDay('"
                 +
@@ -744,34 +536,27 @@ function showSummary(
 
 
 
-// ==================================================
-// VIEW DAY QUESTIONS
-// ==================================================
+// ================================================
+// VIEW DAY
+// ================================================
 
 function viewDay(day){
 
-
     let questions =
-
         JSON.parse(
-
             localStorage.getItem(
                 "questionBank"
             )
             ||
             "[]"
-
         );
 
 
     let dayQuestions =
-
         questions.filter(
             function(q){
 
-                return String(
-                    q.Day
-                )
+                return String(q.Day)
                 ===
                 String(day);
 
@@ -794,11 +579,6 @@ function viewDay(day){
     }
 
 
-
-    // ============================================
-    // MODAL
-    // ============================================
-
     let modal =
         document.getElementById(
             "questionModal"
@@ -818,7 +598,6 @@ function viewDay(day){
 
 
     modalTitle.innerText =
-
         "Day "
         +
         day
@@ -833,17 +612,10 @@ function viewDay(day){
     modalQuestions.innerHTML = "";
 
 
-
-    // ============================================
-    // DISPLAY EVERY QUESTION
-    // ============================================
-
     dayQuestions.forEach(
         function(q,index){
 
-
             let type =
-
                 String(
                     q["Question Type"]
                     ||
@@ -854,7 +626,6 @@ function viewDay(day){
 
 
             let questionBox =
-
                 document.createElement(
                     "div"
                 );
@@ -864,11 +635,6 @@ function viewDay(day){
                 "question-item";
 
 
-
-            // =====================================
-            // QUESTION TYPE CLASS
-            // =====================================
-
             if(type === "MCQ"){
 
                 questionBox.classList.add(
@@ -877,7 +643,6 @@ function viewDay(day){
 
             }
 
-
             else if(type === "ERROR"){
 
                 questionBox.classList.add(
@@ -885,7 +650,6 @@ function viewDay(day){
                 );
 
             }
-
 
             else if(type === "CODING"){
 
@@ -896,38 +660,24 @@ function viewDay(day){
             }
 
 
-
-            // =====================================
-            // QUESTION NUMBER
-            // =====================================
-
             let html =
 
                 "<div class='question-type'>"
-
                 +
-
                 escapeHTML(type)
-
                 +
-
                 "</div>"
 
-
                 +
 
-                "<h3>Question "
-
+                "<h3>"
                 +
-
+                "Question "
+                +
                 (index + 1)
-
                 +
-
                 ". "
-
                 +
-
                 escapeHTML(
                     String(
                         q.Question
@@ -935,16 +685,9 @@ function viewDay(day){
                         ""
                     )
                 )
-
                 +
-
                 "</h3>";
 
-
-
-            // =====================================
-            // MCQ / ERROR OPTIONS
-            // =====================================
 
             if(
                 type === "MCQ"
@@ -952,17 +695,12 @@ function viewDay(day){
                 type === "ERROR"
             ){
 
-
                 html +=
 
                     "<div class='option'>"
-
                     +
-
                     "<b>A.</b> "
-
                     +
-
                     escapeHTML(
                         String(
                             q["Option A"]
@@ -970,23 +708,15 @@ function viewDay(day){
                             ""
                         )
                     )
-
                     +
-
                     "</div>"
 
-
                     +
-
 
                     "<div class='option'>"
-
                     +
-
                     "<b>B.</b> "
-
                     +
-
                     escapeHTML(
                         String(
                             q["Option B"]
@@ -994,23 +724,15 @@ function viewDay(day){
                             ""
                         )
                     )
-
                     +
-
                     "</div>"
 
-
                     +
-
 
                     "<div class='option'>"
-
                     +
-
                     "<b>C.</b> "
-
                     +
-
                     escapeHTML(
                         String(
                             q["Option C"]
@@ -1018,23 +740,15 @@ function viewDay(day){
                             ""
                         )
                     )
-
                     +
-
                     "</div>"
 
-
                     +
-
 
                     "<div class='option'>"
-
                     +
-
                     "<b>D.</b> "
-
                     +
-
                     escapeHTML(
                         String(
                             q["Option D"]
@@ -1042,69 +756,47 @@ function viewDay(day){
                             ""
                         )
                     )
-
                     +
-
                     "</div>";
 
             }
 
-
-
-            // =====================================
-            // CODING
-            // =====================================
 
             if(
                 type === "CODING"
             ){
 
-
                 html +=
 
-
                     "<div class='coding-box'>"
-
 
                     +
 
                     "<b>Coding Requirement:</b>"
 
-
                     +
 
                     "<br><br>"
 
-
                     +
 
                     escapeHTML(
-
                         String(
-
                             q[
                                 "Coding Requirement"
                             ]
-
                             ||
-
                             q.Question
-
                             ||
-
                             ""
-
                         )
-
                     )
-
 
                     +
 
                     "</div>";
 
             }
-
 
 
             questionBox.innerHTML =
@@ -1119,9 +811,6 @@ function viewDay(day){
     );
 
 
-
-    // SHOW MODAL
-
     modal.style.display =
         "block";
 
@@ -1129,9 +818,9 @@ function viewDay(day){
 
 
 
-// ==================================================
-// CLOSE QUESTION MODAL
-// ==================================================
+// ================================================
+// CLOSE QUESTION VIEWER
+// ================================================
 
 function closeQuestionModal(){
 
@@ -1143,11 +832,6 @@ function closeQuestionModal(){
 }
 
 
-
-// ==================================================
-// CLOSE WHEN CLICKING OUTSIDE
-// ==================================================
-
 window.onclick =
     function(event){
 
@@ -1155,7 +839,6 @@ window.onclick =
             document.getElementById(
                 "questionModal"
             );
-
 
         if(
             event.target === modal
@@ -1170,23 +853,22 @@ window.onclick =
 
 
 
-// ==================================================
+// ================================================
 // STUDENT MANAGEMENT
-// ==================================================
+// ================================================
 
 function studentManagement(){
 
-    alert(
-        "Student management will be added next."
-    );
+    window.location.href =
+        "students.html";
 
 }
 
 
 
-// ==================================================
+// ================================================
 // REPORTS
-// ==================================================
+// ================================================
 
 function viewReports(){
 
@@ -1198,9 +880,9 @@ function viewReports(){
 
 
 
-// ==================================================
+// ================================================
 // ESCAPE HTML
-// ==================================================
+// ================================================
 
 function escapeHTML(value){
 
@@ -1235,9 +917,9 @@ function escapeHTML(value){
 
 
 
-// ==================================================
+// ================================================
 // ESCAPE JAVASCRIPT
-// ==================================================
+// ================================================
 
 function escapeJS(value){
 
@@ -1257,13 +939,12 @@ function escapeJS(value){
 
 
 
-// ==================================================
-// LOAD PREVIOUSLY IMPORTED BANK
-// ==================================================
+// ================================================
+// LOAD SAVED QUESTION BANK
+// ================================================
 
 window.onload =
     function(){
-
 
         let saved =
             localStorage.getItem(
@@ -1282,7 +963,6 @@ window.onload =
             &&
             savedDays
         ){
-
 
             let questions =
                 JSON.parse(
@@ -1305,7 +985,6 @@ window.onload =
             document.getElementById(
                 "importStatus"
             ).innerHTML =
-
                 "✅ Previously imported question bank loaded.";
 
         }
@@ -1318,4 +997,4 @@ window.onload =
 
 </body>
 
-    </html>
+</html>
