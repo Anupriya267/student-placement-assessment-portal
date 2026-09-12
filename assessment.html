@@ -9,7 +9,6 @@
 
 </head>
 
-
 <body>
 
 <div class="dashboard">
@@ -28,15 +27,11 @@ Loading Assessment...
 
 </div>
 
-
-<form id="assessmentForm">
-
 <div id="questionContainer">
 
 <p>Loading questions...</p>
 
 </div>
-
 
 <br>
 
@@ -44,45 +39,53 @@ Loading Assessment...
     type="button"
     onclick="submitAssessment()"
 >
-
 Submit Assessment
-
 </button>
 
-</form>
-
 </div>
+
+
+<!-- QUESTION BANK FIRST -->
+
 <script src="java_question_bank.js"></script>
+
+<!-- MAIN SCRIPT SECOND -->
 
 <script src="script.js"></script>
 
 
 <script>
 
-// ================= LOAD ASSESSMENT =================
+// ================= LOAD QUESTIONS =================
 
 function loadAssessment(){
 
-    let questionBank =
-        JSON.parse(
-            localStorage.getItem("questionBank") || "[]"
-        );
+    if(!window.QUESTION_BANK){
+
+        document.getElementById(
+            "questionContainer"
+        ).innerHTML =
+            "<p>Question bank could not be loaded.</p>";
+
+        return;
+
+    }
 
 
     let assignedDay =
         localStorage.getItem("assignedDay") || "1";
 
 
-    let dayQuestions =
-        questionBank.filter(function(q){
+    let questions =
+        window.QUESTION_BANK.filter(function(q){
 
-            return String(q.Day) ===
-                   String(assignedDay);
+            return String(q.Day).trim() ===
+                   String(assignedDay).trim();
 
         });
 
 
-    if(dayQuestions.length === 0){
+    if(questions.length === 0){
 
         document.getElementById(
             "questionContainer"
@@ -99,7 +102,9 @@ function loadAssessment(){
     document.getElementById(
         "assessmentTitle"
     ).innerText =
-        "Day " + assignedDay + " Java Placement Assessment";
+        "Day " +
+        assignedDay +
+        " Java Placement Assessment";
 
 
     let container =
@@ -111,66 +116,63 @@ function loadAssessment(){
     container.innerHTML = "";
 
 
-    let mcqNumber = 0;
-
-    let errorNumber = 0;
-
-    let codingNumber = 0;
+    let mcqCount = 0;
+    let errorCount = 0;
+    let codingCount = 0;
 
 
-    dayQuestions.forEach(function(q){
+    questions.forEach(function(q){
 
         let type =
-            String(q.Type || "").toUpperCase();
+            String(
+                q.QuestionType || ""
+            )
+            .trim()
+            .toUpperCase();
 
 
         // ================= MCQ =================
 
         if(type === "MCQ"){
 
-            mcqNumber++;
+            mcqCount++;
 
 
-            let div =
-                document.createElement("div");
+            container.innerHTML +=
 
-            div.className = "card";
-
-
-            div.innerHTML =
+                "<div class='card'>" +
 
                 "<h3>" +
-                mcqNumber +
+                mcqCount +
                 ". " +
                 escapeHTML(q.Question) +
                 "</h3>" +
 
-                createOption(
-                    "mcq_" + mcqNumber,
+                option(
+                    "mcq_" + mcqCount,
                     "A",
-                    q["Option A"]
+                    q.OptionA
                 ) +
 
-                createOption(
-                    "mcq_" + mcqNumber,
+                option(
+                    "mcq_" + mcqCount,
                     "B",
-                    q["Option B"]
+                    q.OptionB
                 ) +
 
-                createOption(
-                    "mcq_" + mcqNumber,
+                option(
+                    "mcq_" + mcqCount,
                     "C",
-                    q["Option C"]
+                    q.OptionC
                 ) +
 
-                createOption(
-                    "mcq_" + mcqNumber,
+                option(
+                    "mcq_" + mcqCount,
                     "D",
-                    q["Option D"]
-                );
+                    q.OptionD
+                ) +
 
-
-            container.appendChild(div);
+                "</div>";
 
         }
 
@@ -182,51 +184,47 @@ function loadAssessment(){
             type === "ERROR CORRECTION"
         ){
 
-            errorNumber++;
+            errorCount++;
 
 
-            let div =
-                document.createElement("div");
+            container.innerHTML +=
 
-            div.className = "card";
+                "<div class='card'>" +
 
-
-            div.innerHTML =
-
-                "<h3>Error Correction " +
-                errorNumber +
+                "<h3>" +
+                "Error Correction " +
+                errorCount +
                 "</h3>" +
 
                 "<p>" +
                 escapeHTML(q.Question) +
                 "</p>" +
 
-                createOption(
-                    "error_" + errorNumber,
+                option(
+                    "error_" + errorCount,
                     "A",
-                    q["Option A"]
+                    q.OptionA
                 ) +
 
-                createOption(
-                    "error_" + errorNumber,
+                option(
+                    "error_" + errorCount,
                     "B",
-                    q["Option B"]
+                    q.OptionB
                 ) +
 
-                createOption(
-                    "error_" + errorNumber,
+                option(
+                    "error_" + errorCount,
                     "C",
-                    q["Option C"]
+                    q.OptionC
                 ) +
 
-                createOption(
-                    "error_" + errorNumber,
+                option(
+                    "error_" + errorCount,
                     "D",
-                    q["Option D"]
-                );
+                    q.OptionD
+                ) +
 
-
-            container.appendChild(div);
+                "</div>";
 
         }
 
@@ -235,19 +233,16 @@ function loadAssessment(){
 
         else if(type === "CODING"){
 
-            codingNumber++;
+            codingCount++;
 
 
-            let div =
-                document.createElement("div");
+            container.innerHTML +=
 
-            div.className = "card";
+                "<div class='card'>" +
 
-
-            div.innerHTML =
-
-                "<h3>Coding Question " +
-                codingNumber +
+                "<h3>" +
+                "Coding Question " +
+                codingCount +
                 "</h3>" +
 
                 "<p>" +
@@ -256,14 +251,13 @@ function loadAssessment(){
 
                 "<textarea " +
                 "id='coding_" +
-                codingNumber +
+                codingCount +
                 "' " +
                 "rows='10' " +
                 "placeholder='Write your Java code here...'>" +
-                "</textarea>";
+                "</textarea>" +
 
-
-            container.appendChild(div);
+                "</div>";
 
         }
 
@@ -272,9 +266,9 @@ function loadAssessment(){
 }
 
 
-// ================= OPTIONS =================
+// ================= OPTION =================
 
-function createOption(
+function option(
     name,
     value,
     text
@@ -296,6 +290,7 @@ function createOption(
         " " +
         value +
         ". " +
+
         escapeHTML(text) +
 
         "</label><br>"
@@ -316,6 +311,7 @@ function escapeHTML(value){
 
     }
 
+
     return String(value)
 
         .replace(/&/g, "&amp;")
@@ -335,35 +331,12 @@ function escapeHTML(value){
 
 function submitAssessment(){
 
-    if(
-        !confirm(
-            "Are you sure you want to submit the assessment?"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    // Save current responses
-
-    let responses = {
-
-        submittedAt:
-            new Date().toISOString(),
-
-        day:
-            localStorage.getItem(
-                "assignedDay"
-            ) || "1"
-
-    };
+    let responses = {};
 
 
     document
         .querySelectorAll(
-            'input[type="radio"]:checked'
+            "input[type='radio']:checked"
         )
         .forEach(function(input){
 
@@ -375,10 +348,10 @@ function submitAssessment(){
 
     document
         .querySelectorAll("textarea")
-        .forEach(function(textarea){
+        .forEach(function(box){
 
-            responses[textarea.id] =
-                textarea.value;
+            responses[box.id] =
+                box.value;
 
         });
 
@@ -389,19 +362,19 @@ function submitAssessment(){
     );
 
 
-    // Calculate score
+    // Use new scoring function
 
     calculateAndSaveResult();
 
 }
 
 
-// ================= 40 MINUTE TIMER =================
+// ================= TIMER =================
 
-let remainingTime = 40 * 60;
+let timeRemaining = 40 * 60;
 
 
-let assessmentTimer =
+let timer =
     setInterval(function(){
 
         let timerBox =
@@ -410,7 +383,7 @@ let assessmentTimer =
 
         if(!timerBox){
 
-            clearInterval(assessmentTimer);
+            clearInterval(timer);
 
             return;
 
@@ -419,12 +392,12 @@ let assessmentTimer =
 
         let minutes =
             Math.floor(
-                remainingTime / 60
+                timeRemaining / 60
             );
 
 
         let seconds =
-            remainingTime % 60;
+            timeRemaining % 60;
 
 
         timerBox.innerText =
@@ -434,22 +407,18 @@ let assessmentTimer =
             seconds;
 
 
-        remainingTime--;
+        timeRemaining--;
 
 
-        if(remainingTime < 0){
+        if(timeRemaining < 0){
 
-            clearInterval(
-                assessmentTimer
-            );
+            clearInterval(timer);
 
 
             alert(
-                "Time is over. Your assessment will be submitted."
+                "Time is over. Assessment submitted automatically."
             );
 
-
-            // Automatic submission
 
             calculateAndSaveResult();
 
@@ -462,20 +431,9 @@ let assessmentTimer =
 
 window.onload = function(){
 
-    if(window.QUESTION_BANK){
-
-        localStorage.setItem(
-            "questionBank",
-            JSON.stringify(window.QUESTION_BANK)
-        );
-
-    }
-
     loadAssessment();
 
 };
-
-
 
 </script>
 
