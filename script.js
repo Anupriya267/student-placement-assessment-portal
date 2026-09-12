@@ -2,8 +2,11 @@
 
 function login(){
 
-    let username = document.getElementById("username").value.trim();
-    let password = document.getElementById("password").value.trim();
+    let username =
+        document.getElementById("username").value.trim();
+
+    let password =
+        document.getElementById("password").value.trim();
 
     if(username === "admin" && password === "admin123"){
 
@@ -26,264 +29,216 @@ function login(){
 }
 
 
+// ================= ASSESSMENT SUBMISSION =================
 
-// ================= TIMER =================
+function calculateAndSaveResult(){
 
-if(document.getElementById("timer")){
+    let questionBank =
+        JSON.parse(
+            localStorage.getItem("questionBank") || "[]"
+        );
 
-    let time = 40 * 60;
-
-    let timer = setInterval(function(){
-
-        let timerBox = document.getElementById("timer");
-
-        if(timerBox){
-
-            let min = Math.floor(time / 60);
-            let sec = time % 60;
-
-            timerBox.innerHTML =
-                min + ":" + (sec < 10 ? "0" : "") + sec;
-
-        }
-
-        time--;
-
-        if(time < 0){
-
-            clearInterval(timer);
-
-            submitTest();
-
-        }
-
-    },1000);
-
-}
+    let assignedDay =
+        localStorage.getItem("assignedDay") || "1";
 
 
+    // Get questions for current day
 
-// ================= SUBMIT TEST =================
+    let dayQuestions =
+        questionBank.filter(function(q){
 
-function submitTest(){
+            return String(q.Day) === String(assignedDay);
+
+        });
+
+
+    if(dayQuestions.length === 0){
+
+        alert("No questions found for this assessment.");
+
+        return;
+
+    }
+
 
     let score = 0;
 
-
-    // ================= MCQ ANSWERS =================
-
-    let answers = {
-
-        q1:"new",
-        q2:"for",
-        q3:"int",
-        q4:"==",
-        q5:"if",
-        q6:"0",
-        q7:"Object Oriented",
-        q8:"&&",
-        q9:"main",
-        q10:"final"
-
-    };
-
+    let totalObjective = 0;
 
     let answerSheet = [];
 
 
 
-    // ================= CHECK MCQs =================
+    // ================= CHECK QUESTIONS =================
 
-    for(let q in answers){
+    dayQuestions.forEach(function(q, index){
 
-        let selected =
-            document.querySelector(
-                'input[name="' + q + '"]:checked'
-            );
+        let type =
+            String(q.Type || "").toUpperCase();
 
+        let questionNumber =
+            index + 1;
 
-        let studentAnswer =
-            selected ? selected.value : "Not Answered";
-
-
-        let correctAnswer =
-            answers[q];
+        let studentAnswer = "Not Answered";
 
 
-        let isCorrect =
-            studentAnswer === correctAnswer;
+        // ---------- MCQ ----------
+
+        if(type === "MCQ"){
+
+            totalObjective++;
+
+            let selected =
+                document.querySelector(
+                    'input[name="mcq_' +
+                    questionNumber +
+                    '"]:checked'
+                );
+
+            if(selected){
+
+                studentAnswer =
+                    selected.value;
+
+            }
 
 
-        if(isCorrect){
+            let correctAnswer =
+                String(q["Correct Answer"] || "")
+                .trim();
 
-            score++;
+
+            let isCorrect =
+                studentAnswer === correctAnswer;
+
+
+            if(isCorrect){
+
+                score++;
+
+            }
+
+
+            answerSheet.push({
+
+                question:
+                    q.Question,
+
+                studentAnswer:
+                    studentAnswer,
+
+                correctAnswer:
+                    correctAnswer,
+
+                status:
+                    isCorrect
+                    ? "Correct"
+                    : "Wrong"
+
+            });
 
         }
 
 
-        answerSheet.push({
 
-            question: q.toUpperCase(),
+        // ---------- ERROR CORRECTION ----------
 
-            studentAnswer: studentAnswer,
+        else if(
+            type === "ERROR" ||
+            type === "ERROR CORRECTION"
+        ){
 
-            correctAnswer: correctAnswer,
+            totalObjective++;
 
-            status: isCorrect ? "Correct" : "Wrong"
+            let selected =
+                document.querySelector(
+                    'input[name="error_' +
+                    questionNumber +
+                    '"]:checked'
+                );
 
-        });
 
-    }
+            if(selected){
 
+                studentAnswer =
+                    selected.value;
 
+            }
 
-    // ================= ERROR QUESTION 1 =================
 
-    let error1 =
-        document.querySelector(
-            'input[name="error1"]:checked'
-        );
+            let correctAnswer =
+                String(q["Correct Answer"] || "")
+                .trim();
 
 
-    let error1Answer =
-        error1 ? error1.value : "Not Answered";
+            let isCorrect =
+                studentAnswer === correctAnswer;
 
 
-    let error1Correct = "semicolon";
+            if(isCorrect){
 
+                score++;
 
-    let error1CorrectStatus =
-        error1Answer === error1Correct;
+            }
 
 
-    if(error1CorrectStatus){
+            answerSheet.push({
 
-        score++;
+                question:
+                    q.Question,
 
-    }
+                studentAnswer:
+                    studentAnswer,
 
+                correctAnswer:
+                    correctAnswer,
 
-    answerSheet.push({
+                status:
+                    isCorrect
+                    ? "Correct"
+                    : "Wrong"
 
-        question: "ERROR 1",
+            });
 
-        studentAnswer:
-            error1Answer === "semicolon"
-            ? "Add semicolon"
-            : error1Answer === "remove"
-            ? "Remove println"
-            : "Not Answered",
+        }
 
-        correctAnswer: "Add semicolon",
 
-        status:
-            error1CorrectStatus
-            ? "Correct"
-            : "Wrong"
 
-    });
+        // ---------- CODING ----------
 
+        else if(type === "CODING"){
 
+            let codingBox =
+                document.getElementById(
+                    "coding_" + questionNumber
+                );
 
-    // ================= ERROR QUESTION 2 =================
 
-    let error2 =
-        document.querySelector(
-            'input[name="error2"]:checked'
-        );
+            let studentCode =
+                codingBox
+                ? codingBox.value.trim()
+                : "";
 
 
-    let error2Answer =
-        error2 ? error2.value : "Not Answered";
+            answerSheet.push({
 
+                question:
+                    q.Question,
 
-    let error2Correct = "addsemicolon";
+                studentAnswer:
+                    studentCode
+                    ? studentCode
+                    : "Not Answered",
 
+                correctAnswer:
+                    "Automatic coding evaluation will be added later.",
 
-    let error2CorrectStatus =
-        error2Answer === error2Correct;
+                status:
+                    "Pending"
 
+            });
 
-    if(error2CorrectStatus){
-
-        score++;
-
-    }
-
-
-    answerSheet.push({
-
-        question: "ERROR 2",
-
-        studentAnswer:
-            error2Answer === "addsemicolon"
-            ? "Add semicolon after condition"
-            : error2Answer === "remove"
-            ? "Remove loop"
-            : "Not Answered",
-
-        correctAnswer:
-            "Add semicolon after condition",
-
-        status:
-            error2CorrectStatus
-            ? "Correct"
-            : "Wrong"
-
-    });
-
-
-
-    // ================= CODING ANSWERS =================
-
-    let codingBoxes =
-        document.querySelectorAll("textarea");
-
-
-    let coding1 =
-        codingBoxes[0]
-        ? codingBoxes[0].value
-        : "";
-
-
-    let coding2 =
-        codingBoxes[1]
-        ? codingBoxes[1].value
-        : "";
-
-
-    // Coding is displayed but NOT automatically scored yet
-
-    answerSheet.push({
-
-        question: "CODING 1",
-
-        studentAnswer:
-            coding1.trim()
-            ? coding1
-            : "Not Answered",
-
-        correctAnswer:
-            "Automatic coding evaluation will be added later.",
-
-        status: "Pending"
-
-    });
-
-
-    answerSheet.push({
-
-        question: "CODING 2",
-
-        studentAnswer:
-            coding2.trim()
-            ? coding2
-            : "Not Answered",
-
-        correctAnswer:
-            "Automatic coding evaluation will be added later.",
-
-        status: "Pending"
+        }
 
     });
 
@@ -299,7 +254,7 @@ function submitTest(){
 
     localStorage.setItem(
         "total",
-        12
+        totalObjective
     );
 
 
@@ -309,9 +264,15 @@ function submitTest(){
     );
 
 
+    localStorage.setItem(
+        "submittedDay",
+        assignedDay
+    );
 
-    // ================= NAVIGATION =================
 
-    window.location.href = "results.html";
+    // ================= GO TO RESULT =================
+
+    window.location.href =
+        "results.html";
 
 }
