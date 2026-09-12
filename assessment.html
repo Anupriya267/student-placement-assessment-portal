@@ -837,10 +837,44 @@ function submitAssessment(){
     );
 
 
+    localStorage.setItem("submittedDay", assignedDay);
+    // Move student to the next day
+let currentDay = parseInt(assignedDay);
+
+if (currentDay < 41) {
+    let nextDay = currentDay + 1;
+
     localStorage.setItem(
-        "submittedDay",
-        assignedDay
+        "assignedDay",
+        nextDay
     );
+
+    // Also update the student's saved record
+    let students =
+        JSON.parse(
+            localStorage.getItem("students") || "[]"
+        );
+
+    let studentUsername =
+        localStorage.getItem("studentUsername");
+
+    let studentIndex =
+        students.findIndex(function(student) {
+            return String(student.username) ===
+                   String(studentUsername);
+        });
+
+    if (studentIndex !== -1) {
+
+        students[studentIndex].assignedDay =
+            nextDay;
+
+        localStorage.setItem(
+            "students",
+            JSON.stringify(students)
+        );
+    }
+}
 
 
 
