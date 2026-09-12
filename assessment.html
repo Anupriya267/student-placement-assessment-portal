@@ -2,11 +2,8 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Java Placement Assessment</title>
 
@@ -47,12 +44,13 @@ body{
 .question-title{
     font-weight:bold;
     margin-bottom:15px;
+    font-size:18px;
 }
 
 .option{
     display:block;
     margin:10px 0;
-    padding:10px;
+    padding:12px;
     border:1px solid #ddd;
     border-radius:7px;
     cursor:pointer;
@@ -132,97 +130,81 @@ textarea{
 
 </head>
 
-
 <body>
-
 
 <div class="container">
 
+    <div class="header">
 
-<div class="header">
+        <h1>Java Placement Assessment</h1>
 
-<h1>Java Placement Assessment</h1>
+        <div>
+            Student:
+            <b id="studentName">Loading...</b>
+        </div>
 
-<div>
-Student:
-<b id="studentName">Loading...</b>
-</div>
+        <div>
+            Username:
+            <b id="studentUsername">Loading...</b>
+        </div>
 
-<div>
-Username:
-<b id="studentUsername">Loading...</b>
-</div>
+        <div>
+            Year:
+            <b id="studentYear">Loading...</b>
+        </div>
 
-<div>
-Year:
-<b id="studentYear">Loading...</b>
-</div>
+        <div>
+            Assessment Day:
+            <b id="assessmentDay">Loading...</b>
+        </div>
 
-<div>
-Assessment Day:
-<b id="assessmentDay">Loading...</b>
-</div>
-
-</div>
-
-
-<div id="loading"
-     class="loading">
-
-Loading questions...
-
-</div>
+    </div>
 
 
-<div id="error"
-     class="error"
-     style="display:none;">
-
-</div>
+    <div id="loading" class="loading">
+        Loading questions...
+    </div>
 
 
-<div id="assessmentArea"
-     style="display:none;">
+    <div id="error"
+         class="error"
+         style="display:none;">
+    </div>
 
 
-<div class="timer">
+    <div id="assessmentArea"
+         style="display:none;">
 
-Time Remaining:
-<span id="timer">40:00</span>
-
-</div>
-
-
-<form id="assessmentForm">
+        <div class="timer">
+            Time Remaining:
+            <span id="timer">40:00</span>
+        </div>
 
 
-<div id="questionContainer"></div>
+        <form id="assessmentForm">
 
+            <div id="questionContainer"></div>
 
-<button
-type="button"
-class="submit-btn"
-onclick="finishAssessment()">
+            <button
+                type="button"
+                class="submit-btn"
+                onclick="finishAssessment()">
 
-Submit Assessment
+                Submit Assessment
 
-</button>
+            </button>
 
+        </form>
 
-</form>
-
-
-</div>
-
+    </div>
 
 </div>
 
 
 <script>
 
-
 /* =====================================================
-   GOOGLE APPS SCRIPT URL
+   GOOGLE APPS SCRIPT
 ===================================================== */
 
 const GOOGLE_SCRIPT_URL =
@@ -243,7 +225,7 @@ const EXCEL_FILES = [
 
 
 /* =====================================================
-   STUDENT INFORMATION
+   GET LOGGED STUDENT
 ===================================================== */
 
 function getLoggedStudent(){
@@ -251,13 +233,10 @@ function getLoggedStudent(){
     try{
 
         return JSON.parse(
-            localStorage.getItem("loggedInStudent")
-            ||
-            "null"
+            localStorage.getItem("loggedInStudent") || "null"
         );
 
     }
-
     catch(error){
 
         return null;
@@ -267,61 +246,50 @@ function getLoggedStudent(){
 }
 
 
-const loggedStudent =
-getLoggedStudent();
+const loggedStudent = getLoggedStudent();
 
 
 const studentName =
-loggedStudent?.name
-||
-loggedStudent?.Name
-||
-localStorage.getItem("studentName")
-||
-"Student";
+    loggedStudent?.name ||
+    loggedStudent?.Name ||
+    localStorage.getItem("studentName") ||
+    "Student";
 
 
 const studentUsername =
-loggedStudent?.username
-||
-loggedStudent?.Username
-||
-localStorage.getItem("studentUsername")
-||
-"";
+    loggedStudent?.username ||
+    loggedStudent?.Username ||
+    localStorage.getItem("studentUsername") ||
+    "";
 
 
 const studentYear =
-loggedStudent?.year
-||
-loggedStudent?.Year
-||
-localStorage.getItem("studentYear")
-||
-"";
+    loggedStudent?.year ||
+    loggedStudent?.Year ||
+    localStorage.getItem("studentYear") ||
+    "";
 
 
 /* =====================================================
-   ASSESSMENT DAY
+   GET ASSESSMENT DAY
 ===================================================== */
 
-let assignedDay =
-parseInt(
-    localStorage.getItem("assessmentDay")
-    ||
-    localStorage.getItem("assignedDay")
-    ||
-    localStorage.getItem("currentDay")
-    ||
-    "1"
+let assignedDay = parseInt(
+
+    localStorage.getItem("assessmentDay") ||
+
+    localStorage.getItem("assignedDay") ||
+
+    localStorage.getItem("currentDay") ||
+
+    "1",
+
+    10
+
 );
 
 
-if(
-    isNaN(assignedDay)
-    ||
-    assignedDay < 1
-){
+if(isNaN(assignedDay) || assignedDay < 1){
 
     assignedDay = 1;
 
@@ -336,35 +304,24 @@ if(assignedDay > 41){
 
 
 /* =====================================================
-   DISPLAY STUDENT INFORMATION
+   DISPLAY STUDENT
 ===================================================== */
 
-document.getElementById(
-    "studentName"
-).textContent =
-studentName;
+document.getElementById("studentName").textContent =
+    studentName;
 
+document.getElementById("studentUsername").textContent =
+    studentUsername;
 
-document.getElementById(
-    "studentUsername"
-).textContent =
-studentUsername;
+document.getElementById("studentYear").textContent =
+    studentYear;
 
-
-document.getElementById(
-    "studentYear"
-).textContent =
-studentYear;
-
-
-document.getElementById(
-    "assessmentDay"
-).textContent =
-"Day " + assignedDay;
+document.getElementById("assessmentDay").textContent =
+    "Day " + assignedDay;
 
 
 /* =====================================================
-   GLOBAL VARIABLES
+   VARIABLES
 ===================================================== */
 
 let allQuestions = [];
@@ -389,16 +346,13 @@ async function loadExcel(){
     let lastError = null;
 
 
-    for(
-        const file of EXCEL_FILES
-    ){
+    for(const file of EXCEL_FILES){
 
         try{
 
-            const response =
-                await fetch(
-                    file + "?v=" + Date.now()
-                );
+            const response = await fetch(
+                file + "?v=" + Date.now()
+            );
 
 
             if(!response.ok){
@@ -430,11 +384,9 @@ async function loadExcel(){
             }
 
         }
-
         catch(error){
 
-            lastError =
-                error;
+            lastError = error;
 
         }
 
@@ -443,8 +395,7 @@ async function loadExcel(){
 
     if(!workbook){
 
-        throw lastError
-        ||
+        throw lastError ||
         new Error(
             "Excel file could not be loaded."
         );
@@ -452,20 +403,21 @@ async function loadExcel(){
     }
 
 
-    const sheetName =
-        workbook.SheetNames.includes(
-            "Question Bank"
-        )
+    let sheetName =
+
+        workbook.SheetNames.includes("Question Bank")
+
         ?
+
         "Question Bank"
+
         :
+
         workbook.SheetNames[0];
 
 
     const sheet =
-        workbook.Sheets[
-            sheetName
-        ];
+        workbook.Sheets[sheetName];
 
 
     const rows =
@@ -486,8 +438,13 @@ async function loadExcel(){
     }
 
 
-    allQuestions =
-        rows;
+    allQuestions = rows;
+
+
+    console.log(
+        "Total imported questions:",
+        allQuestions.length
+    );
 
 
     prepareQuestions();
@@ -496,17 +453,12 @@ async function loadExcel(){
 
 
 /* =====================================================
-   GET FIELD FROM EXCEL ROW
+   GENERIC EXCEL FIELD
 ===================================================== */
 
-function getExcelField(
-    row,
-    names
-){
+function getExcelField(row,names){
 
-    for(
-        const name of names
-    ){
+    for(const name of names){
 
         if(
             row[name] !== undefined &&
@@ -514,9 +466,7 @@ function getExcelField(
             String(row[name]).trim() !== ""
         ){
 
-            return String(
-                row[name]
-            ).trim();
+            return String(row[name]).trim();
 
         }
 
@@ -529,7 +479,7 @@ function getExcelField(
 
 
 /* =====================================================
-   GET QUESTION TEXT
+   QUESTION
 ===================================================== */
 
 function getQuestion(row){
@@ -552,12 +502,12 @@ function getQuestion(row){
 
 
 /* =====================================================
-   GET DAY
+   DAY
 ===================================================== */
 
 function getDay(row){
 
-    return parseInt(
+    const value =
         getExcelField(
             row,
             [
@@ -568,15 +518,16 @@ function getDay(row){
                 "DayNumber",
                 "dayNumber"
             ]
-        ),
-        10
-    );
+        );
+
+
+    return parseInt(value,10);
 
 }
 
 
 /* =====================================================
-   GET SECTION / QUESTION TYPE
+   QUESTION TYPE / SECTION
 ===================================================== */
 
 function getSection(row){
@@ -601,90 +552,102 @@ function getSection(row){
         );
 
 
-    return String(
-        value || ""
-    )
-    .trim()
-    .toUpperCase()
-    .replace(/[_-]+/g," ")
-    .replace(/\s+/g," ");
-
-}
-
-
-/* =====================================================
-   SECTION CHECK
-===================================================== */
-
-function sectionIs(
-    row,
-    type
-){
-
-    const section =
-        getSection(row);
-
-
-    const wanted =
-        String(type || "")
+    return String(value || "")
         .trim()
-        .toUpperCase();
-
-
-    if(wanted === "MCQ"){
-
-        return (
-            section === "MCQ"
-            ||
-            section.includes("MCQ")
-            ||
-            section.includes("MULTIPLE CHOICE")
-        );
-
-    }
-
-
-    if(wanted === "ERROR"){
-
-        return (
-            section.includes("ERROR")
-            ||
-            section.includes("ERROR FINDING")
-            ||
-            section.includes("ERROR CORRECTION")
-            ||
-            section.includes("DEBUG")
-        );
-
-    }
-
-
-    if(wanted === "CODING"){
-
-        return (
-            section.includes("CODING")
-            ||
-            section.includes("PROGRAM")
-            ||
-            section.includes("PROGRAMMING")
-        );
-
-    }
-
-
-    return false;
+        .toUpperCase()
+        .replace(/[_-]+/g," ")
+        .replace(/\s+/g," ");
 
 }
 
 
 /* =====================================================
-   GET OPTION
+   CHECK MCQ
 ===================================================== */
 
-function getOption(
-    row,
-    letter
-){
+function isMCQ(row){
+
+    const section = getSection(row);
+
+
+    return (
+
+        section === "MCQ"
+
+        ||
+
+        section.includes("MCQ")
+
+        ||
+
+        section.includes("MULTIPLE CHOICE")
+
+    );
+
+}
+
+
+/* =====================================================
+   CHECK ERROR
+===================================================== */
+
+function isErrorQuestion(row){
+
+    const section = getSection(row);
+
+
+    return (
+
+        section.includes("ERROR")
+
+        ||
+
+        section.includes("DEBUG")
+
+        ||
+
+        section.includes("ERROR FINDING")
+
+        ||
+
+        section.includes("ERROR CORRECTION")
+
+    );
+
+}
+
+
+/* =====================================================
+   CHECK CODING
+===================================================== */
+
+function isCoding(row){
+
+    const section = getSection(row);
+
+
+    return (
+
+        section.includes("CODING")
+
+        ||
+
+        section.includes("PROGRAM")
+
+        ||
+
+        section.includes("PROGRAMMING")
+
+    );
+
+}
+
+
+/* =====================================================
+   OPTIONS
+===================================================== */
+
+function getOption(row,letter){
 
     return getExcelField(
         row,
@@ -701,7 +664,7 @@ function getOption(
 
 
 /* =====================================================
-   GET CORRECT ANSWER
+   CORRECT ANSWER
 ===================================================== */
 
 function getCorrectAnswer(row){
@@ -721,34 +684,29 @@ function getCorrectAnswer(row){
 
 
 /* =====================================================
-   PREPARE QUESTIONS
+   PREPARE DAY QUESTIONS
 ===================================================== */
 
 function prepareQuestions(){
 
     const dayQuestions =
         allQuestions.filter(
-            function(row){
-
-                return (
-                    getDay(row)
-                    ===
-                    assignedDay
-                );
-
-            }
+            row =>
+                getDay(row) === assignedDay
         );
 
 
-    if(
-        dayQuestions.length === 0
-    ){
+    console.log(
+        "Questions for Day " + assignedDay + ":",
+        dayQuestions.length
+    );
+
+
+    if(dayQuestions.length === 0){
 
         throw new Error(
-            "No questions found for Day "
-            +
-            assignedDay
-            +
+            "No questions found for Day " +
+            assignedDay +
             "."
         );
 
@@ -756,66 +714,32 @@ function prepareQuestions(){
 
 
     const mcq =
-        dayQuestions.filter(
-            function(row){
-
-                return sectionIs(
-                    row,
-                    "MCQ"
-                );
-
-            }
-        );
+        dayQuestions.filter(isMCQ);
 
 
     const errorQuestions =
-        dayQuestions.filter(
-            function(row){
-
-                return sectionIs(
-                    row,
-                    "ERROR"
-                );
-
-            }
-        );
+        dayQuestions.filter(isErrorQuestion);
 
 
     const coding =
-        dayQuestions.filter(
-            function(row){
-
-                return sectionIs(
-                    row,
-                    "CODING"
-                );
-
-            }
-        );
+        dayQuestions.filter(isCoding);
 
 
     console.log(
-        "Day:",
-        assignedDay
-    );
-
-    console.log(
-        "Total questions:",
-        dayQuestions.length
-    );
-
-    console.log(
-        "MCQ:",
+        "Day " + assignedDay +
+        " MCQ:",
         mcq.length
     );
 
     console.log(
-        "Error:",
+        "Day " + assignedDay +
+        " Error:",
         errorQuestions.length
     );
 
     console.log(
-        "Coding:",
+        "Day " + assignedDay +
+        " Coding:",
         coding.length
     );
 
@@ -839,57 +763,39 @@ function prepareQuestions(){
         coding.slice(0,3);
 
 
-    if(
-        selectedMCQ.length < 10
-    ){
+    if(selectedMCQ.length < 10){
 
         throw new Error(
-            "Day "
-            +
-            assignedDay
-            +
-            " has only "
-            +
-            selectedMCQ.length
-            +
+            "Day " +
+            assignedDay +
+            " has only " +
+            selectedMCQ.length +
             " MCQ questions. Need 10."
         );
 
     }
 
 
-    if(
-        selectedError.length < 2
-    ){
+    if(selectedError.length < 2){
 
         throw new Error(
-            "Day "
-            +
-            assignedDay
-            +
-            " has only "
-            +
-            selectedError.length
-            +
+            "Day " +
+            assignedDay +
+            " has only " +
+            selectedError.length +
             " Error questions. Need 2."
         );
 
     }
 
 
-    if(
-        selectedCoding.length < 3
-    ){
+    if(selectedCoding.length < 3){
 
         throw new Error(
-            "Day "
-            +
-            assignedDay
-            +
-            " has only "
-            +
-            selectedCoding.length
-            +
+            "Day " +
+            assignedDay +
+            " has only " +
+            selectedCoding.length +
             " Coding questions. Need 3."
         );
 
@@ -928,8 +834,7 @@ function shuffle(array){
 
         const j =
             Math.floor(
-                Math.random()
-                *
+                Math.random() *
                 (i + 1)
             );
 
@@ -948,7 +853,7 @@ function shuffle(array){
 
 
 /* =====================================================
-   RENDER QUESTIONS
+   RENDER ALL QUESTIONS
 ===================================================== */
 
 function renderQuestions(){
@@ -959,12 +864,12 @@ function renderQuestions(){
         );
 
 
-    container.innerHTML =
-        "";
+    container.innerHTML = "";
 
 
     selectedQuestions.forEach(
-        function(row,index){
+        (row,index) => {
+
 
             if(index === 0){
 
@@ -997,16 +902,14 @@ function renderQuestions(){
 
 
             const card =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
 
             card.className =
                 "question-card";
 
 
-            const questionText =
+            const question =
                 getQuestion(row);
 
 
@@ -1018,9 +921,7 @@ function renderQuestions(){
                 (index + 1) +
                 ". " +
 
-                escapeHTML(
-                    questionText
-                ) +
+                escapeHTML(question) +
 
                 "</div>";
 
@@ -1034,7 +935,6 @@ function renderQuestions(){
                     );
 
             }
-
             else{
 
                 html +=
@@ -1046,13 +946,10 @@ function renderQuestions(){
             }
 
 
-            card.innerHTML =
-                html;
+            card.innerHTML = html;
 
 
-            container.appendChild(
-                card
-            );
+            container.appendChild(card);
 
         }
     );
@@ -1060,14 +957,12 @@ function renderQuestions(){
 
     document.getElementById(
         "loading"
-    ).style.display =
-        "none";
+    ).style.display = "none";
 
 
     document.getElementById(
         "assessmentArea"
-    ).style.display =
-        "block";
+    ).style.display = "block";
 
 }
 
@@ -1076,71 +971,53 @@ function renderQuestions(){
    RENDER MCQ / ERROR
 ===================================================== */
 
-function renderObjective(
-    row,
-    index
-){
+function renderObjective(row,index){
 
     const letters =
-        [
-            "A",
-            "B",
-            "C",
-            "D"
-        ];
+        ["A","B","C","D"];
 
 
-    let html =
-        "";
+    let html = "";
 
 
-    letters.forEach(
-        function(letter){
+    letters.forEach(letter => {
 
-            const option =
-                getOption(
-                    row,
-                    letter
-                );
+        const option =
+            getOption(row,letter);
 
 
-            if(!option){
+        if(!option){
 
-                return;
-
-            }
-
-
-            html +=
-
-                "<label class='option'>" +
-
-                "<input " +
-
-                "type='radio' " +
-
-                "name='q" +
-                index +
-                "' " +
-
-                "value='" +
-                escapeAttribute(
-                    letter
-                ) +
-                "'>" +
-
-                "<b>" +
-                letter +
-                ".</b> " +
-
-                escapeHTML(
-                    option
-                ) +
-
-                "</label>";
+            return;
 
         }
-    );
+
+
+        html +=
+
+            "<label class='option'>" +
+
+            "<input " +
+
+            "type='radio' " +
+
+            "name='q" +
+            index +
+            "' " +
+
+            "value='" +
+            escapeAttribute(letter) +
+            "'>" +
+
+            "<b>" +
+            letter +
+            ".</b> " +
+
+            escapeHTML(option) +
+
+            "</label>";
+
+    });
 
 
     return html;
@@ -1152,12 +1029,9 @@ function renderObjective(
    RENDER CODING
 ===================================================== */
 
-function renderCoding(
-    row,
-    index
-){
+function renderCoding(row,index){
 
-    return
+    return (
 
         "<p><b>Write your Java code:</b></p>" +
 
@@ -1169,7 +1043,9 @@ function renderCoding(
 
         "placeholder='Write your Java code here...'>" +
 
-        "</textarea>";
+        "</textarea>"
+
+    );
 
 }
 
@@ -1180,9 +1056,7 @@ function renderCoding(
 
 function startTimer(){
 
-    clearInterval(
-        timerInterval
-    );
+    clearInterval(timerInterval);
 
 
     updateTimer();
@@ -1190,7 +1064,7 @@ function startTimer(){
 
     timerInterval =
         setInterval(
-            function(){
+            () => {
 
                 timeRemaining--;
 
@@ -1198,9 +1072,7 @@ function startTimer(){
                 updateTimer();
 
 
-                if(
-                    timeRemaining <= 0
-                ){
+                if(timeRemaining <= 0){
 
                     clearInterval(
                         timerInterval
@@ -1212,9 +1084,7 @@ function startTimer(){
                     );
 
 
-                    finishAssessment(
-                        true
-                    );
+                    finishAssessment(true);
 
                 }
 
@@ -1246,7 +1116,7 @@ function updateTimer(){
     ).textContent =
 
         String(minutes)
-        .padStart(2,"0")
+            .padStart(2,"0")
 
         +
 
@@ -1255,7 +1125,7 @@ function updateTimer(){
         +
 
         String(seconds)
-        .padStart(2,"0");
+            .padStart(2,"0");
 
 }
 
@@ -1265,7 +1135,7 @@ function updateTimer(){
 ===================================================== */
 
 async function finishAssessment(
-    automaticSubmit
+    automaticSubmit = false
 ){
 
     if(submitting){
@@ -1277,13 +1147,13 @@ async function finishAssessment(
 
     if(!automaticSubmit){
 
-        const confirmSubmit =
+        const ok =
             confirm(
                 "Are you sure you want to submit the assessment?"
             );
 
 
-        if(!confirmSubmit){
+        if(!ok){
 
             return;
 
@@ -1300,9 +1170,6 @@ async function finishAssessment(
     );
 
 
-    const answerSheet = [];
-
-
     let mcqScore = 0;
 
     let errorScore = 0;
@@ -1310,18 +1177,22 @@ async function finishAssessment(
     let codingScore = 0;
 
 
+    const answerSheet = [];
+
+
     /* =================================================
        COLLECT ANSWERS
     ================================================= */
 
     selectedQuestions.forEach(
-        function(row,index){
+        (row,index) => {
+
 
             const question =
                 getQuestion(row);
 
 
-            /* ---------- OBJECTIVE ---------- */
+            /* OBJECTIVE */
 
             if(index < 12){
 
@@ -1356,21 +1227,20 @@ async function finishAssessment(
 
 
                 let status =
+                    isCorrect
+                    ?
+                    "Correct"
+                    :
                     "Wrong";
 
 
                 if(isCorrect){
-
-                    status =
-                        "Correct";
-
 
                     if(index < 10){
 
                         mcqScore++;
 
                     }
-
                     else{
 
                         errorScore++;
@@ -1393,13 +1263,11 @@ async function finishAssessment(
                         question,
 
                     studentAnswer:
-                        studentAnswer
-                        ||
+                        studentAnswer ||
                         "Not Answered",
 
                     correctAnswer:
-                        correctAnswer
-                        ||
+                        correctAnswer ||
                         "-",
 
                     status:
@@ -1417,14 +1285,13 @@ async function finishAssessment(
             }
 
 
-            /* ---------- CODING ---------- */
+            /* CODING */
 
             else{
 
                 const textarea =
                     document.getElementById(
-                        "coding" +
-                        index
+                        "coding" + index
                     );
 
 
@@ -1456,8 +1323,7 @@ async function finishAssessment(
                         question,
 
                     studentAnswer:
-                        code
-                        ||
+                        code ||
                         "Not Answered",
 
                     status:
@@ -1477,6 +1343,10 @@ async function finishAssessment(
     );
 
 
+    /* =================================================
+       SCORE
+    ================================================= */
+
     const totalScore =
         mcqScore +
         errorScore +
@@ -1485,27 +1355,19 @@ async function finishAssessment(
 
     const percentage =
         (
-            totalScore /
-            15 *
-            100
+            totalScore / 15 * 100
         ).toFixed(2);
 
 
     const codingEvaluations =
         answerSheet.filter(
-            function(answer){
-
-                return (
-                    answer.type ===
-                    "CODING"
-                );
-
-            }
+            answer =>
+                answer.type === "CODING"
         );
 
 
     /* =================================================
-       SAVE LOCAL RESULT
+       REPORT
     ================================================= */
 
     const report = {
@@ -1513,10 +1375,19 @@ async function finishAssessment(
         name:
             studentName,
 
+        studentName:
+            studentName,
+
         username:
             studentUsername,
 
+        studentUsername:
+            studentUsername,
+
         year:
+            studentYear,
+
+        studentYear:
             studentYear,
 
         day:
@@ -1555,28 +1426,26 @@ async function finishAssessment(
     };
 
 
-    saveLocalReport(
-        report
-    );
+    /* =================================================
+       SAVE STUDENT REPORT
+    ================================================= */
+
+    saveLocalReport(report);
 
 
     /* =================================================
-       SAVE RESULT FOR RESULTS PAGE
+       SAVE RESULT PAGE DATA
     ================================================= */
 
     localStorage.setItem(
         "latestAssessmentResult",
-        JSON.stringify(
-            report
-        )
+        JSON.stringify(report)
     );
 
 
     localStorage.setItem(
         "lastAssessmentResult",
-        JSON.stringify(
-            report
-        )
+        JSON.stringify(report)
     );
 
 
@@ -1586,12 +1455,9 @@ async function finishAssessment(
 
     try{
 
-        await sendToGoogleSheet(
-            report
-        );
+        await sendToGoogleSheet(report);
 
     }
-
     catch(error){
 
         console.error(
@@ -1606,8 +1472,12 @@ async function finishAssessment(
        NEXT DAY
     ================================================= */
 
+    const completedDay =
+        assignedDay;
+
+
     let nextDay =
-        assignedDay + 1;
+        completedDay + 1;
 
 
     if(nextDay > 41){
@@ -1616,6 +1486,10 @@ async function finishAssessment(
 
     }
 
+
+    /*
+       Keep all three keys synchronized.
+    */
 
     localStorage.setItem(
         "assignedDay",
@@ -1636,7 +1510,21 @@ async function finishAssessment(
 
 
     /* =================================================
-       GO TO RESULTS
+       FINAL DAY FLAG
+    ================================================= */
+
+    if(completedDay === 41){
+
+        localStorage.setItem(
+            "allAssessmentsCompleted",
+            "true"
+        );
+
+    }
+
+
+    /* =================================================
+       OPEN RESULTS
     ================================================= */
 
     window.location.href =
@@ -1649,9 +1537,7 @@ async function finishAssessment(
    SAVE LOCAL REPORT
 ===================================================== */
 
-function saveLocalReport(
-    report
-){
+function saveLocalReport(report){
 
     let reports = [];
 
@@ -1662,13 +1548,10 @@ function saveLocalReport(
             JSON.parse(
                 localStorage.getItem(
                     "studentReports"
-                )
-                ||
-                "[]"
+                ) || "[]"
             );
 
     }
-
     catch(error){
 
         reports = [];
@@ -1677,49 +1560,40 @@ function saveLocalReport(
 
 
     /*
-       Avoid duplicate records if submit is triggered twice.
+       Prevent duplicate submission
+       for the same student and day.
     */
 
     reports =
         reports.filter(
-            function(item){
+            item => !(
+                String(item.username) ===
+                String(report.username)
 
-                return !(
-                    String(item.username)
-                    ===
-                    String(report.username)
-                    &&
-                    Number(item.day)
-                    ===
-                    Number(report.day)
-                );
+                &&
 
-            }
+                Number(item.day) ===
+                Number(report.day)
+            )
         );
 
 
-    reports.push(
-        report
-    );
+    reports.push(report);
 
 
     localStorage.setItem(
         "studentReports",
-        JSON.stringify(
-            reports
-        )
+        JSON.stringify(reports)
     );
 
 }
 
 
 /* =====================================================
-   SEND RESULT TO GOOGLE SHEET
+   SEND TO GOOGLE SHEET
 ===================================================== */
 
-async function sendToGoogleSheet(
-    report
-){
+async function sendToGoogleSheet(report){
 
     const payload = {
 
@@ -1781,11 +1655,9 @@ async function sendToGoogleSheet(
         GOOGLE_SCRIPT_URL,
         {
 
-            method:
-                "POST",
+            method:"POST",
 
-            mode:
-                "no-cors",
+            mode:"no-cors",
 
             headers:{
                 "Content-Type":
@@ -1793,9 +1665,7 @@ async function sendToGoogleSheet(
             },
 
             body:
-                JSON.stringify(
-                    payload
-                )
+                JSON.stringify(payload)
 
         }
     );
@@ -1804,7 +1674,7 @@ async function sendToGoogleSheet(
 
 
 /* =====================================================
-   CODING EVALUATOR
+   CODING EVALUATION
 ===================================================== */
 
 function evaluateCoding(
@@ -1866,21 +1736,6 @@ function evaluateCoding(
 
     /* LOOP */
 
-    const hasLoop =
-
-        c.includes("for(")
-        ||
-        c.includes("for (")
-        ||
-        c.includes("while(")
-        ||
-        c.includes("while (")
-        ||
-        c.includes("do{")
-        ||
-        c.includes("do {");
-
-
     const needsLoop =
 
         q.includes("loop")
@@ -1905,7 +1760,19 @@ function evaluateCoding(
         required++;
 
 
-        if(hasLoop){
+        if(
+            c.includes("for(")
+            ||
+            c.includes("for (")
+            ||
+            c.includes("while(")
+            ||
+            c.includes("while (")
+            ||
+            c.includes("do{")
+            ||
+            c.includes("do {")
+        ){
 
             score++;
 
@@ -1932,8 +1799,6 @@ function evaluateCoding(
             c.includes("[]")
             ||
             c.includes("array")
-            ||
-            c.includes("arrays")
         ){
 
             score++;
@@ -2002,9 +1867,7 @@ function evaluateCoding(
         required++;
 
 
-        if(
-            c.includes("%")
-        ){
+        if(c.includes("%")){
 
             score++;
 
@@ -2081,7 +1944,7 @@ function evaluateCoding(
     }
 
 
-    /* METHODS */
+    /* METHOD */
 
     const needsMethod =
 
@@ -2192,7 +2055,7 @@ function evaluateCoding(
     }
 
 
-    /* RESULT */
+    /* FINAL CODING SCORE */
 
     const ratio =
         required > 0
@@ -2202,9 +2065,7 @@ function evaluateCoding(
         0;
 
 
-    if(
-        ratio >= 0.75
-    ){
+    if(ratio >= 0.75){
 
         return {
 
@@ -2219,9 +2080,7 @@ function evaluateCoding(
     }
 
 
-    if(
-        ratio >= 0.35
-    ){
+    if(ratio >= 0.35){
 
         return {
 
@@ -2253,23 +2112,16 @@ function evaluateCoding(
    NORMALIZE ANSWER
 ===================================================== */
 
-function normalizeAnswer(
-    value
-){
+function normalizeAnswer(value){
 
-    return String(
-        value || ""
-    )
-    .trim()
-    .toLowerCase()
-    .replace(
-        /\s+/g,
-        " "
-    )
-    .replace(
-        /^[a-d]\.\s*/,
-        ""
-    );
+    return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g," ")
+        .replace(
+            /^[a-d]\.\s*/,
+            ""
+        );
 
 }
 
@@ -2278,38 +2130,34 @@ function normalizeAnswer(
    ESCAPE HTML
 ===================================================== */
 
-function escapeHTML(
-    value
-){
+function escapeHTML(value){
 
-    return String(
-        value || ""
-    )
+    return String(value || "")
 
-    .replace(
-        /&/g,
-        "&amp;"
-    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-    .replace(
-        /</g,
-        "&lt;"
-    )
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-    .replace(
-        />/g,
-        "&gt;"
-    )
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-    .replace(
-        /"/g,
-        "&quot;"
-    )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -2318,53 +2166,48 @@ function escapeHTML(
    ESCAPE ATTRIBUTE
 ===================================================== */
 
-function escapeAttribute(
-    value
-){
+function escapeAttribute(value){
 
-    return String(
-        value || ""
-    )
+    return String(value || "")
 
-    .replace(
-        /&/g,
-        "&amp;"
-    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-    .replace(
-        /"/g,
-        "&quot;"
-    )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-    .replace(
-        /'/g,
-        "&#039;"
-    )
+        .replace(
+            /'/g,
+            "&#039;"
+        )
 
-    .replace(
-        /</g,
-        "&lt;"
-    )
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-    .replace(
-        />/g,
-        "&gt;"
-    );
+        .replace(
+            />/g,
+            "&gt;"
+        );
 
 }
 
 
 /* =====================================================
-   LOAD
+   START
 ===================================================== */
 
 loadExcel()
-.catch(
-    function(error){
 
-        console.error(
-            error
-        );
+.catch(
+    error => {
+
+        console.error(error);
 
 
         document.getElementById(
@@ -2384,13 +2227,11 @@ loadExcel()
 
 
         errorBox.textContent =
-            error.message
-            ||
+            error.message ||
             "Unable to load assessment.";
 
     }
 );
-
 
 </script>
 
