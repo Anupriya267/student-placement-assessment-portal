@@ -2,10 +2,15 @@
 <html>
 
 <head>
+
     <title>Student Reports</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="style.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </head>
 
 <body>
@@ -23,16 +28,20 @@
             <table border="1" width="100%" cellpadding="8">
 
                 <thead>
+
                     <tr>
                         <th>Name</th>
                         <th>Username</th>
                         <th>Year</th>
                         <th>Day</th>
-                        <th>Score</th>
+                        <th>MCQ + Error</th>
+                        <th>Coding</th>
+                        <th>Total</th>
                         <th>Percentage</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
+
                 </thead>
 
                 <tbody id="reportTable"></tbody>
@@ -42,6 +51,7 @@
         </div>
 
     </div>
+
 
     <div class="card">
 
@@ -54,7 +64,8 @@
 </div>
 
 
-<!-- REPORT VIEW MODAL -->
+
+<!-- ================= REPORT MODAL ================= -->
 
 <div id="reportModal"
      style="
@@ -78,7 +89,9 @@
         border-radius:10px;
         ">
 
-        <h2 id="modalTitle">Student Report</h2>
+        <h2 id="modalTitle">
+            Student Report
+        </h2>
 
         <div id="reportDetails"></div>
 
@@ -97,15 +110,20 @@
 </div>
 
 
+
 <script>
+
+
+// ================= LOAD REPORTS =================
 
 let reports =
     JSON.parse(
-        localStorage.getItem("studentReports")
-        || "[]"
+        localStorage.getItem("studentReports") || "[]"
     );
 
+
 let selectedReport = null;
+
 
 
 // ================= DISPLAY REPORTS =================
@@ -122,12 +140,13 @@ function displayReports(){
 
         table.innerHTML =
             "<tr>" +
-            "<td colspan='8'>" +
+            "<td colspan='10'>" +
             "No student reports available yet." +
             "</td>" +
             "</tr>";
 
         return;
+
     }
 
 
@@ -135,6 +154,44 @@ function displayReports(){
 
         const row =
             document.createElement("tr");
+
+
+        // ================= MCQ + ERROR =================
+
+        let objectiveScore =
+            getObjectiveScore(report);
+
+
+        // ================= CODING =================
+
+        let codingScore = 0;
+
+
+        if(report.codingScore !== undefined){
+
+            codingScore =
+                Number(report.codingScore) || 0;
+
+        }
+
+
+        // ================= TOTAL =================
+
+        let totalScore =
+            objectiveScore + codingScore;
+
+
+        const totalQuestions = 15;
+
+
+        // ================= PERCENTAGE =================
+
+        let percentage =
+            (totalScore / totalQuestions) * 100;
+
+
+        percentage =
+            percentage.toFixed(2);
 
 
         row.innerHTML =
@@ -152,18 +209,29 @@ function displayReports(){
             "</td>" +
 
             "<td>" +
-            report.day +
+            escapeHTML(report.day) +
             "</td>" +
 
             "<td>" +
-            report.score +
-            "/" +
-            report.total +
+            objectiveScore +
+            "/12" +
             "</td>" +
 
             "<td>" +
-            report.percentage +
-            "%</td>" +
+            codingScore +
+            "/3" +
+            " - Pending" +
+            "</td>" +
+
+            "<td>" +
+            totalScore +
+            "/15" +
+            "</td>" +
+
+            "<td>" +
+            percentage +
+            "%" +
+            "</td>" +
 
             "<td>" +
             escapeHTML(report.status) +
@@ -174,7 +242,9 @@ function displayReports(){
             "<button onclick='viewReport(" +
             index +
             ")'>" +
+
             "View Report" +
+
             "</button>" +
 
             "</td>";
@@ -185,6 +255,40 @@ function displayReports(){
     });
 
 }
+
+
+
+// ================= OBJECTIVE SCORE =================
+
+function getObjectiveScore(report){
+
+    /*
+       New reports may contain objectiveScore.
+       Older reports may only contain score.
+    */
+
+    if(report.objectiveScore !== undefined){
+
+        return Number(report.objectiveScore) || 0;
+
+    }
+
+
+    if(report.score !== undefined){
+
+        /*
+          Old reports were scored out of 12.
+        */
+
+        return Number(report.score) || 0;
+
+    }
+
+
+    return 0;
+
+}
+
 
 
 // ================= VIEW REPORT =================
@@ -204,6 +308,31 @@ function viewReport(index){
         selectedReport.day;
 
 
+
+    let objectiveScore =
+        getObjectiveScore(selectedReport);
+
+
+    let codingScore = 0;
+
+
+    if(selectedReport.codingScore !== undefined){
+
+        codingScore =
+            Number(selectedReport.codingScore) || 0;
+
+    }
+
+
+    let totalScore =
+        objectiveScore + codingScore;
+
+
+    let percentage =
+        ((totalScore / 15) * 100).toFixed(2);
+
+
+
     let html =
 
         "<h3>Student Details</h3>" +
@@ -221,17 +350,27 @@ function viewReport(index){
         "</p>" +
 
         "<p><b>Day:</b> " +
-        selectedReport.day +
+        escapeHTML(selectedReport.day) +
         "</p>" +
 
-        "<p><b>Score:</b> " +
-        selectedReport.score +
-        "/" +
-        selectedReport.total +
-        "</p>" +
+        "<hr>" +
+
+        "<h3>Assessment Score</h3>" +
+
+        "<p><b>MCQ + Error Correction:</b> " +
+        objectiveScore +
+        " / 12</p>" +
+
+        "<p><b>Coding:</b> " +
+        codingScore +
+        " / 3 - Pending Evaluation</p>" +
+
+        "<p><b>TOTAL:</b> " +
+        totalScore +
+        " / 15</p>" +
 
         "<p><b>Percentage:</b> " +
-        selectedReport.percentage +
+        percentage +
         "%</p>" +
 
         "<p><b>Status:</b> " +
@@ -246,6 +385,9 @@ function viewReport(index){
 
         "<h3>Answer Sheet</h3>";
 
+
+
+    // ================= ANSWERS =================
 
     if(
         !selectedReport.answers ||
@@ -262,13 +404,27 @@ function viewReport(index){
         selectedReport.answers.forEach(
             function(answer,index){
 
+                let answerStatus =
+                    answer.status || "Pending";
+
+
+                let correctAnswer =
+                    answer.correctAnswer ||
+                    "Coding evaluation pending";
+
+
                 html +=
 
                     "<div style='" +
+
                     "border:1px solid #ddd;" +
+
                     "padding:12px;" +
+
                     "margin-bottom:10px;" +
+
                     "border-radius:6px;" +
+
                     "'>" +
 
                     "<b>Question " +
@@ -294,7 +450,7 @@ function viewReport(index){
                     "<b>Correct Answer:</b><br>" +
 
                     escapeHTML(
-                        answer.correctAnswer
+                        correctAnswer
                     ) +
 
                     "<br><br>" +
@@ -302,7 +458,7 @@ function viewReport(index){
                     "<b>Status:</b> " +
 
                     escapeHTML(
-                        answer.status
+                        answerStatus
                     ) +
 
                     "</div>";
@@ -311,6 +467,7 @@ function viewReport(index){
         );
 
     }
+
 
 
     document.getElementById(
@@ -325,7 +482,8 @@ function viewReport(index){
 }
 
 
-// ================= CLOSE =================
+
+// ================= CLOSE REPORT =================
 
 function closeReport(){
 
@@ -334,6 +492,7 @@ function closeReport(){
     ).style.display = "none";
 
 }
+
 
 
 // ================= PDF =================
@@ -351,13 +510,16 @@ function downloadPDF(){
     }
 
 
-    const { jsPDF } = window.jspdf;
+    const { jsPDF } =
+        window.jspdf;
+
 
     const doc =
         new jsPDF();
 
 
     let y = 15;
+
 
 
     function addText(text){
@@ -368,7 +530,12 @@ function downloadPDF(){
                 175
             );
 
-        if(y + lines.length * 7 > 280){
+
+        if(
+            y +
+            lines.length * 7 >
+            280
+        ){
 
             doc.addPage();
 
@@ -376,11 +543,13 @@ function downloadPDF(){
 
         }
 
+
         doc.text(
             lines,
             15,
             y
         );
+
 
         y +=
             lines.length * 7 + 3;
@@ -388,7 +557,41 @@ function downloadPDF(){
     }
 
 
+
+    let objectiveScore =
+        getObjectiveScore(
+            selectedReport
+        );
+
+
+    let codingScore = 0;
+
+
+    if(selectedReport.codingScore !== undefined){
+
+        codingScore =
+            Number(
+                selectedReport.codingScore
+            ) || 0;
+
+    }
+
+
+    let totalScore =
+        objectiveScore +
+        codingScore;
+
+
+    let percentage =
+        (
+            (totalScore / 15) *
+            100
+        ).toFixed(2);
+
+
+
     doc.setFontSize(18);
+
 
     addText(
         "Student Placement Assessment Report"
@@ -403,38 +606,58 @@ function downloadPDF(){
         selectedReport.name
     );
 
+
     addText(
         "Username: " +
         selectedReport.username
     );
+
 
     addText(
         "Year: " +
         selectedReport.year
     );
 
+
     addText(
         "Day: " +
         selectedReport.day
     );
 
+
     addText(
-        "Score: " +
-        selectedReport.score +
-        "/" +
-        selectedReport.total
+        "MCQ + Error Correction: " +
+        objectiveScore +
+        "/12"
     );
+
+
+    addText(
+        "Coding: " +
+        codingScore +
+        "/3 - Pending Evaluation"
+    );
+
+
+    addText(
+        "TOTAL: " +
+        totalScore +
+        "/15"
+    );
+
 
     addText(
         "Percentage: " +
-        selectedReport.percentage +
+        percentage +
         "%"
     );
+
 
     addText(
         "Status: " +
         selectedReport.status
     );
+
 
     addText(
         "Date: " +
@@ -450,6 +673,7 @@ function downloadPDF(){
     );
 
 
+
     if(selectedReport.answers){
 
         selectedReport.answers.forEach(
@@ -460,25 +684,36 @@ function downloadPDF(){
                     (index + 1)
                 );
 
+
                 addText(
                     "Question: " +
                     answer.question
                 );
+
 
                 addText(
                     "Student Answer: " +
                     answer.studentAnswer
                 );
 
+
                 addText(
                     "Correct Answer: " +
-                    answer.correctAnswer
+                    (
+                        answer.correctAnswer ||
+                        "Coding evaluation pending"
+                    )
                 );
+
 
                 addText(
                     "Status: " +
-                    answer.status
+                    (
+                        answer.status ||
+                        "Pending"
+                    )
                 );
+
 
                 y += 3;
 
@@ -486,6 +721,7 @@ function downloadPDF(){
         );
 
     }
+
 
 
     doc.save(
@@ -506,6 +742,7 @@ function downloadPDF(){
 }
 
 
+
 // ================= BACK =================
 
 function backToAdmin(){
@@ -516,26 +753,49 @@ function backToAdmin(){
 }
 
 
-// ================= SECURITY DISPLAY =================
+
+// ================= SECURITY =================
 
 function escapeHTML(value){
 
     return String(value || "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
+
 
 
 // ================= START =================
 
 displayReports();
 
+
 </script>
 
 </body>
 
-    </html>
+</html>
